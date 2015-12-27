@@ -90,8 +90,8 @@
                   <td data-th-text="${task.description}">ipsum</td>
                   <td data-th-text="${task.priority}">dolor</td>
                   <td data-th-text="${task.state}">sit</td>
-                  <td data-th-text="${task.created}">sit</td>
-                  <td data-th-text="${task.updated}">sit</td>
+                  <td data-th-text="${#dates.format(task.created, #messages.msg('thymeleaf.format.datetime'))}">sit</td>
+                  <td data-th-text="${#dates.format(task.updated, #messages.msg('thymeleaf.format.datetime'))}">sit</td>
                 </tr>
               </tbody>
             </table>
