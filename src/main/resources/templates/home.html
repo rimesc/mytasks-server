@@ -70,27 +70,16 @@
           <h1 class="page-header">Dashboard</h1>
 
           <h2 class="sub-header">Projects</h2>
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Name</th>
-                  <th>Description</th>
-                  <th>Created</th>
-                  <th>Tasks</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr data-th-each="project : ${projects}">
-                  <td data-th-text="${project.id}">1</td>
-                  <td data-th-text="${project.name}">Lorem</td>
-                  <td data-th-text="${project.description}">ipsum</td>
-                  <td data-th-text="${#dates.format(project.created, #messages.msg('thymeleaf.format.datetime'))}">2001-01-01 12:00:00</td>
-                  <td data-th-text="${project.numberOfTasks}">0</td>
-                </tr>
-              </tbody>
-            </table>
+          <div>
+            <ul class="list-group">
+            	<li data-th-each="project : ${projects}" class="list-group-item">
+					<span class="badge" data-th-text="${project.numberOfTasks}">0</span>
+            	  	<h4 class="list-group-item-heading"><a href="#" data-th-text="${project.name}">Lorem ipsum</a></h4>
+                  	<p class="list-group-item-text" data-th-text="${project.description}">
+                  		Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.
+					</p>
+            	</li>
+           	</ul>
           </div>
 
           <h2 class="sub-header">Tasks</h2>

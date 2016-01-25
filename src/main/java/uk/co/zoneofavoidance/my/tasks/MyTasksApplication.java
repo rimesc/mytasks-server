@@ -32,9 +32,10 @@ public class MyTasksApplication {
    public CommandLineRunner sampleData(final ProjectRepository projects, final TaskRepository tasks) {
       return (args) -> {
          final Project firstProject = new Project("My first project", "This is my first sample project.");
-         final Project secondProject = new Project("My second project", "This is my second sample project.");
+         final Project secondProject = new Project("My second project", "This is my second sample project. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
          projects.save(firstProject);
          projects.save(secondProject);
+         projects.save(new Project("My third project", "This is my third sample project. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
          tasks.save(new Task(firstProject, "First sample task", "This is the first sample task.", HIGH, TO_DO));
          tasks.save(new Task(firstProject, "Second sample task", "This is the second sample task.", CRITICAL, CLOSED));
          tasks.save(new Task(firstProject, "Third sample task", "This is the third sample task.", LOW, TO_DO));
