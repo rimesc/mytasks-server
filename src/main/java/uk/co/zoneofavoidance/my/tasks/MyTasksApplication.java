@@ -15,7 +15,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 
+import uk.co.zoneofavoidance.my.tasks.domain.Project;
 import uk.co.zoneofavoidance.my.tasks.domain.Task;
+import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
 import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
 
 @SpringBootApplication
@@ -27,13 +29,17 @@ public class MyTasksApplication {
 
    @Bean
    @Profile("dev")
-   public CommandLineRunner sampleData(final TaskRepository tasks) {
+   public CommandLineRunner sampleData(final ProjectRepository projects, final TaskRepository tasks) {
       return (args) -> {
-         tasks.save(new Task("First sample task", "This is the first sample task.", HIGH, TO_DO));
-         tasks.save(new Task("Second sample task", "This is the second sample task.", CRITICAL, CLOSED));
-         tasks.save(new Task("Third sample task", "This is the third sample task.", LOW, TO_DO));
-         tasks.save(new Task("Fourth sample task", "This is the fourth sample task.", NORMAL, IN_PROGRESS));
-         tasks.save(new Task("Fifth sample task", "This is the fifth sample task.", HIGH, ON_HOLD));
+         final Project firstProject = new Project("My first project", "This is my first sample project.");
+         final Project secondProject = new Project("My second project", "This is my second sample project.");
+         projects.save(firstProject);
+         projects.save(secondProject);
+         tasks.save(new Task(firstProject, "First sample task", "This is the first sample task.", HIGH, TO_DO));
+         tasks.save(new Task(firstProject, "Second sample task", "This is the second sample task.", CRITICAL, CLOSED));
+         tasks.save(new Task(firstProject, "Third sample task", "This is the third sample task.", LOW, TO_DO));
+         tasks.save(new Task(secondProject, "Fourth sample task", "This is the fourth sample task.", NORMAL, IN_PROGRESS));
+         tasks.save(new Task(secondProject, "Fifth sample task", "This is the fifth sample task.", HIGH, ON_HOLD));
       };
    }
 }

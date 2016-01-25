@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
 import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
 
 @Controller
@@ -16,9 +17,15 @@ public class HomeController {
    @Autowired
    private TaskRepository tasks;
 
+   @Autowired
+   private ProjectRepository projects;
+
    @RequestMapping(method = GET)
    public ModelAndView get() {
-      return new ModelAndView("home", "tasks", tasks.findAll());
+      final ModelAndView modelAndView = new ModelAndView("home");
+      modelAndView.addObject("projects", projects.findAll());
+      modelAndView.addObject("tasks", tasks.findAll());
+      return modelAndView;
    }
 
 }
