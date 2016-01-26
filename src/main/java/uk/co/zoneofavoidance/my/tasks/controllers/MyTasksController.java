@@ -11,8 +11,7 @@ import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
 import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
 
 @Controller
-@RequestMapping(path = "/")
-public class HomeController {
+public class MyTasksController {
 
    @Autowired
    private TaskRepository tasks;
@@ -20,11 +19,18 @@ public class HomeController {
    @Autowired
    private ProjectRepository projects;
 
-   @RequestMapping(method = GET)
-   public ModelAndView get() {
+   @RequestMapping(path = "/", method = GET)
+   public ModelAndView getHome() {
       final ModelAndView modelAndView = new ModelAndView("home");
       modelAndView.addObject("projects", projects.findAll());
       modelAndView.addObject("tasks", tasks.findAll());
+      return modelAndView;
+   }
+
+   @RequestMapping(path = "/projects", method = GET)
+   public ModelAndView getProjects() {
+      final ModelAndView modelAndView = new ModelAndView("projects");
+      modelAndView.addObject("projects", projects.findAll());
       return modelAndView;
    }
 
