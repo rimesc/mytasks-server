@@ -14,6 +14,7 @@
 
 		<!-- Custom styles for this template -->
 		<link data-th-attr="href=@{/css/dashboard.css}" rel="stylesheet">
+		<link data-th-attr="href=@{/css/application.css}" rel="stylesheet">
 
 	</head>
 
@@ -21,14 +22,10 @@
 
 		<nav data-th-replace="fragments :: navbar"></nav>
 
-		<div class="container-fluid">
-			<div class="row">
-				<div data-th-replace="fragments :: sidebar(active='projects')"></div>
-				
-				<div id="page-content" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-					<h1 class="page-header" data-th-text="${project.name}"></h1>
-					<p data-th-text="${project.description}"></p>
-				</div>
+		<div class="container">
+			<div id="page-content">
+				<h1 class="page-header" data-th-text="${project.name}"></h1>
+				<p data-th-text="${project.description}"></p>
 			</div>
 		</div>
 

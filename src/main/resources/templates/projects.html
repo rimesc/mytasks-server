@@ -14,41 +14,39 @@
 
 		<!-- Custom styles for this template -->
 		<link data-th-attr="href=@{/css/dashboard.css}" rel="stylesheet">
+		<link data-th-attr="href=@{/css/application.css}" rel="stylesheet">
 
 	</head>
 
 	<body>
 
-		<nav data-th-replace="fragments :: navbar"></nav>
+		<nav data-th-replace="fragments :: navbar(active='projects')"></nav>
 
-		<div class="container-fluid">
-			<div class="row">
-				<div data-th-replace="fragments :: sidebar(active='projects')"></div>
+		<div class="container">
 				
-				<div id="page-content" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-					<h1 class="page-header">Projects</h1>
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<div style="float: right" class="btn-group btn-group-sm">
-								<a type="button" class="btn btn-primary" data-th-href="@{/projects/new}"><span class="glyphicon glyphicon-plus"></span> New Project</a>
-							</div>
-							<div style="clear: both"></div>
+			<div id="page-content">
+				<h1 class="page-header">Projects</h1>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<div style="float: right" class="btn-group btn-group-sm">
+							<a type="button" class="btn btn-primary" data-th-href="@{/projects/new}"><span class="glyphicon glyphicon-plus"></span> New Project</a>
 						</div>
-  						<!-- div class="panel-body">
-						</div-->
-  						<ul class="list-group">
-							<li data-th-each="project : ${projects}" class="list-group-item">
-								<span class="badge" data-th-text="${project.numberOfTasks}">0</span>
-								<h4 class="list-group-item-heading"><a data-th-href="@{/projects/{projectId}(projectId=${project.id})}" data-th-text="${project.name}">Lorem ipsum</a></h4>
-								<p class="list-group-item-text" data-th-text="${project.description}">
-									Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.
-								</p>
-							</li>
-					 	</ul>
+						<div style="clear: both"></div>
 					</div>
-
+ 						<!-- div class="panel-body">
+					</div-->
+ 						<ul class="list-group">
+						<li data-th-each="project : ${projects}" class="list-group-item">
+							<span class="badge" data-th-text="${project.numberOfTasks}">0</span>
+							<h4 class="list-group-item-heading"><a data-th-href="@{/projects/{projectId}(projectId=${project.id})}" data-th-text="${project.name}">Lorem ipsum</a></h4>
+							<p class="list-group-item-text" data-th-text="${project.description}">
+								Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.
+							</p>
+						</li>
+				 	</ul>
 				</div>
 			</div>
+
 		</div>
 
 		<!-- Bootstrap core JavaScript -->
