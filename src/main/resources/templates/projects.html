@@ -23,30 +23,30 @@
 		<nav data-th-replace="fragments :: navbar(active='projects')"></nav>
 
 		<div class="container">
-				
-			<div id="page-content">
-				<h1 class="page-header">Projects</h1>
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<div style="float: right" class="btn-group btn-group-sm">
-							<a type="button" class="btn btn-primary" data-th-href="@{/projects/new}"><span class="glyphicon glyphicon-plus"></span> New Project</a>
+			<div class="row">
+				<div class="col-md-12 main">
+					<h1 class="page-header">Projects</h1>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<div style="float: right" class="btn-group btn-group-sm">
+								<a type="button" class="btn btn-primary" data-th-href="@{/projects/new}"><span class="glyphicon glyphicon-plus"></span> New Project</a>
+							</div>
+							<div style="clear: both"></div>
 						</div>
-						<div style="clear: both"></div>
+	 						<!-- div class="panel-body">
+						</div-->
+	 						<ul class="list-group">
+							<li data-th-each="project : ${projects}" class="list-group-item">
+								<span class="badge" data-th-text="${project.numberOfTasks}">0</span>
+								<h4 class="list-group-item-heading"><a data-th-href="@{/projects/{projectId}(projectId=${project.id})}" data-th-text="${project.name}">Lorem ipsum</a></h4>
+								<p class="list-group-item-text" data-th-text="${project.description}">
+									Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.
+								</p>
+							</li>
+					 	</ul>
 					</div>
- 						<!-- div class="panel-body">
-					</div-->
- 						<ul class="list-group">
-						<li data-th-each="project : ${projects}" class="list-group-item">
-							<span class="badge" data-th-text="${project.numberOfTasks}">0</span>
-							<h4 class="list-group-item-heading"><a data-th-href="@{/projects/{projectId}(projectId=${project.id})}" data-th-text="${project.name}">Lorem ipsum</a></h4>
-							<p class="list-group-item-text" data-th-text="${project.description}">
-								Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.
-							</p>
-						</li>
-				 	</ul>
 				</div>
 			</div>
-
 		</div>
 
 		<!-- Bootstrap core JavaScript -->

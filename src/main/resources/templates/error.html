@@ -23,9 +23,13 @@
 		<nav data-th-replace="fragments :: navbar"></nav>
 
 		<div class="container">
-			<div>
-				<div class="alert alert-top alert-danger" role="alert">
-					<p><strong data-th-text="|${status} ${error}|"></strong>&emsp;<span data-th-text="${message}"></span></p>
+			<div class="row">
+				<div class="col-md-12 main">
+					<div class="alert alert-danger alert-centered" role="alert">
+						<p><span class="glyphicon glyphicon-remove-sign"></span></p>
+						<p><strong data-th-text="|${status} ${error}|"></strong></p>
+						<p data-th-text="${message}"></p>
+					</div>
 				</div>
 			</div>
 		</div>
