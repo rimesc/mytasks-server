@@ -27,6 +27,24 @@
 				<div class="col-md-12 main">
 					<h1 class="page-header" data-th-text="${project.name}"></h1>
 					<p data-th-text="${project.description}"></p>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<div style="float: right" class="btn-group btn-group-sm">
+								<a type="button" class="btn btn-primary" data-th-href="@{/tasks/new?project={projectId}(projectId=${project.id})}"><span class="glyphicon glyphicon-plus"></span> New Task</a>
+							</div>
+							<div style="clear: both"></div>
+						</div>
+	 						<!-- div class="panel-body">
+						</div-->
+	 						<ul class="list-group">
+							<li data-th-each="task : ${tasks}" class="list-group-item">
+								<h4 class="list-group-item-heading"><a data-th-href="@{/tasks/{taskId}(taskId=${task.id})}" data-th-text="${task.summary}">Lorem ipsum</a></h4>
+								<p class="list-group-item-text" data-th-text="${task.description}">
+									Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.
+								</p>
+							</li>
+					 	</ul>
+					</div>
 				</div>
 			</div>
 		</div>
