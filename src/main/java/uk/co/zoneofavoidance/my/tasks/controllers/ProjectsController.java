@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.co.zoneofavoidance.my.tasks.domain.Project;
-import uk.co.zoneofavoidance.my.tasks.exceptions.ProjectNotFoundException;
+import uk.co.zoneofavoidance.my.tasks.exceptions.NotFoundException;
 import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
 import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
 
@@ -57,7 +57,7 @@ public class ProjectsController {
       final ModelAndView modelAndView = new ModelAndView("project");
       final Project project = projects.findOne(projectId);
       if (project == null) {
-         throw new ProjectNotFoundException();
+         throw new NotFoundException("project");
       }
       modelAndView.addObject("project", project);
       modelAndView.addObject("tasks", tasks.findByProjectId(projectId));

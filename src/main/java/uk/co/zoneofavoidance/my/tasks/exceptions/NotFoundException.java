@@ -5,10 +5,10 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(NOT_FOUND)
-public class ProjectNotFoundException extends RuntimeException {
+public class NotFoundException extends RuntimeException {
 
-   public ProjectNotFoundException() {
-      super("The requested project could not be found.");
+   public NotFoundException(final String objectType) {
+      super("The requested " + objectType + " could not be found.");
    }
 
 }

@@ -17,3 +17,25 @@ body {
 .alert-centered .glyphicon {
 	font-size: 36px;
 }
+
+span.priority {
+	border-radius: 4px;
+	color: #fff;
+	padding: 4px 8px;
+}
+
+span.priority-critical {
+	background-color: #d9534f;
+}
+
+span.priority-high {
+	background-color: #f0ad4e;
+}
+
+span.priority-normal {
+	background-color: #5bc0de;
+}
+
+span.priority-low {
+	background-color: #5cb85c;
+}

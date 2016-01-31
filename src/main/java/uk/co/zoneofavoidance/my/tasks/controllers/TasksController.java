@@ -8,13 +8,14 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.co.zoneofavoidance.my.tasks.domain.Priority;
 import uk.co.zoneofavoidance.my.tasks.domain.Project;
 import uk.co.zoneofavoidance.my.tasks.domain.Task;
-import uk.co.zoneofavoidance.my.tasks.exceptions.ProjectNotFoundException;
+import uk.co.zoneofavoidance.my.tasks.exceptions.NotFoundException;
 import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
 import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
 
@@ -32,7 +33,7 @@ public class TasksController {
    public ModelAndView getNewTask(final TaskForm taskForm) {
       final Project project = projects.findOne(taskForm.getProject());
       if (project == null) {
-         throw new ProjectNotFoundException();
+         throw new NotFoundException("project");
       }
       final ModelAndView modelAndView = new ModelAndView("new_task");
       modelAndView.addObject("project", project);
@@ -44,7 +45,7 @@ public class TasksController {
    public ModelAndView postNewTask(@Valid final TaskForm taskForm, final BindingResult bindingResult) {
       final Project project = projects.findOne(taskForm.getProject());
       if (project == null) {
-         throw new ProjectNotFoundException();
+         throw new NotFoundException("project");
       }
       if (bindingResult.hasErrors()) {
          final ModelAndView modelAndView = new ModelAndView("new_task");
@@ -59,16 +60,15 @@ public class TasksController {
       return new ModelAndView("redirect:/projects/" + project.getId());
    }
 
-   // @RequestMapping(path = "{taskId}", method = GET)
-   // public ModelAndView getProject(@PathVariable final long projectId) {
-   // final ModelAndView modelAndView = new ModelAndView("project");
-   // final Project project = projects.findOne(projectId);
-   // if (project == null) {
-   // throw new ProjectNotFoundException();
-   // }
-   // modelAndView.addObject("project", project);
-   // modelAndView.addObject("tasks", tasks.findByProjectId(projectId));
-   // return modelAndView;
-   // }
+   @RequestMapping(path = "{taskId}", method = GET)
+   public ModelAndView getProject(@PathVariable final long taskId) {
+      final ModelAndView modelAndView = new ModelAndView("task");
+      final Task task = tasks.findOne(taskId);
+      if (task == null) {
+         throw new NotFoundException("task");
+      }
+      modelAndView.addObject("task", task);
+      return modelAndView;
+   }
 
 }
