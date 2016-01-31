@@ -35,7 +35,7 @@ public class TasksController {
       if (project == null) {
          throw new NotFoundException("project");
       }
-      final ModelAndView modelAndView = new ModelAndView("new_task");
+      final ModelAndView modelAndView = new ModelAndView("tasks/new");
       modelAndView.addObject("priorities", Priority.values());
       return modelAndView;
    }
@@ -47,7 +47,7 @@ public class TasksController {
          throw new NotFoundException("project");
       }
       if (bindingResult.hasErrors()) {
-         final ModelAndView modelAndView = new ModelAndView("new_task");
+         final ModelAndView modelAndView = new ModelAndView("tasks/new");
          modelAndView.addObject("project", project);
          modelAndView.addObject("taskForm", taskForm);
          modelAndView.addObject("priorities", Priority.values());
@@ -59,7 +59,7 @@ public class TasksController {
 
    @RequestMapping(path = "{taskId}", method = GET)
    public ModelAndView getProject(@PathVariable final long taskId) {
-      final ModelAndView modelAndView = new ModelAndView("task");
+      final ModelAndView modelAndView = new ModelAndView("tasks/view");
       final Task task = tasks.findOne(taskId);
       if (task == null) {
          throw new NotFoundException("task");
@@ -70,7 +70,7 @@ public class TasksController {
 
    @RequestMapping(path = "edit/{taskId}", method = GET)
    public ModelAndView getEditProject(@PathVariable final long taskId) {
-      final ModelAndView modelAndView = new ModelAndView("edit_task");
+      final ModelAndView modelAndView = new ModelAndView("tasks/edit");
       final Task task = tasks.findOne(taskId);
       if (task == null) {
          throw new NotFoundException("task");
@@ -88,7 +88,7 @@ public class TasksController {
          throw new NotFoundException("task");
       }
       if (bindingResult.hasErrors()) {
-         final ModelAndView modelAndView = new ModelAndView("edit_task");
+         final ModelAndView modelAndView = new ModelAndView("tasks/edit");
          modelAndView.addObject("taskForm", taskForm);
          modelAndView.addObject("priorities", Priority.values());
          return modelAndView;

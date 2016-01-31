@@ -29,21 +29,21 @@ public class ProjectsController {
 
    @RequestMapping(method = GET)
    public ModelAndView getProjects() {
-      final ModelAndView modelAndView = new ModelAndView("projects");
+      final ModelAndView modelAndView = new ModelAndView("projects/list");
       modelAndView.addObject("projects", projects.findAll());
       return modelAndView;
    }
 
    @RequestMapping(path = "new", method = GET)
    public ModelAndView getNewProject(final ProjectForm projectForm) {
-      final ModelAndView modelAndView = new ModelAndView("new_project");
+      final ModelAndView modelAndView = new ModelAndView("projects/new");
       return modelAndView;
    }
 
    @RequestMapping(path = "new", method = POST)
    public ModelAndView postNewProject(@Valid final ProjectForm projectForm, final BindingResult bindingResult) {
       if (bindingResult.hasErrors()) {
-         final ModelAndView modelAndView = new ModelAndView("new_project");
+         final ModelAndView modelAndView = new ModelAndView("projects/new");
          modelAndView.addObject("name", projectForm.getName());
          modelAndView.addObject("description", projectForm.getDescription());
          return modelAndView;
@@ -54,7 +54,7 @@ public class ProjectsController {
 
    @RequestMapping(path = "{projectId}", method = GET)
    public ModelAndView getProject(@PathVariable final long projectId) {
-      final ModelAndView modelAndView = new ModelAndView("project");
+      final ModelAndView modelAndView = new ModelAndView("projects/view");
       final Project project = projects.findOne(projectId);
       if (project == null) {
          throw new NotFoundException("project");
