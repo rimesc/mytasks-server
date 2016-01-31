@@ -4,7 +4,7 @@ import uk.co.zoneofavoidance.my.tasks.util.EnumUtils;
 
 public enum State {
 
-   OPEN, TO_DO, IN_PROGRESS, DONE, ON_HOLD, CLOSED;
+   TO_DO, IN_PROGRESS, ON_HOLD, DONE;
 
    @Override
    public String toString() {
