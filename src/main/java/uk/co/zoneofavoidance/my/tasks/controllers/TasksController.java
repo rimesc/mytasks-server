@@ -36,7 +36,6 @@ public class TasksController {
          throw new NotFoundException("project");
       }
       final ModelAndView modelAndView = new ModelAndView("new_task");
-      modelAndView.addObject("project", project);
       modelAndView.addObject("priorities", Priority.values());
       return modelAndView;
    }
@@ -50,9 +49,7 @@ public class TasksController {
       if (bindingResult.hasErrors()) {
          final ModelAndView modelAndView = new ModelAndView("new_task");
          modelAndView.addObject("project", project);
-         modelAndView.addObject("summary", taskForm.getSummary());
-         modelAndView.addObject("description", taskForm.getDescription());
-         modelAndView.addObject("priority", taskForm.getPriority());
+         modelAndView.addObject("taskForm", taskForm);
          modelAndView.addObject("priorities", Priority.values());
          return modelAndView;
       }
@@ -71,4 +68,35 @@ public class TasksController {
       return modelAndView;
    }
 
+   @RequestMapping(path = "edit/{taskId}", method = GET)
+   public ModelAndView getEditProject(@PathVariable final long taskId) {
+      final ModelAndView modelAndView = new ModelAndView("edit_task");
+      final Task task = tasks.findOne(taskId);
+      if (task == null) {
+         throw new NotFoundException("task");
+      }
+      final TaskForm taskForm = new TaskForm(task.getProject().getId(), task.getSummary(), task.getDescription(), task.getPriority());
+      modelAndView.addObject("taskForm", taskForm);
+      modelAndView.addObject("priorities", Priority.values());
+      return modelAndView;
+   }
+
+   @RequestMapping(path = "edit/{taskId}", method = POST)
+   public ModelAndView postEditProject(@PathVariable final long taskId, @Valid final TaskForm taskForm, final BindingResult bindingResult) {
+      final Task task = tasks.findOne(taskId);
+      if (task == null) {
+         throw new NotFoundException("task");
+      }
+      if (bindingResult.hasErrors()) {
+         final ModelAndView modelAndView = new ModelAndView("edit_task");
+         modelAndView.addObject("taskForm", taskForm);
+         modelAndView.addObject("priorities", Priority.values());
+         return modelAndView;
+      }
+      task.setSummary(taskForm.getSummary());
+      task.setDescription(taskForm.getDescription());
+      task.setPriority(taskForm.getPriority());
+      tasks.save(task);
+      return new ModelAndView("redirect:/tasks/" + taskId);
+   }
 }

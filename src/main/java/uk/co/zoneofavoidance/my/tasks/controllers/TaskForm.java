@@ -22,6 +22,16 @@ public class TaskForm {
    @NotNull
    private Priority priority;
 
+   public TaskForm() {
+   }
+
+   public TaskForm(final Long project, final String summary, final String description, final Priority priority) {
+      this.project = project;
+      this.summary = summary;
+      this.description = description;
+      this.priority = priority;
+   }
+
    public Long getProject() {
       return project;
    }
