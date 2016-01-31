@@ -39,3 +39,40 @@ span.priority-normal {
 span.priority-low {
 	background-color: #5cb85c;
 }
+
+span.state {
+	border-radius: 4px;
+	border: 1px solid #337ab7;
+	color: #337ab7;
+	padding: 3px 7px;
+}
+
+span.state:BEFORE {
+	position: relative;
+	top: 1px;
+	font-family: 'Glyphicons Halflings';
+	font-style: normal;
+	font-weight: 400;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+span.state-to_do:BEFORE {
+	content: "\e023\202f"; /* glyphicon-time */
+}
+
+span.state-in_progress:BEFORE {
+	content: "\e072\202f"; /* glyphicon-play */
+}
+
+span.state-on_hold:BEFORE {
+	content: "\e073\202f"; /* glyphicon-pause */
+}
+
+span.state-done:BEFORE {
+	content: "\e013\202f"; /* glyphicon-ok */
+}
+span.state-closed:BEFORE {
+	content: "\e033\202f"; /* glyphicon-lock */
+}
