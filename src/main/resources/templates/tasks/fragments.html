@@ -24,7 +24,7 @@
 								<div class="col-md-4 col-sm-6 col-xs-12">
 									<label for="taskPriority" class="control-label">Priority<span data-th-if="${#fields.hasErrors('priority')}" data-th-text="| (${#fields.errors('priority')[0]})|"> (error)</span></label>
 									<select class="form-control" id="taskPriority" name="priority">
-										<option data-th-each="p : ${priorities}" data-th-selected="${p} == *{priority} or (*{priority} == null and ${p.name()} == 'NORMAL')" data-th-text="${p}" data-th-value="${p.name()}"></option>
+										<option data-th-each="p : ${priorities}" data-th-selected="${p} == *{priority} or (*{priority} == null and ${p.name()} == 'NORMAL')" data-th-text="#{|mytasks.priority.${p}|}" data-th-value="${p.name()}"></option>
 									</select>
 								</div>
 							</div>
