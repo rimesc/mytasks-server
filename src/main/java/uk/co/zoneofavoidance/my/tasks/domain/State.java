@@ -4,8 +4,6 @@ import static java.util.Arrays.asList;
 
 import java.util.List;
 
-import uk.co.zoneofavoidance.my.tasks.util.EnumUtils;
-
 /**
  * The state of a task.
  */
@@ -48,11 +46,6 @@ public enum State {
          default:
             throw new AssertionError("Unhandled state: " + name());
       }
-   }
-
-   @Override
-   public String toString() {
-      return EnumUtils.toString(name());
    }
 
 }
