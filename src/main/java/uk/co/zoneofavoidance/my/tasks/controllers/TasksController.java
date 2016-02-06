@@ -10,10 +10,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.co.zoneofavoidance.my.tasks.domain.Priority;
 import uk.co.zoneofavoidance.my.tasks.domain.Project;
+import uk.co.zoneofavoidance.my.tasks.domain.State;
 import uk.co.zoneofavoidance.my.tasks.domain.Task;
 import uk.co.zoneofavoidance.my.tasks.exceptions.NotFoundException;
 import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
@@ -68,8 +70,21 @@ public class TasksController {
       return modelAndView;
    }
 
+   @RequestMapping(path = "{taskId}", method = POST)
+   public ModelAndView postProject(@PathVariable final long taskId, @RequestParam("state") final State state) {
+      final ModelAndView modelAndView = new ModelAndView("tasks/view");
+      final Task task = tasks.findOne(taskId);
+      if (task == null) {
+         throw new NotFoundException("task");
+      }
+      task.setState(state);
+      tasks.save(task);
+      modelAndView.addObject("task", task);
+      return modelAndView;
+   }
+
    @RequestMapping(path = "edit/{taskId}", method = GET)
-   public ModelAndView getEditProject(@PathVariable final long taskId) {
+   public ModelAndView getEditTask(@PathVariable final long taskId) {
       final ModelAndView modelAndView = new ModelAndView("tasks/edit");
       final Task task = tasks.findOne(taskId);
       if (task == null) {
@@ -82,7 +97,7 @@ public class TasksController {
    }
 
    @RequestMapping(path = "edit/{taskId}", method = POST)
-   public ModelAndView postEditProject(@PathVariable final long taskId, @Valid final TaskForm taskForm, final BindingResult bindingResult) {
+   public ModelAndView postEditTask(@PathVariable final long taskId, @Valid final TaskForm taskForm, final BindingResult bindingResult) {
       final Task task = tasks.findOne(taskId);
       if (task == null) {
          throw new NotFoundException("task");
