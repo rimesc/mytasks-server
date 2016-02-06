@@ -16,6 +16,11 @@
 		<link data-th-attr="href=@{/css/dashboard.css}" rel="stylesheet">
 		<link data-th-attr="href=@{/css/application.css}" rel="stylesheet">
 
+		<script type="text/javascript">
+		  function setState(state) {
+			  $.post(document.location, {"state": state}, function() {location.reload();});
+		  }
+		</script> 
 	</head>
 
 	<body>
@@ -26,12 +31,19 @@
 			<div class="row">
 				<div class="col-md-12 main">
 					<h1 class="page-header" data-th-text="${task.summary}"></h1>
+					<div class="btn-toolbar pull-right">
+						<div class="btn-group" role="group">
+						  <button type="button" class="btn btn-default" data-th-each="state : ${task.state.commonTransitions()}" data-th-text="#{|mytasks.state.transition.${task.state}.${state}|}" data-th-onclick="|setState('${state}');|"></button>
+						</div>
+						<div class="btn-group" role="group">
+							<a role="button" class="btn btn-default" data-th-href="@{/tasks/edit/{taskId}(taskId=${task.id})}">
+								<span class="glyphicon glyphicon-edit"></span>
+							</a>
+						</div>
+					</div>
 					<div>
 						<span class="state" data-th-classappend="|state-${#strings.toLowerCase(task.state.name())}|" data-th-text="#{|mytasks.state.${task.state}|}"></span>
 						<span class="priority" data-th-classappend="|priority-${#strings.toLowerCase(task.priority.name())}|" data-th-text="|Priority: #{|mytasks.priority.${task.priority}|}|"></span>
-						<a role="button" class="btn" data-th-href="@{/tasks/edit/{taskId}(taskId=${task.id})}">
-							<span class="glyphicon glyphicon-edit"></span>
-						</a>
 					</div>
 					<p data-th-text="${task.description}"></p>
 				</div>
