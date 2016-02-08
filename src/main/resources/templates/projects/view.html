@@ -38,7 +38,20 @@
 						<div style="clear: both"></div>
 						<h1 data-th-text="${project.name}"></h1>
 						<p class="lead" data-th-text="${project.description}"></p>
-						<p><a data-th-href="@{/projects/{projectId}/tasks(projectId=${project.id})}"><span class="glyphicon glyphicon-check"></span> <span data-th-text="|${project.numberOfTasks} tasks|"></span></a></p>
+						<ul>
+							<li>
+								<a data-th-href="@{/projects/{projectId}/tasks(projectId=${project.id})}">
+									<span class="glyphicon glyphicon-check"></span>
+									<span data-th-text="|${project.numberOfTasks} task| + (${project.numberOfTasks} != 1 ? 's' : '')"></span>
+								</a>
+							</li>
+							<li>
+								<a data-th-href="@{/projects/{projectId}/notes(projectId=${project.id})}">
+									<span class="glyphicon glyphicon-file"></span>
+									<span data-th-text="|1 note|"></span>
+								</a>
+							</li>
+						</ul>
 					</div>
 					<div class="readme">
 						<a role="button" title="Edit" class="btn edit" data-th-if="${project.readMe}" data-th-href="@{/projects/edit/{projectId}/documentation(projectId=${project.id})}">
