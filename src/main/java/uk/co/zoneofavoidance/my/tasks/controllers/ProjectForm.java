@@ -12,12 +12,27 @@ public class ProjectForm {
 
    private String description;
 
+   private String readMe;
+
+   public ProjectForm() {
+   }
+
+   public ProjectForm(final String name, final String description, final String readMe) {
+      this.name = name;
+      this.description = description;
+      this.readMe = readMe;
+   }
+
    public String getName() {
       return name;
    }
 
    public String getDescription() {
       return description;
+   }
+
+   public String getReadMe() {
+      return readMe;
    }
 
    public void setName(final String name) {
@@ -28,4 +43,7 @@ public class ProjectForm {
       this.description = description;
    }
 
+   public void setDocumentation(final String documentation) {
+      this.readMe = documentation;
+   }
 }

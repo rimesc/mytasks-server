@@ -10,8 +10,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import uk.co.zoneofavoidance.my.tasks.domain.Note;
 import uk.co.zoneofavoidance.my.tasks.domain.Project;
 import uk.co.zoneofavoidance.my.tasks.exceptions.NotFoundException;
 import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
@@ -64,4 +66,24 @@ public class ProjectsController {
       return modelAndView;
    }
 
+   @RequestMapping(path = "edit/{projectId}/documentation", method = GET)
+   public ModelAndView getEditDocument(@PathVariable("projectId") final Long projectId) {
+      final ModelAndView modelAndView = new ModelAndView("projects/edit-documentation");
+      final Project project = projects.findOne(projectId);
+      modelAndView.addObject("project", project);
+      final Note readMe = project.getReadMe();
+      modelAndView.addObject("text", readMe == null ? "" : readMe.getText());
+      return modelAndView;
+   }
+
+   @RequestMapping(path = "edit/{projectId}/documentation", method = POST)
+   public ModelAndView postEditDocument(@PathVariable("projectId") final Long projectId, @RequestParam("text") final String text) {
+      final Project project = projects.findOne(projectId);
+      if (project == null) {
+         throw new NotFoundException("project");
+      }
+      project.getReadMe().setText(text);
+      projects.save(project);
+      return new ModelAndView("redirect:/projects/" + projectId);
+   }
 }

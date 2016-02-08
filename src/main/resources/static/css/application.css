@@ -91,3 +91,8 @@ span.state-done:BEFORE {
 .edit:HOVER {
 	opacity: 1.0;
 }
+
+div.readme {
+	margin-top: 20px;
+	text-align: center;
+}

@@ -1,3 +1,7 @@
+.markdown {
+	text-align: justify;
+}
+
 .markdown h1 {
 	font-size: 28px;
 }
