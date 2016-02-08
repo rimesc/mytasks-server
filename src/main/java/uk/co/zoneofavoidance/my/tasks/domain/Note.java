@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 
 @Entity
-public class Document {
+public class Note {
 
    @Id
    @GeneratedValue
@@ -15,10 +15,10 @@ public class Document {
    @Lob
    private String text;
 
-   public Document() {
+   public Note() {
    }
 
-   public Document(final String text) {
+   public Note(final String text) {
       this.text = text;
    }
 

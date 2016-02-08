@@ -31,11 +31,11 @@
 						<p class="lead" data-th-text="${project.description}"></p>
 						<p><a data-th-href="@{/tasks?project={projectId}(projectId=${project.id})}"><span class="glyphicon glyphicon-check"></span> <span data-th-text="|${project.numberOfTasks} tasks|"></span></a></p>
 					</div>
-					<div class="readme" data-th-if="${project.documentation}">
-						<a role="button" title="Edit" class="btn edit" data-th-href="@{/documents/edit/{documentId}(documentId=${project.documentation.id})}">
+					<div class="readme" data-th-if="${project.readMe}">
+						<a role="button" title="Edit" class="btn edit" data-th-href="@{/projects/edit/{projectId}/documentation(projectId=${project.id})}">
 							<span class="glyphicon glyphicon-edit"></span>
 						</a>
-						<div class="markdown" data-th-if="${project.documentation}" data-th-utext="${@markdown.markdownToHtml(project.documentation.text)}">
+						<div class="markdown" data-th-if="${project.readMe}" data-th-utext="${@markdown.markdownToHtml(project.readMe.text)}">
 						</div>
 					</div>
 				</div>

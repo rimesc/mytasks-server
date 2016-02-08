@@ -39,7 +39,7 @@ public class Project {
    private int numberOfTasks;
 
    @OneToOne(fetch = LAZY, optional = true, cascade = ALL)
-   private Document documentation;
+   private Note readMe;
 
    public Project() {
    }
@@ -69,8 +69,8 @@ public class Project {
       return numberOfTasks;
    }
 
-   public Document getDocumentation() {
-      return documentation;
+   public Note getReadMe() {
+      return readMe;
    }
 
    public void setId(final Long id) {
@@ -89,8 +89,8 @@ public class Project {
       this.created = created;
    }
 
-   public void setDocumentation(final Document documentation) {
-      this.documentation = documentation;
+   public void setReadMe(final Note readMe) {
+      this.readMe = readMe;
    }
 
 }

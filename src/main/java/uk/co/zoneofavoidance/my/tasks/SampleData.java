@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.io.Resources;
 
-import uk.co.zoneofavoidance.my.tasks.domain.Document;
+import uk.co.zoneofavoidance.my.tasks.domain.Note;
 import uk.co.zoneofavoidance.my.tasks.domain.Project;
 import uk.co.zoneofavoidance.my.tasks.domain.Task;
 import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
@@ -37,8 +37,8 @@ public class SampleData implements CommandLineRunner {
    public void run(final String... args) throws Exception {
       final Project firstProject = new Project("My first project", "This is my first sample project.");
       final Project secondProject = new Project("My second project", "This is my second sample project. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-      final Document document = new Document(Resources.toString(SampleData.class.getResource("/samples/readme.md"), UTF_8));
-      firstProject.setDocumentation(document);
+      final Note readMe = new Note(Resources.toString(SampleData.class.getResource("/samples/readme.md"), UTF_8));
+      firstProject.setReadMe(readMe);
       projects.save(firstProject);
       projects.save(secondProject);
       projects.save(new Project("My third project", "This is my third sample project. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
