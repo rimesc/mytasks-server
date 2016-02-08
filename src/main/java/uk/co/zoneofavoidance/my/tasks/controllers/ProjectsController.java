@@ -3,6 +3,8 @@ package uk.co.zoneofavoidance.my.tasks.controllers;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import uk.co.zoneofavoidance.my.tasks.domain.Note;
 import uk.co.zoneofavoidance.my.tasks.domain.Project;
+import uk.co.zoneofavoidance.my.tasks.domain.Task;
 import uk.co.zoneofavoidance.my.tasks.exceptions.NotFoundException;
 import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
 import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
@@ -86,4 +89,18 @@ public class ProjectsController {
       projects.save(project);
       return new ModelAndView("redirect:/projects/" + projectId);
    }
+
+   @RequestMapping(path = "{projectId}/tasks", method = GET)
+   public ModelAndView getTasks(@PathVariable("projectId") final Long projectId) {
+      final Project project = projects.findOne(projectId);
+      if (project == null) {
+         throw new NotFoundException("project");
+      }
+      final List<Task> projectTasks = tasks.findByProjectId(projectId);
+      final ModelAndView modelAndView = new ModelAndView("projects/tasks");
+      modelAndView.addObject("project", project);
+      modelAndView.addObject("tasks", projectTasks);
+      return modelAndView;
+   }
+
 }

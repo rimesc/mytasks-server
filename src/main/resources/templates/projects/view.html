@@ -27,9 +27,18 @@
 			<div class="row">
 				<div class="col-md-12 main">
 					<div class="project-header">
+						<div class="btn-toobar pull-right">
+							<div class="btn-group">
+								<a type="button" class="btn btn-primary" data-th-href="@{/tasks/new?project={projectId}(projectId=${project.id})}"><span class="glyphicon glyphicon-plus"></span> New Task</a>
+							</div>
+							<!--div class="btn-group">
+								<a type="button" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span></a>
+							</div-->
+						</div>
+						<div style="clear: both"></div>
 						<h1 data-th-text="${project.name}"></h1>
 						<p class="lead" data-th-text="${project.description}"></p>
-						<p><a data-th-href="@{/tasks?project={projectId}(projectId=${project.id})}"><span class="glyphicon glyphicon-check"></span> <span data-th-text="|${project.numberOfTasks} tasks|"></span></a></p>
+						<p><a data-th-href="@{/projects/{projectId}/tasks(projectId=${project.id})}"><span class="glyphicon glyphicon-check"></span> <span data-th-text="|${project.numberOfTasks} tasks|"></span></a></p>
 					</div>
 					<div class="readme">
 						<a role="button" title="Edit" class="btn edit" data-th-if="${project.readMe}" data-th-href="@{/projects/edit/{projectId}/documentation(projectId=${project.id})}">
