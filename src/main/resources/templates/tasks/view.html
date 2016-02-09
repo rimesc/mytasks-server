@@ -15,6 +15,7 @@
 		<!-- Custom styles for this template -->
 		<link data-th-attr="href=@{/css/dashboard.css}" rel="stylesheet">
 		<link data-th-attr="href=@{/css/application.css}" rel="stylesheet">
+		<link data-th-attr="href=@{/css/markdown.css}" rel="stylesheet">
 
 		<script type="text/javascript">
 		  function setState(state) {
@@ -45,7 +46,15 @@
 						<span class="state" data-th-classappend="|state-${#strings.toLowerCase(task.state.name())}|" data-th-text="#{|mytasks.state.${task.state}|}"></span>
 						<span class="priority" data-th-classappend="|priority-${#strings.toLowerCase(task.priority.name())}|" data-th-text="|Priority: #{|mytasks.priority.${task.priority}|}|"></span>
 					</div>
-					<p data-th-text="${task.description}"></p>
+					<div class="readme">
+						<div class="markdown" data-th-if="${task.description}" data-th-utext="${@markdown.markdownToHtml(task.description)}">
+						</div>
+						<div data-th-unless="${task.description}">
+							<a role="button" class="btn btn-primary" data-th-href="@{/tasks/edit/{taskId}/documentation(taskId=${task.id})}">
+								Edit notes
+							</a>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
