@@ -13,7 +13,6 @@
 		<link data-th-attr="href=@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}" rel="stylesheet">
 
 		<!-- Custom styles for this template -->
-		<link data-th-attr="href=@{/css/dashboard.css}" rel="stylesheet">
 		<link data-th-attr="href=@{/css/application.css}" rel="stylesheet">
 
 	</head>
@@ -24,21 +23,25 @@
 
 		<div class="container">
 			<div class="row">
-				<div class="col-md-8 col-md-offset-2 main">
-					<h1 class="page-header">New Project</h1>
-	
-					<form method="post" data-th-object="${projectForm}">
-						<div class="form-group" data-th-classappend="${#fields.hasErrors('name')} ? 'has-error'">
-							<label for="projectName" class="control-label">Name<span data-th-if="${#fields.hasErrors('name')}" data-th-text="| (${#fields.errors('name')[0]})|"> (error)</span></label>
-							<input type="text" class="form-control" id="projectName" name="name" placeholder="My new project" data-th-value="${name}">
+				<div class="col-md-8 col-md-offset-2">
+					<div class="main">
+						<div class="content">
+							<h1 class="page-header">New Project</h1>
+			
+							<form method="post" data-th-object="${projectForm}">
+								<div class="form-group" data-th-classappend="${#fields.hasErrors('name')} ? 'has-error'">
+									<label for="projectName" class="control-label">Name<span data-th-if="${#fields.hasErrors('name')}" data-th-text="| (${#fields.errors('name')[0]})|"> (error)</span></label>
+									<input type="text" class="form-control" id="projectName" name="name" placeholder="My new project" data-th-value="${name}">
+								</div>
+								<div class="form-group" data-th-classappend="${#fields.hasErrors('description')} ? 'has-error'">
+									<label for="projectDescription" class="control-label">Description<span data-th-if="${#fields.hasErrors('description')}" data-th-text="| (${#fields.errors('description')[0]})|"> (error)</span></label>
+									<textarea rows="2" class="form-control" id="projectDescription" name="description" placeholder="A short description of the project." data-th-text="${description}"></textarea>
+								</div>
+								<button role="button" type="submit" class="btn btn-primary">Create</button>
+								<a role="button" class="btn btn-default" data-th-href="@{/projects}">Cancel</a>
+							</form>
 						</div>
-						<div class="form-group" data-th-classappend="${#fields.hasErrors('description')} ? 'has-error'">
-							<label for="projectDescription" class="control-label">Description<span data-th-if="${#fields.hasErrors('description')}" data-th-text="| (${#fields.errors('description')[0]})|"> (error)</span></label>
-							<textarea rows="2" class="form-control" id="projectDescription" name="description" placeholder="A short description of the project." data-th-text="${description}"></textarea>
-						</div>
-						<button role="button" type="submit" class="btn btn-primary">Create</button>
-						<a role="button" class="btn btn-default" data-th-href="@{/projects}">Cancel</a>
-					</form>
+					</div>
 				</div>
 			</div>
 		</div>

@@ -1,13 +1,18 @@
 body {
 	background-color: #f5f5f5;
+	/* Move down content because we have a fixed navbar that is 50px tall */
+	padding-top: 50px;
 }
 
 .main {
 	background-color: #fff;
-	margin-top: 20px;
-	margin-bottom: 20px;
+	margin: 20px -15px;
 	border: 1px solid #ddd;
 	border-radius: 8px;
+}
+
+.content {
+	padding: 20px 40px;
 }
 
 .project-header {
