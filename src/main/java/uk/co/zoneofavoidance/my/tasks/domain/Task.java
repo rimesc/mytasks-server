@@ -130,4 +130,8 @@ public class Task {
       this.updated = updated;
    }
 
+   public boolean isModified() {
+      return getUpdated() != null && getCreated() != null && getUpdated().after(getCreated());
+   }
+
 }
