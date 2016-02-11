@@ -13,7 +13,6 @@
 		<link data-th-attr="href=@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}" rel="stylesheet">
 
 		<!-- Custom styles for this template -->
-		<link data-th-attr="href=@{/css/dashboard.css}" rel="stylesheet">
 		<link data-th-attr="href=@{/css/application.css}" rel="stylesheet">
 
 	</head>
@@ -24,11 +23,15 @@
 
 		<div class="container">
 			<div class="row">
-				<div class="col-md-12 main">
-					<div class="alert alert-danger alert-centered" role="alert">
-						<p><span class="glyphicon glyphicon-remove-sign"></span></p>
-						<p><strong data-th-text="|${status} ${error}|"></strong></p>
-						<p data-th-text="${message}"></p>
+				<div class="col-md-12">
+					<div class="main">
+						<div class="content">
+							<div class="alert alert-danger alert-centered" role="alert">
+								<p><span class="glyphicon glyphicon-remove-sign"></span></p>
+								<p><strong data-th-text="|${status} ${error}|"></strong></p>
+								<p data-th-text="${message}"></p>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
