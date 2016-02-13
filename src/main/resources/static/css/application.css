@@ -40,6 +40,12 @@ ul.project-list .list-group-item-text {
 	white-space: nowrap;
 }
 
+li.list-group-placeholder {
+	padding: 20px 25px;
+	text-align: center;
+	color: #777;
+}
+
 .alert-centered {
 	text-align: center;
 }
