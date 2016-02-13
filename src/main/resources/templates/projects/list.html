@@ -34,7 +34,7 @@
 									</div>
 									<div style="clear: both"></div>
 								</div>
-		 						<ul class="list-group">
+		 						<ul class="list-group project-list">
 									<li data-th-each="project : ${projects}" class="list-group-item">
 										<span class="badge" data-th-text="${project.numberOfTasks}">0</span>
 										<h4 class="list-group-item-heading"><a data-th-href="@{/projects/{projectId}(projectId=${project.id})}" data-th-text="${project.name}">Lorem ipsum</a></h4>

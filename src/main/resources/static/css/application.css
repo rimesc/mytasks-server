@@ -34,6 +34,12 @@ body {
 	margin: 0px 10px;
 }
 
+ul.project-list .list-group-item-text {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 .alert-centered {
 	text-align: center;
 }

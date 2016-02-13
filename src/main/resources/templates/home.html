@@ -27,10 +27,11 @@
 					<div class="main">
 						<div class="content">
 							<h1 class="page-header">Dashboard</h1>
-			
-							<h2 class="sub-header">Projects</h2>
-							<div>
-								<ul class="list-group">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h3 class="panel-title">Projects</h3>
+								</div>
+								<ul class="list-group project-list">
 									<li data-th-each="project : ${projects}" class="list-group-item">
 										<span class="badge" data-th-text="${project.numberOfTasks}">0</span>
 										<h4 class="list-group-item-heading"><a data-th-href="@{/projects/{projectId}(projectId=${project.id})}" data-th-text="${project.name}">Lorem ipsum</a></h4>
@@ -39,36 +40,6 @@
 										</p>
 									</li>
 							 	</ul>
-							</div>
-			
-							<h2 class="sub-header">Tasks</h2>
-							<div class="table-responsive">
-								<table class="table table-striped">
-									<thead>
-										<tr>
-											<th>#</th>
-											<th>Summary</th>
-											<th>Description</th>
-											<th>Priority</th>
-											<th>State</th>
-											<th>Created</th>
-											<th>Updated</th>
-											<th>Project</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr data-th-each="task : ${tasks}">
-											<td data-th-text="${task.id}">1</td>
-											<td data-th-text="${task.summary}">Lorem</td>
-											<td data-th-text="${task.description}">ipsum</td>
-											<td data-th-text="#{|mytasks.priority.${task.priority}|}">dolor</td>
-											<td data-th-text="#{|mytasks.state.${task.state}|}">sit</td>
-											<td data-th-text="${#dates.format(task.created, #messages.msg('thymeleaf.format.datetime'))}">2001-01-01 12:00:00</td>
-											<td data-th-text="${#dates.format(task.updated, #messages.msg('thymeleaf.format.datetime'))}">2001-01-01 12:00:00</td>
-											<td data-th-text="${task.project.id}">1</td>
-										</tr>
-									</tbody>
-								</table>
 							</div>
 						</div>
 					</div>
