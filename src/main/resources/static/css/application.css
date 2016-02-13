@@ -4,6 +4,28 @@ body {
 	padding-top: 50px;
 }
 
+/* format form buttons in navbars the same as links */
+
+.nav > li > form > button.btn-link {
+	position: relative;
+	display: block;
+	padding: 10px 15px;
+	border: 0;
+}
+
+.navbar-nav > li > form > button.btn-link {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	line-height: 20px;
+}
+
+@media (min-width: 768px) {
+  .navbar-nav > li > form > button.btn-link {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+}
+
 .main {
 	background-color: #fff;
 	margin: 20px -15px;

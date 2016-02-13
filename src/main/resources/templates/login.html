@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+		<link rel="icon" type="image/png" data-th-attr="href=@{/images/logo.png}">
+
+		<title>myTasks - Home</title>
+
+		<!-- Bootstrap core CSS -->
+		<link data-th-attr="href=@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}" rel="stylesheet">
+
+		<!-- Custom styles for this template -->
+		<link data-th-attr="href=@{/css/application.css}" rel="stylesheet">
+
+	</head>
+
+	<body>
+
+		<nav data-th-replace="fragments :: navbar(active='overview')"></nav>
+
+		<div class="container">
+			<div class="row">
+				<div class="col-md-8 col-md-offset-2">
+					<div class="main">
+						<div class="content">
+							<div class="alert alert-danger" role="alert" data-th-if="${error}" data-th-text="#{${error}}"></div>
+							<form class="form-horizontal" method="post">
+							  <div class="form-group" data-th-classappend="${error} ? 'has-error'">
+							    <label for="username" class="col-sm-3 control-label">User name</label>
+							    <div class="col-sm-9">
+							      <input autofocus type="text" class="form-control" name="username" id="username">
+							    </div>
+							  </div>
+							  <div class="form-group" data-th-classappend="${error} ? 'has-error'">
+							    <label for="password" class="col-sm-3 control-label">Password</label>
+							    <div class="col-sm-9">
+							      <input type="password" class="form-control" name="password" id="password">
+							    </div>
+							  </div>
+							  <!--
+							  <div class="form-group">
+							    <div class="col-sm-offset-2 col-sm-10">
+							      <div class="checkbox">
+							        <label>
+							          <input type="checkbox"> Remember me
+							        </label>
+							      </div>
+							    </div>
+							  </div>
+							  --><input type="hidden"
+data-th-name="${_csrf.parameterName}"
+data-th-value="${_csrf.token}"/>
+							  <div class="form-group">
+							    <div class="col-sm-offset-3 col-sm-9">
+							      <button type="submit" class="btn btn-default">Sign in</button>
+							    </div>
+							  </div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Bootstrap core JavaScript -->
+		<script data-th-attr="src=@{/webjars/jquery/2.1.4/jquery.min.js}"></script>
+		<script data-th-attr="src=@{/webjars/bootstrap/3.3.6/js/bootstrap.min.js}"></script>
+	</body>
+</html>
+
