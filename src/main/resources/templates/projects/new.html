@@ -37,6 +37,7 @@
 									<label for="projectDescription" class="control-label">Description<span data-th-if="${#fields.hasErrors('description')}" data-th-text="| (${#fields.errors('description')[0]})|"> (error)</span></label>
 									<textarea rows="2" class="form-control" id="projectDescription" name="description" placeholder="A short description of the project." data-th-text="${description}"></textarea>
 								</div>
+								<input data-th-replace="fragments :: csrf"/>
 								<button role="button" type="submit" class="btn btn-primary">Create</button>
 								<a role="button" class="btn btn-default" data-th-href="@{/projects}">Cancel</a>
 							</form>

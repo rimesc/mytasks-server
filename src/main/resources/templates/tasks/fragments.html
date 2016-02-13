@@ -31,6 +31,7 @@
 								</div>
 							</div>
 							<input type="hidden" name="project" data-th-value="*{project}">
+							<input data-th-replace="fragments :: csrf"/>
 							<button role="button" type="submit" data-th-text="${confirm} ?: 'Submit'" class="btn btn-primary"></button>
 							<a role="button" class="btn btn-default" data-th-href="@{/projects/{projectId}(projectId=*{project})}">Cancel</a>
 						</form>

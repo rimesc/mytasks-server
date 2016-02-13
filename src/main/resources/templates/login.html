@@ -28,36 +28,35 @@
 						<div class="content">
 							<div class="alert alert-danger" role="alert" data-th-if="${error}" data-th-text="#{${error}}"></div>
 							<form class="form-horizontal" method="post">
-							  <div class="form-group" data-th-classappend="${error} ? 'has-error'">
-							    <label for="username" class="col-sm-3 control-label">User name</label>
-							    <div class="col-sm-9">
-							      <input autofocus type="text" class="form-control" name="username" id="username">
-							    </div>
-							  </div>
-							  <div class="form-group" data-th-classappend="${error} ? 'has-error'">
-							    <label for="password" class="col-sm-3 control-label">Password</label>
-							    <div class="col-sm-9">
-							      <input type="password" class="form-control" name="password" id="password">
-							    </div>
-							  </div>
-							  <!--
-							  <div class="form-group">
-							    <div class="col-sm-offset-2 col-sm-10">
-							      <div class="checkbox">
-							        <label>
-							          <input type="checkbox"> Remember me
-							        </label>
-							      </div>
-							    </div>
-							  </div>
-							  --><input type="hidden"
-data-th-name="${_csrf.parameterName}"
-data-th-value="${_csrf.token}"/>
-							  <div class="form-group">
-							    <div class="col-sm-offset-3 col-sm-9">
-							      <button type="submit" class="btn btn-default">Sign in</button>
-							    </div>
-							  </div>
+								<div class="form-group" data-th-classappend="${error} ? 'has-error'">
+									<label for="username" class="col-sm-3 control-label">User name</label>
+								<div class="col-sm-9">
+									<input autofocus type="text" class="form-control" name="username" id="username">
+								</div>
+								</div>
+								<div class="form-group" data-th-classappend="${error} ? 'has-error'">
+									<label for="password" class="col-sm-3 control-label">Password</label>
+									<div class="col-sm-9">
+										<input type="password" class="form-control" name="password" id="password">
+									</div>
+								</div>
+								<!--
+								<div class="form-group">
+									<div class="col-sm-offset-2 col-sm-10">
+										<div class="checkbox">
+											<label>
+												<input type="checkbox"> Remember me
+											</label>
+										</div>
+									</div>
+								</div>
+								-->
+								<input data-th-replace="fragments :: csrf"/>
+								<div class="form-group">
+									<div class="col-sm-offset-3 col-sm-9">
+										<button type="submit" class="btn btn-default">Sign in</button>
+									</div>
+								</div>
 							</form>
 						</div>
 					</div>
