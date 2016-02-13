@@ -28,13 +28,16 @@
 					<div class="main">
 						<div class="content">
 							<div class="project-header">
-								<div class="btn-toobar pull-right">
+								<div class="btn-toobar pull-left">
 									<div class="btn-group">
 										<a type="button" class="btn btn-primary" data-th-href="@{/tasks/new?project={projectId}(projectId=${project.id})}"><span class="glyphicon glyphicon-plus"></span> New Task</a>
 									</div>
-									<!--div class="btn-group">
-										<a type="button" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span></a>
-									</div-->
+								</div>
+								<div class="btn-toobar pull-right">
+									<div class="btn-group">
+										<a type="button" class="btn btn-default" data-th-href="@{/projects/edit/{projectId}(projectId=${project.id})}"><span class="glyphicon glyphicon-edit"></span> Edit</a>
+										<a type="button" class="btn btn-default" data-th-href="@{/projects/delete/{projectId}(projectId=${project.id})}"><span class="glyphicon glyphicon-trash"></span> Delete</a>
+									</div>
 								</div>
 								<div style="clear: both"></div>
 								<h1 data-th-text="${project.name}"></h1>

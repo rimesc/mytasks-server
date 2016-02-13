@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>myTasks</title>
+	</head>
+
+	<body>
+
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="main">
+						<form data-th-fragment="form(confirm)" method="post" data-th-object="${projectForm}">
+							<div class="form-group" data-th-classappend="${#fields.hasErrors('name')} ? 'has-error'">
+								<label for="projectName" class="control-label">Name<span data-th-if="${#fields.hasErrors('name')}" data-th-text="| (${#fields.errors('name')[0]})|"> (error)</span></label>
+								<input type="text" autofocus class="form-control" id="projectName" name="name" placeholder="My new project" data-th-value="${projectForm.name}">
+							</div>
+							<div class="form-group" data-th-classappend="${#fields.hasErrors('description')} ? 'has-error'">
+								<label for="projectDescription" class="control-label">Description<span data-th-if="${#fields.hasErrors('description')}" data-th-text="| (${#fields.errors('description')[0]})|"> (error)</span></label>
+								<textarea rows="2" class="form-control" id="projectDescription" name="description" placeholder="A short description of the project." data-th-text="${projectForm.description}"></textarea>
+							</div>
+							<input data-th-replace="fragments :: csrf"/>
+							<button role="button" type="submit" data-th-text="${confirm}" class="btn btn-primary"></button>
+							<a role="button" class="btn btn-default" data-th-href="@{${onCancel}}">Cancel</a>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</body>
+</html>
+

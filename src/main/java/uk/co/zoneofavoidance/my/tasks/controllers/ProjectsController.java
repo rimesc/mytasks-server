@@ -42,19 +42,8 @@ public class ProjectsController {
    @RequestMapping(path = "new", method = GET)
    public ModelAndView getNewProject(final ProjectForm projectForm) {
       final ModelAndView modelAndView = new ModelAndView("projects/new");
+      modelAndView.addObject("onCancel", "/projects");
       return modelAndView;
-   }
-
-   @RequestMapping(path = "new", method = POST)
-   public ModelAndView postNewProject(@Valid final ProjectForm projectForm, final BindingResult bindingResult) {
-      if (bindingResult.hasErrors()) {
-         final ModelAndView modelAndView = new ModelAndView("projects/new");
-         modelAndView.addObject("name", projectForm.getName());
-         modelAndView.addObject("description", projectForm.getDescription());
-         return modelAndView;
-      }
-      final Project project = projects.save(new Project(projectForm.getName(), projectForm.getDescription()));
-      return new ModelAndView("redirect:/projects/" + project.getId());
    }
 
    @RequestMapping(path = "{projectId}", method = GET)
@@ -67,6 +56,49 @@ public class ProjectsController {
       modelAndView.addObject("project", project);
       modelAndView.addObject("tasks", tasks.findByProjectId(projectId));
       return modelAndView;
+   }
+
+   @RequestMapping(path = "new", method = POST)
+   public ModelAndView postNewProject(@Valid final ProjectForm projectForm, final BindingResult bindingResult) {
+      if (bindingResult.hasErrors()) {
+         final ModelAndView modelAndView = new ModelAndView("projects/new");
+         modelAndView.addObject("projectForm", projectForm);
+         modelAndView.addObject("onCancel", "/projects");
+         return modelAndView;
+      }
+      final Project project = projects.save(new Project(projectForm.getName(), projectForm.getDescription()));
+      return new ModelAndView("redirect:/projects/" + project.getId());
+   }
+
+   @RequestMapping(path = "edit/{projectId}", method = GET)
+   public ModelAndView getEditProject(@PathVariable("projectId") final Long projectId) {
+      final ModelAndView modelAndView = new ModelAndView("projects/edit");
+      final Project project = projects.findOne(projectId);
+      if (project == null) {
+         throw new NotFoundException("project");
+      }
+      final ProjectForm projectForm = new ProjectForm(project.getName(), project.getDescription());
+      modelAndView.addObject("projectForm", projectForm);
+      modelAndView.addObject("onCancel", "/projects/" + projectId);
+      return modelAndView;
+   }
+
+   @RequestMapping(path = "edit/{projectId}", method = POST)
+   public ModelAndView postEditProject(@PathVariable("projectId") final Long projectId, @Valid final ProjectForm projectForm, final BindingResult bindingResult) {
+      final Project project = projects.findOne(projectId);
+      if (project == null) {
+         throw new NotFoundException("project");
+      }
+      if (bindingResult.hasErrors()) {
+         final ModelAndView modelAndView = new ModelAndView("projects/edit");
+         modelAndView.addObject("projectForm", projectForm);
+         modelAndView.addObject("onCancel", "/projects/" + projectId);
+         return modelAndView;
+      }
+      project.setName(projectForm.getName());
+      project.setDescription(projectForm.getDescription());
+      projects.save(project);
+      return new ModelAndView("redirect:/projects/" + project.getId());
    }
 
    @RequestMapping(path = "edit/{projectId}/documentation", method = GET)
