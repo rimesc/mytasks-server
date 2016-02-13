@@ -26,6 +26,7 @@
 				<div class="col-md-8 col-md-offset-2">
 					<div class="main">
 						<div class="content">
+							<div class="alert alert-success" role="alert" data-th-if="${success}" data-th-text="#{${success}}"></div>
 							<div class="alert alert-danger" role="alert" data-th-if="${error}" data-th-text="#{${error}}"></div>
 							<form class="form-horizontal" method="post">
 								<div class="form-group" data-th-classappend="${error} ? 'has-error'">

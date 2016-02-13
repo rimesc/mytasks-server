@@ -14,12 +14,16 @@ import org.springframework.web.servlet.ModelAndView;
 public class LoginController {
 
    @RequestMapping(path = "/login", method = GET)
-   public ModelAndView getLogin(@RequestParam(required = false) final String error, final Principal principal) {
+   public ModelAndView getLogin(@RequestParam(required = false) final String logout, @RequestParam(required = false) final String error, final Principal principal) {
       if (principal instanceof Authentication && ((Authentication) principal).isAuthenticated()) {
          return new ModelAndView("redirect:/");
       }
+      ;
       final ModelAndView modelAndView = new ModelAndView("login");
-      if (error != null) {
+      if (logout != null) {
+         modelAndView.addObject("success", "logout");
+      }
+      else if (error != null) {
          modelAndView.addObject("error", "error.invalid.credentials");
       }
       return modelAndView;
