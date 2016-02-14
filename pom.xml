@@ -6,7 +6,7 @@
 	<groupId>uk.co.zoneofavoidance</groupId>
 	<artifactId>mytasks</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<name>myTasks</name>
 	<description>A simple task manager web application</description>
