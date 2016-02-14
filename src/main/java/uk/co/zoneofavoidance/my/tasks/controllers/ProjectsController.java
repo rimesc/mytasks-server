@@ -101,6 +101,27 @@ public class ProjectsController {
       return new ModelAndView("redirect:/projects/" + project.getId());
    }
 
+   @RequestMapping(path = "delete/{projectId}", method = GET)
+   public ModelAndView getDeleteProject(@PathVariable("projectId") final Long projectId) {
+      final ModelAndView modelAndView = new ModelAndView("projects/delete");
+      final Project project = projects.findOne(projectId);
+      if (project == null) {
+         throw new NotFoundException("project");
+      }
+      modelAndView.addObject("project", project);
+      return modelAndView;
+   }
+
+   @RequestMapping(path = "delete/{projectId}", method = POST)
+   public ModelAndView postDeleteProject(@PathVariable("projectId") final Long projectId) {
+      final Project project = projects.findOne(projectId);
+      if (project == null) {
+         throw new NotFoundException("project");
+      }
+      projects.delete(project);
+      return new ModelAndView("redirect:/projects");
+   }
+
    @RequestMapping(path = "edit/{projectId}/documentation", method = GET)
    public ModelAndView getEditDocument(@PathVariable("projectId") final Long projectId) {
       final ModelAndView modelAndView = new ModelAndView("projects/edit-documentation");
