@@ -20,7 +20,7 @@ import uk.co.zoneofavoidance.my.tasks.domain.Project;
 import uk.co.zoneofavoidance.my.tasks.domain.Task;
 import uk.co.zoneofavoidance.my.tasks.exceptions.NotFoundException;
 import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
-import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
+import uk.co.zoneofavoidance.my.tasks.services.TaskService;
 
 @Controller
 @RequestMapping(path = "projects")
@@ -30,7 +30,7 @@ public class ProjectsController {
    private ProjectRepository projects;
 
    @Autowired
-   private TaskRepository tasks;
+   private TaskService tasks;
 
    @RequestMapping(method = GET)
    public ModelAndView getProjects() {
@@ -54,7 +54,7 @@ public class ProjectsController {
          throw new NotFoundException("project");
       }
       modelAndView.addObject("project", project);
-      modelAndView.addObject("tasks", tasks.findByProjectId(projectId));
+      modelAndView.addObject("tasks", tasks.getForProject(projectId));
       return modelAndView;
    }
 
@@ -149,7 +149,7 @@ public class ProjectsController {
       if (project == null) {
          throw new NotFoundException("project");
       }
-      final List<Task> projectTasks = tasks.findByProjectId(projectId);
+      final List<Task> projectTasks = tasks.getForProject(projectId);
       final ModelAndView modelAndView = new ModelAndView("projects/tasks");
       modelAndView.addObject("project", project);
       modelAndView.addObject("tasks", projectTasks);
