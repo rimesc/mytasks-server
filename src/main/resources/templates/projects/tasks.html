@@ -38,7 +38,7 @@
 										<h4 class="list-group-item-heading"><a data-th-href="@{/tasks/{taskId}(taskId=${task.id})}" data-th-text="${task.summary}">Lorem ipsum</a></h4>
 										<span data-th-text="(${task.modified} ? 'Last modified' : 'Created') + ' ' + ${@myDates.formatDateTime(task.updated)}"></span>
 									</li>
-									<li data-th-if="${projects.empty}" class="list-group-item list-group-placeholder">
+									<li data-th-if="${tasks.empty}" class="list-group-item list-group-placeholder">
 										No tasks to show.
 									</li>
 							 	</ul>
