@@ -1,6 +1,7 @@
 package uk.co.zoneofavoidance.my.tasks.domain;
 
 import static javax.persistence.EnumType.STRING;
+import static javax.persistence.FetchType.LAZY;
 import static uk.co.zoneofavoidance.my.tasks.domain.Priority.NORMAL;
 import static uk.co.zoneofavoidance.my.tasks.domain.State.TO_DO;
 
@@ -12,6 +13,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -26,7 +28,7 @@ public class Task {
    @GeneratedValue
    private Long id;
 
-   @Column
+   @Column(nullable = false)
    @Length(max = 255)
    @NotBlank
    private String summary;
@@ -34,13 +36,18 @@ public class Task {
    @Lob
    private String description;
 
+   @Column(nullable = false)
    @Enumerated(STRING)
    @NotNull
    private Priority priority = NORMAL;
 
+   @Column(nullable = false)
    @Enumerated(STRING)
    @NotNull
    private State state = TO_DO;
+
+   @ManyToOne(fetch = LAZY, optional = false)
+   private Project project;
 
    @CreationTimestamp
    private Date created;
@@ -51,14 +58,15 @@ public class Task {
    public Task() {
    }
 
-   public Task(final String summary, final String description, final Priority priority) {
+   public Task(final Project project, final String summary, final String description, final Priority priority) {
+      this.project = project;
       this.summary = summary;
       this.description = description;
       this.priority = priority;
    }
 
-   public Task(final String summary, final String description, final Priority priority, final State state) {
-      this(summary, description, priority);
+   public Task(final Project project, final String summary, final String description, final Priority priority, final State state) {
+      this(project, summary, description, priority);
       this.state = state;
    }
 
@@ -80,6 +88,10 @@ public class Task {
 
    public State getState() {
       return state;
+   }
+
+   public Project getProject() {
+      return project;
    }
 
    public Date getCreated() {
@@ -106,12 +118,20 @@ public class Task {
       this.state = state;
    }
 
+   public void setProject(final Project project) {
+      this.project = project;
+   }
+
    public void setCreated(final Date created) {
       this.created = created;
    }
 
    public void setUpdated(final Date updated) {
       this.updated = updated;
+   }
+
+   public boolean isModified() {
+      return getUpdated() != null && getCreated() != null && getUpdated().after(getCreated());
    }
 
 }

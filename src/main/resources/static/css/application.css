@@ -1,0 +1,148 @@
+body {
+	background-color: #f5f5f5;
+	/* Move down content because we have a fixed navbar that is 50px tall */
+	padding-top: 50px;
+}
+
+/* format form buttons in navbars the same as links */
+
+.nav > li > form > button.btn-link {
+	position: relative;
+	display: block;
+	padding: 10px 15px;
+	border: 0;
+}
+
+.navbar-nav > li > form > button.btn-link {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	line-height: 20px;
+}
+
+@media (min-width: 768px) {
+  .navbar-nav > li > form > button.btn-link {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+}
+
+.main {
+	background-color: #fff;
+	margin: 20px -15px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+}
+
+.content {
+	padding: 20px 40px;
+}
+
+.project-header {
+	text-align: center;
+	border-bottom: 1px solid #eee;
+}
+
+.project-header h1 {
+}
+
+.project-header ul {
+	list-style: none;
+	margin: 0px 0px 10px 0px;
+	padding: 0px;
+}
+
+.project-header ul>li{
+	display: inline-block;
+	margin: 0px 10px;
+}
+
+ul.project-list .list-group-item-text {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+li.list-group-placeholder {
+	padding: 20px 25px;
+	text-align: center;
+	color: #777;
+}
+
+.alert-centered {
+	text-align: center;
+}
+
+.alert-centered .glyphicon {
+	font-size: 36px;
+}
+
+span.priority {
+	border-radius: 4px;
+	color: #fff;
+	padding: 4px 8px;
+}
+
+span.priority-critical {
+	background-color: #d9534f;
+}
+
+span.priority-high {
+	background-color: #f0ad4e;
+}
+
+span.priority-normal {
+	background-color: #5bc0de;
+}
+
+span.priority-low {
+	background-color: #5cb85c;
+}
+
+span.state {
+	border-radius: 4px;
+	border: 1px solid #337ab7;
+	color: #337ab7;
+	padding: 3px 7px;
+}
+
+span.state:BEFORE {
+	position: relative;
+	top: 1px;
+	font-family: 'Glyphicons Halflings';
+	font-style: normal;
+	font-weight: 400;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+span.state-to_do:BEFORE {
+	content: "\e023\202f"; /* glyphicon-time */
+}
+
+span.state-in_progress:BEFORE {
+	content: "\e072\202f"; /* glyphicon-play */
+}
+
+span.state-on_hold:BEFORE {
+	content: "\e073\202f"; /* glyphicon-pause */
+}
+
+span.state-done:BEFORE {
+	content: "\e013\202f"; /* glyphicon-ok */
+}
+
+.edit {
+	color: #000;
+	opacity: 0.2;
+	float: right;
+}
+
+.edit:HOVER {
+	opacity: 1.0;
+}
+
+div.readme {
+	margin-top: 20px;
+	text-align: center;
+}

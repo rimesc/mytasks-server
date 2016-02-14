@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>myTasks</title>
+	</head>
+
+	<body>
+
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="main">
+						<form data-th-fragment="form(confirm)" method="post" data-th-object="${taskForm}">
+							<div class="form-group" data-th-classappend="${#fields.hasErrors('summary')} ? 'has-error'">
+								<label for="taskSummary" class="control-label">Summary<span data-th-if="${#fields.hasErrors('summary')}" data-th-text="| (${#fields.errors('summary')[0]})|"> (error)</span></label>
+								<input type="text" class="form-control" id="taskSummary" name="summary" placeholder="My new task" data-th-value="*{summary}">
+							</div>
+							<div class="form-group" data-th-classappend="${#fields.hasErrors('description')} ? 'has-error'">
+								<label for="taskDescription" class="control-label">Description<span data-th-if="${#fields.hasErrors('description')}" data-th-text="| (${#fields.errors('description')[0]})|"> (error)</span></label>
+								<textarea rows="12" class="form-control" id="taskDescription" name="description" placeholder="A description of the task." data-th-text="*{description}"></textarea>
+							</div>
+							<div class="form-group" data-th-classappend="${#fields.hasErrors('priority')} ? 'has-error'">
+								<div class="row">
+									<div class="col-md-4 col-sm-6 col-xs-12">
+										<label for="taskPriority" class="control-label">Priority<span data-th-if="${#fields.hasErrors('priority')}" data-th-text="| (${#fields.errors('priority')[0]})|"> (error)</span></label>
+										<select class="form-control" id="taskPriority" name="priority">
+											<option data-th-each="p : ${priorities}" data-th-selected="${p} == *{priority} or (*{priority} == null and ${p.name()} == 'NORMAL')" data-th-text="#{|mytasks.priority.${p}|}" data-th-value="${p.name()}"></option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<input type="hidden" name="project" data-th-value="*{project}">
+							<input data-th-replace="fragments :: csrf"/>
+							<button role="button" type="submit" data-th-text="${confirm} ?: 'Submit'" class="btn btn-primary"></button>
+							<a role="button" class="btn btn-default" data-th-href="@{/projects/{projectId}(projectId=*{project})}">Cancel</a>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</body>
+</html>
+

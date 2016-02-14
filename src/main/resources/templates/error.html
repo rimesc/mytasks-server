@@ -7,7 +7,7 @@
 		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 		<link rel="icon" type="image/png" data-th-attr="href=@{/images/logo.png}">
 
-		<title>myTasks - Home</title>
+		<title>myTasks - Error</title>
 
 		<!-- Bootstrap core CSS -->
 		<link data-th-attr="href=@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}" rel="stylesheet">
@@ -19,30 +19,17 @@
 
 	<body>
 
-		<nav data-th-replace="fragments :: navbar(active='overview')"></nav>
+		<nav data-th-replace="fragments :: navbar"></nav>
 
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12">
 					<div class="main">
 						<div class="content">
-							<h1 class="page-header">Dashboard</h1>
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h3 class="panel-title">Projects</h3>
-								</div>
-								<ul class="list-group project-list">
-									<li data-th-each="project : ${projects}" class="list-group-item">
-										<span class="badge" data-th-text="${project.numberOfTasks}">0</span>
-										<h4 class="list-group-item-heading"><a data-th-href="@{/projects/{projectId}(projectId=${project.id})}" data-th-text="${project.name}">Lorem ipsum</a></h4>
-										<p class="list-group-item-text" data-th-text="${project.description}">
-											Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.
-										</p>
-									</li>
-									<li data-th-if="${projects.empty}" class="list-group-item list-group-placeholder">
-										No projects to show.
-									</li>
-							 	</ul>
+							<div class="alert alert-danger alert-centered" role="alert">
+								<p><span class="glyphicon glyphicon-remove-sign"></span></p>
+								<p><strong data-th-text="|${status} ${error}|"></strong></p>
+								<p data-th-text="${message}"></p>
 							</div>
 						</div>
 					</div>
