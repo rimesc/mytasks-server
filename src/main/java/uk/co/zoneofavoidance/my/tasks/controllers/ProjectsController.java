@@ -54,7 +54,6 @@ public class ProjectsController {
          throw new NotFoundException("project");
       }
       modelAndView.addObject("project", project);
-      modelAndView.addObject("tasks", tasks.getForProject(projectId));
       return modelAndView;
    }
 
@@ -144,12 +143,12 @@ public class ProjectsController {
    }
 
    @RequestMapping(path = "{projectId}/tasks", method = GET)
-   public ModelAndView getTasks(@PathVariable("projectId") final Long projectId) {
+   public ModelAndView getTasks(@PathVariable("projectId") final Long projectId, @RequestParam(required = false) final String all) {
       final Project project = projects.findOne(projectId);
       if (project == null) {
          throw new NotFoundException("project");
       }
-      final List<Task> projectTasks = tasks.getForProject(projectId);
+      final List<Task> projectTasks = all == null ? tasks.getOpenForProject(projectId) : tasks.getForProject(projectId);
       final ModelAndView modelAndView = new ModelAndView("projects/tasks");
       modelAndView.addObject("project", project);
       modelAndView.addObject("tasks", projectTasks);

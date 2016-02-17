@@ -1,5 +1,10 @@
 package uk.co.zoneofavoidance.my.tasks.services;
 
+import static java.util.Arrays.asList;
+import static uk.co.zoneofavoidance.my.tasks.domain.State.IN_PROGRESS;
+import static uk.co.zoneofavoidance.my.tasks.domain.State.ON_HOLD;
+import static uk.co.zoneofavoidance.my.tasks.domain.State.TO_DO;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -7,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import uk.co.zoneofavoidance.my.tasks.domain.State;
 import uk.co.zoneofavoidance.my.tasks.domain.Task;
 import uk.co.zoneofavoidance.my.tasks.exceptions.NotFoundException;
 import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
@@ -39,6 +45,29 @@ public class TaskService {
    @Transactional(readOnly = true)
    public List<Task> getForProject(final long projectId) {
       return tasks.findByProjectId(projectId);
+   }
+
+   /**
+    * Retrieves the tasks for a project, filtered by state.
+    *
+    * @param projectId ID of the project
+    * @param states list of states to filter by
+    * @return tasks for the project
+    */
+   @Transactional(readOnly = true)
+   public List<Task> getForProject(final long projectId, final State... states) {
+      return tasks.findByProjectIdAndStateIn(projectId, asList(states));
+   }
+
+   /**
+    * Retrieves the open tasks for a project.
+    *
+    * @param projectId ID of the project
+    * @return open tasks for the project
+    */
+   @Transactional(readOnly = true)
+   public List<Task> getOpenForProject(final long projectId) {
+      return getForProject(projectId, TO_DO, IN_PROGRESS, ON_HOLD);
    }
 
    /**

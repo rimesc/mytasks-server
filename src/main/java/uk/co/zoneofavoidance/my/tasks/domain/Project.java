@@ -38,6 +38,9 @@ public class Project {
    @Formula("(select count(*) from Task t where t.project_id = id)")
    private int numberOfTasks;
 
+   @Formula("(select count(*) from Task t where t.project_id = id and t.state != 'DONE')")
+   private int numberOfOpenTasks;
+
    @OneToOne(fetch = LAZY, optional = true, cascade = ALL)
    private Note readMe;
 
@@ -67,6 +70,10 @@ public class Project {
 
    public int getNumberOfTasks() {
       return numberOfTasks;
+   }
+
+   public int getNumberOfOpenTasks() {
+      return numberOfOpenTasks;
    }
 
    public Note getReadMe() {
