@@ -2,6 +2,7 @@ package uk.co.zoneofavoidance.my.tasks.controllers;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static uk.co.zoneofavoidance.my.tasks.controllers.TaskSelection.OPEN;
 
 import java.util.List;
 
@@ -10,6 +11,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -143,16 +146,22 @@ public class ProjectsController {
    }
 
    @RequestMapping(path = "{projectId}/tasks", method = GET)
-   public ModelAndView getTasks(@PathVariable("projectId") final Long projectId, @RequestParam(required = false) final String all) {
+   public ModelAndView getTasks(@PathVariable("projectId") final Long projectId, @RequestParam(defaultValue = "open") final TaskSelection select) {
       final Project project = projects.findOne(projectId);
       if (project == null) {
          throw new NotFoundException("project");
       }
-      final List<Task> projectTasks = all == null ? tasks.getOpenForProject(projectId) : tasks.getForProject(projectId);
+      final List<Task> projectTasks = tasks.getForProject(projectId, select.getStates());
       final ModelAndView modelAndView = new ModelAndView("projects/tasks");
       modelAndView.addObject("project", project);
+      modelAndView.addObject("selection", select);
       modelAndView.addObject("tasks", projectTasks);
       return modelAndView;
+   }
+
+   @InitBinder
+   public void initBinder(final WebDataBinder dataBinder) {
+      dataBinder.registerCustomEditor(TaskSelection.class, new EnumConverter<>(TaskSelection.class, OPEN));
    }
 
 }

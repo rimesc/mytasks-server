@@ -1,6 +1,7 @@
 package uk.co.zoneofavoidance.my.tasks.services;
 
 import static java.util.Arrays.asList;
+import static uk.co.zoneofavoidance.my.tasks.domain.State.DONE;
 import static uk.co.zoneofavoidance.my.tasks.domain.State.IN_PROGRESS;
 import static uk.co.zoneofavoidance.my.tasks.domain.State.ON_HOLD;
 import static uk.co.zoneofavoidance.my.tasks.domain.State.TO_DO;
@@ -68,6 +69,17 @@ public class TaskService {
    @Transactional(readOnly = true)
    public List<Task> getOpenForProject(final long projectId) {
       return getForProject(projectId, TO_DO, IN_PROGRESS, ON_HOLD);
+   }
+
+   /**
+    * Retrieves the closed tasks for a project.
+    *
+    * @param projectId ID of the project
+    * @return closed tasks for the project
+    */
+   @Transactional(readOnly = true)
+   public List<Task> getClosedForProject(final Long projectId) {
+      return getForProject(projectId, DONE);
    }
 
    /**
