@@ -19,7 +19,7 @@ import uk.co.zoneofavoidance.my.tasks.domain.State;
 import uk.co.zoneofavoidance.my.tasks.domain.Task;
 import uk.co.zoneofavoidance.my.tasks.exceptions.NotFoundException;
 import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
-import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
+import uk.co.zoneofavoidance.my.tasks.services.TaskService;
 
 @Controller
 @RequestMapping(path = "tasks")
@@ -29,7 +29,7 @@ public class TasksController {
    private ProjectRepository projects;
 
    @Autowired
-   private TaskRepository tasks;
+   private TaskService tasks;
 
    @RequestMapping(path = "new", method = GET)
    public ModelAndView getNewTask(final TaskForm taskForm) {
@@ -62,21 +62,14 @@ public class TasksController {
    @RequestMapping(path = "{taskId}", method = GET)
    public ModelAndView getProject(@PathVariable final long taskId) {
       final ModelAndView modelAndView = new ModelAndView("tasks/view");
-      final Task task = tasks.findOne(taskId);
-      if (task == null) {
-         throw new NotFoundException("task");
-      }
-      modelAndView.addObject("task", task);
+      modelAndView.addObject("task", tasks.get(taskId));
       return modelAndView;
    }
 
    @RequestMapping(path = "{taskId}", method = POST)
    public ModelAndView postProject(@PathVariable final long taskId, @RequestParam("state") final State state) {
       final ModelAndView modelAndView = new ModelAndView("tasks/view");
-      final Task task = tasks.findOne(taskId);
-      if (task == null) {
-         throw new NotFoundException("task");
-      }
+      final Task task = tasks.get(taskId);
       task.setState(state);
       tasks.save(task);
       modelAndView.addObject("task", task);
@@ -86,10 +79,7 @@ public class TasksController {
    @RequestMapping(path = "edit/{taskId}", method = GET)
    public ModelAndView getEditTask(@PathVariable final long taskId) {
       final ModelAndView modelAndView = new ModelAndView("tasks/edit");
-      final Task task = tasks.findOne(taskId);
-      if (task == null) {
-         throw new NotFoundException("task");
-      }
+      final Task task = tasks.get(taskId);
       final TaskForm taskForm = new TaskForm(task.getProject().getId(), task.getSummary(), task.getDescription(), task.getPriority());
       modelAndView.addObject("taskForm", taskForm);
       modelAndView.addObject("priorities", Priority.values());
@@ -98,10 +88,7 @@ public class TasksController {
 
    @RequestMapping(path = "edit/{taskId}", method = POST)
    public ModelAndView postEditTask(@PathVariable final long taskId, @Valid final TaskForm taskForm, final BindingResult bindingResult) {
-      final Task task = tasks.findOne(taskId);
-      if (task == null) {
-         throw new NotFoundException("task");
-      }
+      final Task task = tasks.get(taskId);
       if (bindingResult.hasErrors()) {
          final ModelAndView modelAndView = new ModelAndView("tasks/edit");
          modelAndView.addObject("taskForm", taskForm);

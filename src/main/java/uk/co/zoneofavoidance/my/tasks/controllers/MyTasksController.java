@@ -8,13 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
-import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
 
 @Controller
 public class MyTasksController {
-
-   @Autowired
-   private TaskRepository tasks;
 
    @Autowired
    private ProjectRepository projects;
@@ -23,7 +19,6 @@ public class MyTasksController {
    public ModelAndView getHome() {
       final ModelAndView modelAndView = new ModelAndView("home");
       modelAndView.addObject("projects", projects.findAll());
-      modelAndView.addObject("tasks", tasks.findAll());
       return modelAndView;
    }
 

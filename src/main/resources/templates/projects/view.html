@@ -46,7 +46,7 @@
 									<li>
 										<a data-th-href="@{/projects/{projectId}/tasks(projectId=${project.id})}">
 											<span class="glyphicon glyphicon-check"></span>
-											<span data-th-text="|${project.numberOfTasks} task| + (${project.numberOfTasks} != 1 ? 's' : '')"></span>
+											<span data-th-text="|${project.numberOfOpenTasks} open task| + (${project.numberOfOpenTasks} != 1 ? 's' : '')"></span>
 										</a>
 									</li>
 									<li>
