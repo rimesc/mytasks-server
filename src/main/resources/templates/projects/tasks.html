@@ -53,7 +53,7 @@
 										<h4 class="list-group-item-heading">
 											<a data-th-href="@{/tasks/{taskId}(taskId=${task.id})}" data-th-with="icon = ${#messages.msgOrNull('mytasks.state.icon.' + task.state)}">
 												<span data-th-if="${icon}" class="glyphicon small" data-th-classappend="|glyphicon-${icon}|"></span>
-												<span data-th-text="${task.summary}"></span>
+												<span data-th-class="(${task.state.toString()} == 'DONE') ? 'line-through'" data-th-text="${task.summary}"></span>
 											</a>
 										</h4>
 										<span data-th-text="(${task.modified} ? 'Last modified' : 'Created') + ' ' + ${@myDates.formatDateTime(task.updated)}"></span>
