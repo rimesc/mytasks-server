@@ -20,10 +20,15 @@ body {
 }
 
 @media (min-width: 768px) {
-  .navbar-nav > li > form > button.btn-link {
-    padding-top: 15px;
-    padding-bottom: 15px;
+	.navbar-nav > li > form > button.btn-link {
+	padding-top: 15px;
+	padding-bottom: 15px;
   }
+}
+
+.panel-heading .navbar-form {
+	margin-top: 3px;
+	margin-bottom: 3px;
 }
 
 .main {

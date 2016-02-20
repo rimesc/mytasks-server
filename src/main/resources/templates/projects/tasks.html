@@ -40,9 +40,12 @@
 									  		</li>
 										</ul>
 									</div>
-									<div class="btn-group btn-group-sm pull-right">
-										<a type="button" class="btn btn-primary" data-th-href="@{/tasks/new?project={projectId}(projectId=${project.id})}"><span class="glyphicon glyphicon-plus"></span> New Task</a>
-									</div>
+									<form class="navbar-form navbar-right" method="get" data-th-action="@{/tasks/new?project={projectId}(projectId=${project.id})}">
+										<input type="hidden" name="project" data-th-value="${project.id}"/>
+        								<button type="submit" class="btn btn-primary">
+        									<span class="glyphicon glyphicon-plus"></span> New Task
+        								</button>
+        							</form>
 									<div style="clear: both"></div>
 								</div>
 								<ul class="list-group">
