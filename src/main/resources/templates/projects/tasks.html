@@ -60,7 +60,7 @@
 											<span class="text-muted" data-th-text="(${task.modified} ? 'Last modified' : 'Created') + ' ' + ${@myDates.formatDateTime(task.updated)}"></span>
 										</div>
 										<div class="pull-right">
-											<span data-th-classappend="|text-#{|mytasks.priority.class.${task.priority}|}|" data-th-text="|#{|mytasks.priority.${task.priority}|}|"></span>
+											<span class="priority" data-th-classappend="|priority-${#strings.toLowerCase(task.priority.name())}|"></span>
 										</div>		
 										<div style="clear: both"></div>
 									</li>
