@@ -45,7 +45,7 @@
 							</div>
 							<div>
 								<span class="state" data-th-classappend="|state-${#strings.toLowerCase(task.state.name())}|" data-th-text="#{|mytasks.state.${task.state}|}"></span>
-								<span class="priority" data-th-classappend="|priority-${#strings.toLowerCase(task.priority.name())}|" data-th-text="|Priority: #{|mytasks.priority.${task.priority}|}|"></span>
+								<span class="priority" data-th-classappend="|priority-${#strings.toLowerCase(task.priority.name())}|"></span>
 							</div>
 							<div class="readme">
 								<div class="markdown" data-th-if="${task.description}" data-th-utext="${@markdown.markdownToHtml(task.description)}">

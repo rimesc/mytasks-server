@@ -48,15 +48,21 @@
         							</form>
 									<div style="clear: both"></div>
 								</div>
-								<ul class="list-group">
+								<ul class="list-group task-list">
 									<li data-th-each="task : ${tasks}" class="list-group-item">
-										<h4 class="list-group-item-heading">
+										<div class="task-summary list-group-item-heading">
 											<a data-th-href="@{/tasks/{taskId}(taskId=${task.id})}" data-th-with="icon = ${#messages.msgOrNull('mytasks.state.icon.' + task.state)}">
 												<span data-th-if="${icon}" class="glyphicon small" data-th-classappend="|glyphicon-${icon}|"></span>
 												<span data-th-class="(${task.state.toString()} == 'DONE') ? 'line-through'" data-th-text="${task.summary}"></span>
 											</a>
-										</h4>
-										<span data-th-text="(${task.modified} ? 'Last modified' : 'Created') + ' ' + ${@myDates.formatDateTime(task.updated)}"></span>
+										</div>
+										<div class="pull-left">
+											<span class="text-muted" data-th-text="(${task.modified} ? 'Last modified' : 'Created') + ' ' + ${@myDates.formatDateTime(task.updated)}"></span>
+										</div>
+										<div class="pull-right">
+											<span class="priority" data-th-classappend="|priority-${#strings.toLowerCase(task.priority.name())}|"></span>
+										</div>		
+										<div style="clear: both"></div>
 									</li>
 									<li data-th-if="${tasks.empty}" class="list-group-item list-group-placeholder">
 										No tasks to show.
