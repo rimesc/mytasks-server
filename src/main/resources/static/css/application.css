@@ -77,6 +77,18 @@ li.list-group-placeholder {
 	color: #777;
 }
 
+.task-list .list-group-item-heading {
+	font-weight: 500;
+	font-size: 15px;
+}
+
+.task-list .list-group-item-heading>a {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 .alert-centered {
 	text-align: center;
 }
