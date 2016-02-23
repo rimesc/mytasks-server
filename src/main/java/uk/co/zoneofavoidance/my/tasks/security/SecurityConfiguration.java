@@ -15,9 +15,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 
 @Configuration
-// @Profile("!dev")
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+   /** Admin role. */
+   public static final String ADMIN_ROLE = "ROLE_ADMIN";
 
    @Autowired
    private DataSource dataSource;
