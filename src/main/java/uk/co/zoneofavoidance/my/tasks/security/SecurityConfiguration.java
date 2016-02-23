@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 
 @Configuration
 @EnableWebSecurity
@@ -24,11 +25,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
    @Autowired
    private DataSource dataSource;
 
+   @Autowired
+   private UserDetailsManager userDetailsManager;
+
    @Override
    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-      final JdbcUserDetailsManager userDetailsService = new JdbcUserDetailsManager();
-      userDetailsService.setDataSource(dataSource);
-      auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+      auth.userDetailsService(userDetailsManager).passwordEncoder(passwordEncoder());
+   }
+
+   @Bean
+   public UserDetailsManager userDetailsManager() {
+      final JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager();
+      userDetailsManager.setDataSource(dataSource);
+      return userDetailsManager;
    }
 
    @Override

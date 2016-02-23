@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+		<link rel="icon" type="image/png" data-th-attr="href=@{/images/logo.png}">
+
+		<title>myTasks - Settings</title>
+
+		<!-- Bootstrap core CSS -->
+		<link data-th-attr="href=@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}" rel="stylesheet">
+
+		<!-- Custom styles for this template -->
+		<link data-th-attr="href=@{/css/application.css}" rel="stylesheet">
+		
+		<style type="text/css">
+			td.user {width: 100%}
+			td.admin {text-align: center}
+		</style>
+
+	</head>
+
+	<body>
+
+		<nav data-th-replace="fragments :: navbar(active='overview')"></nav>
+
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="main">
+						<div class="content">
+							<h1 class="page-header">Global Settings</h1>
+							<h2 class="sub-header">Users</h2>
+							<div class="panel panel-default">
+								<div class="table-responsive">
+								  <table class="table">
+					              <thead>
+					                <tr>
+					                  <th>Name</th>
+					                  <th>Admin</th>
+					                </tr>
+					              </thead>
+								    <tbody>
+								      <tr data-th-each="user : ${users}" data-th-class="${currentUser} == ${user} ? 'info'">
+								        <td class="user" data-th-text="${user.username}"></td>
+								        <td class="admin"><span data-th-if="${@users.isAdmin(user)}" class="glyphicon glyphicon-ok"></span></td>
+								      </tr>
+								    </tbody>
+								  </table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Bootstrap core JavaScript -->
+		<script data-th-attr="src=@{/webjars/jquery/2.1.4/jquery.min.js}"></script>
+		<script data-th-attr="src=@{/webjars/bootstrap/3.3.6/js/bootstrap.min.js}"></script>
+	</body>
+</html>
+

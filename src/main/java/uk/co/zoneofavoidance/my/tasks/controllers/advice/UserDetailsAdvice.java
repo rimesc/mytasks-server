@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @ControllerAdvice
 public class UserDetailsAdvice {
 
-   @ModelAttribute
-   public User userDetails(@AuthenticationPrincipal final User user) {
+   @ModelAttribute("currentUser")
+   public User currentUser(@AuthenticationPrincipal final User user) {
       return user;
    }
 

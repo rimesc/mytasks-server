@@ -24,7 +24,7 @@
 						<li data-th-with="isActive = (${active} == 'tasks')" data-th-classappend="${isActive} ? 'active'"><a data-th-href="@{/tasks}">Tasks</a></li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
-						<li data-th-if="${@users.isAdmin(user)}"><a title="Settings" href="#"><span class="glyphicon glyphicon-cog"></span></a></li>
+						<li data-th-if="${@users.isAdmin(currentUser)}"><a title="Settings" data-th-href="@{/admin}"><span class="glyphicon glyphicon-cog"></span></a></li>
 						<li><a title="Profile" href="#"><span class="glyphicon glyphicon-user"></span></a></li>
 						<li><a title="Help" href="#"><span class="glyphicon glyphicon-question-sign"></span></a></li>
 						<li>
