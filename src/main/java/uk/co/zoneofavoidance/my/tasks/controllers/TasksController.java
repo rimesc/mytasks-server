@@ -25,11 +25,15 @@ import uk.co.zoneofavoidance.my.tasks.services.TaskService;
 @RequestMapping(path = "tasks")
 public class TasksController {
 
-   @Autowired
-   private ProjectRepository projects;
+   private final ProjectRepository projects;
+   private final TaskService tasks;
 
    @Autowired
-   private TaskService tasks;
+   public TasksController(final ProjectRepository projects, final TaskService tasks) {
+      super();
+      this.projects = projects;
+      this.tasks = tasks;
+   }
 
    @RequestMapping(path = "new", method = GET)
    public ModelAndView getNewTask(final TaskForm taskForm) {
@@ -55,19 +59,19 @@ public class TasksController {
          modelAndView.addObject("priorities", Priority.values());
          return modelAndView;
       }
-      tasks.save(new Task(project, taskForm.getSummary(), taskForm.getDescription(), taskForm.getPriority()));
-      return new ModelAndView("redirect:/projects/" + project.getId());
+      final Task task = tasks.save(new Task(project, taskForm.getSummary(), taskForm.getDescription(), taskForm.getPriority()));
+      return new ModelAndView("redirect:/tasks/" + task.getId());
    }
 
    @RequestMapping(path = "{taskId}", method = GET)
-   public ModelAndView getProject(@PathVariable final long taskId) {
+   public ModelAndView getTask(@PathVariable final long taskId) {
       final ModelAndView modelAndView = new ModelAndView("tasks/view");
       modelAndView.addObject("task", tasks.get(taskId));
       return modelAndView;
    }
 
    @RequestMapping(path = "{taskId}", method = POST)
-   public ModelAndView postProject(@PathVariable final long taskId, @RequestParam("state") final State state) {
+   public ModelAndView postTask(@PathVariable final long taskId, @RequestParam("state") final State state) {
       final ModelAndView modelAndView = new ModelAndView("tasks/view");
       final Task task = tasks.get(taskId);
       task.setState(state);

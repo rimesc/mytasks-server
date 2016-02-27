@@ -12,8 +12,12 @@ import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
 @Controller
 public class MyTasksController {
 
+   private final ProjectRepository projects;
+
    @Autowired
-   private ProjectRepository projects;
+   public MyTasksController(final ProjectRepository projects) {
+      this.projects = projects;
+   }
 
    @RequestMapping(path = "/", method = GET)
    public ModelAndView getHome() {

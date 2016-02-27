@@ -9,21 +9,27 @@ import static uk.co.zoneofavoidance.my.tasks.domain.State.TO_DO;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.zoneofavoidance.my.tasks.domain.State;
 import uk.co.zoneofavoidance.my.tasks.domain.Task;
 import uk.co.zoneofavoidance.my.tasks.exceptions.NotFoundException;
+import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
 import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
 
 @Service
 @Transactional
 public class TaskService {
 
-   @Autowired
-   private TaskRepository tasks;
+   private final TaskRepository tasks;
+
+   private final ProjectRepository projects;
+
+   public TaskService(final TaskRepository tasks, final ProjectRepository projects) {
+      this.tasks = tasks;
+      this.projects = projects;
+   }
 
    /**
     * Retrieves a task by ID.
@@ -45,7 +51,11 @@ public class TaskService {
     */
    @Transactional(readOnly = true)
    public List<Task> getForProject(final long projectId) {
-      return tasks.findByProjectId(projectId);
+      final List<Task> projectTasks = tasks.findByProjectId(projectId);
+      if (projectTasks.isEmpty()) {
+         checkProjectExists(projectId);
+      }
+      return projectTasks;
    }
 
    /**
@@ -57,7 +67,11 @@ public class TaskService {
     */
    @Transactional(readOnly = true)
    public List<Task> getForProject(final long projectId, final State... states) {
-      return tasks.findByProjectIdAndStateIn(projectId, asList(states));
+      final List<Task> projectTasks = tasks.findByProjectIdAndStateIn(projectId, asList(states));
+      if (projectTasks.isEmpty()) {
+         checkProjectExists(projectId);
+      }
+      return projectTasks;
    }
 
    /**
@@ -90,6 +104,12 @@ public class TaskService {
     */
    public Task save(final Task task) {
       return tasks.save(task);
+   }
+
+   private void checkProjectExists(final long projectId) {
+      if (projects.findOne(projectId) == null) {
+         throw new NotFoundException("project");
+      }
    }
 
 }
