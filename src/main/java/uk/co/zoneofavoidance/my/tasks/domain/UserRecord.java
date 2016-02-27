@@ -2,6 +2,7 @@ package uk.co.zoneofavoidance.my.tasks.domain;
 
 import static javax.persistence.CascadeType.ALL;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import javax.persistence.Column;
@@ -14,7 +15,7 @@ import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Table(name = "users")
-public class UserRecord {
+public class UserRecord implements Serializable {
 
    @Id
    @Column(name = "username", length = 50, nullable = false)

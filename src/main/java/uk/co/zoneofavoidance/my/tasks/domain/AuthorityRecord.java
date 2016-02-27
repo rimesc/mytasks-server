@@ -1,5 +1,7 @@
 package uk.co.zoneofavoidance.my.tasks.domain;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -9,12 +11,13 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "authorities")
-public class AuthorityRecord {
+public class AuthorityRecord implements Serializable {
 
    @Id
    @Column(length = 50, nullable = false)
    private String authority;
 
+   @Id
    @ManyToOne
    @JoinColumn(name = "username", nullable = false, updatable = false)
    private UserRecord user;
