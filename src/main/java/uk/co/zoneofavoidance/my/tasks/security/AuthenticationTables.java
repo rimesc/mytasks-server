@@ -34,8 +34,8 @@ public class AuthenticationTables implements CommandLineRunner {
 
    private void createDefaultUser() {
       final JdbcTemplate template = new JdbcTemplate(dataSource);
-      template.execute(String.format("INSERT INTO users VALUES ('%s', '%s', 'true');", DEFAULT_USER_NAME, passwordEncoder.encode(DEFAULT_USER_PASSWORD)));
-      template.execute("INSERT INTO authorities VALUES ('admin', 'ROLE_ADMIN');");
+      template.execute(String.format("INSERT INTO users (username, password, enabled) VALUES ('%s', '%s', 'true');", DEFAULT_USER_NAME, passwordEncoder.encode(DEFAULT_USER_PASSWORD)));
+      template.execute("INSERT INTO authorities (username, authority) VALUES ('admin', 'ROLE_ADMIN');");
    }
 
    private Integer numberOfUsers() {
