@@ -1,5 +1,8 @@
 package uk.co.zoneofavoidance.my.tasks.domain;
 
+import static java.util.Arrays.stream;
+import static java.util.Collections.emptySet;
+import static java.util.stream.Collectors.toList;
 import static javax.persistence.CascadeType.ALL;
 
 import java.io.Serializable;
@@ -26,10 +29,19 @@ public class UserRecord implements Serializable {
    private String password;
 
    @Column(nullable = false)
-   boolean enabled;
+   boolean enabled = true;
 
    @OneToMany(mappedBy = "user", cascade = ALL)
    private Collection<AuthorityRecord> authorities;
+
+   public UserRecord() {
+   }
+
+   public UserRecord(final String username, final String password, final String... authorities) {
+      this.userName = username;
+      this.password = password;
+      this.authorities = stream(authorities).map(a -> new AuthorityRecord(this, a)).collect(toList());
+   }
 
    public String getUserName() {
       return userName;
@@ -44,7 +56,7 @@ public class UserRecord implements Serializable {
    }
 
    public Collection<AuthorityRecord> getAuthorities() {
-      return authorities;
+      return authorities == null ? emptySet() : authorities;
    }
 
    public void setUserName(final String userName) {
