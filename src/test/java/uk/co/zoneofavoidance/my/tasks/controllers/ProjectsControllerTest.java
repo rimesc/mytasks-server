@@ -54,9 +54,6 @@ public class ProjectsControllerTest {
    private static final Project FOO_PROJECT = new Project("Foo", "The Foo project.");
    private static final Project BAR_PROJECT = new Project("Bar", "The Bar project.");
 
-   @Rule
-   public MockitoRule mockitoRule = MockitoJUnit.rule();
-
    @Mock
    private TaskService taskService;
 
@@ -309,4 +306,10 @@ public class ProjectsControllerTest {
       when(repository.findOne(PROJECT_ID)).thenReturn(null);
       controller.getTasks(PROJECT_ID, OPEN);
    }
+
+   @Rule
+   public MockitoRule mockitoRule() {
+      return MockitoJUnit.rule();
+   }
+
 }

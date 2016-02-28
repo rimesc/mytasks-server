@@ -59,6 +59,7 @@ public class ProjectsController {
    @RequestMapping(path = "new", method = GET)
    public ModelAndView getNewProject(final ProjectForm projectForm) {
       final ModelAndView modelAndView = new ModelAndView("projects/new");
+      modelAndView.addObject("projectForm", projectForm);
       modelAndView.addObject("onCancel", "/projects");
       return modelAndView;
    }
