@@ -36,7 +36,6 @@ import uk.co.zoneofavoidance.my.tasks.repositories.UserRepository;
 /**
  * Unit tests for {@link UserService}.
  */
-@SuppressWarnings("checkstyle:javadocmethod")
 public class UserServiceTest {
 
    private static final UserRecord USER_FOO = new UserRecord("foo", "abcdefgh");
@@ -44,9 +43,6 @@ public class UserServiceTest {
 
    private static final SimpleGrantedAuthority ROLE_USER = new SimpleGrantedAuthority("ROLE_USER");
    private static final SimpleGrantedAuthority ROLE_ADMIN = new SimpleGrantedAuthority("ROLE_ADMIN");
-
-   @Rule
-   public MockitoRule mockitoRule = MockitoJUnit.rule();
 
    @Mock
    private UserDetailsManager userDetailsManager;
@@ -172,6 +168,11 @@ public class UserServiceTest {
          description.appendValue(expected);
       }
 
+   }
+
+   @Rule
+   public MockitoRule mockitoRule() {
+      return MockitoJUnit.rule();
    }
 
 }

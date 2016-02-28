@@ -33,7 +33,6 @@ public class UserService {
    private final PasswordEncoder encoder;
 
    @Autowired
-   @SuppressWarnings("checkstyle:javadocmethod")
    public UserService(final UserDetailsManager manager, final UserRepository users, final PasswordEncoder encoder) {
       this.manager = manager;
       this.users = users;
