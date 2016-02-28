@@ -26,9 +26,6 @@ public class MyTasksControllerTest {
    private static final Project FOO_PROJECT = new Project("Foo", "The Foo project.");
    private static final Project BAR_PROJECT = new Project("Bar", "The Bar project.");
 
-   @Rule
-   public final MockitoRule mockitoRule = MockitoJUnit.rule();
-
    @Mock
    private ProjectRepository repository;
 
@@ -46,6 +43,11 @@ public class MyTasksControllerTest {
       final ModelAndView modelAndView = controller.getHome();
       assertViewName(modelAndView, "home");
       assertModelAttributeValue(modelAndView, "projects", projects);
+   }
+
+   @Rule
+   public MockitoRule mockitoRule() {
+      return MockitoJUnit.rule();
    }
 
 }

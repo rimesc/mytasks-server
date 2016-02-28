@@ -47,9 +47,6 @@ public class TasksControllerTest {
    private static final Project FOO_PROJECT = new Project("Foo", "The Foo project.");
    private static final Task FOO_TASK = new Task(FOO_PROJECT, "Foo", "The Foo task.", NORMAL, TO_DO);
 
-   @Rule
-   public MockitoRule mockitoRule = MockitoJUnit.rule();
-
    @Mock
    private TaskService taskService;
 
@@ -202,6 +199,11 @@ public class TasksControllerTest {
    public void postEditTaskPropagatesException() {
       when(taskService.get(TASK_ID)).thenThrow(new NotFoundException("task"));
       controller.postEditTask(TASK_ID, new TaskForm(), bindingResult);
+   }
+
+   @Rule
+   public MockitoRule mockitoRule() {
+      return MockitoJUnit.rule();
    }
 
 }

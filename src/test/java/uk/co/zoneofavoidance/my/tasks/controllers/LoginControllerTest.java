@@ -19,9 +19,6 @@ import org.springframework.web.servlet.ModelAndView;
  */
 public class LoginControllerTest {
 
-   @Rule
-   public final MockitoRule mockitoRule = MockitoJUnit.rule();
-
    @Mock
    private Authentication authentication;
 
@@ -64,6 +61,11 @@ public class LoginControllerTest {
       assertViewName(modelAndView, "login");
       assertModelAttributeValue(modelAndView, "error", "error.invalid.credentials");
       assertModelAttributeNotAvailable(modelAndView, "success");
+   }
+
+   @Rule
+   public MockitoRule mockitoRule() {
+      return MockitoJUnit.rule();
    }
 
 }

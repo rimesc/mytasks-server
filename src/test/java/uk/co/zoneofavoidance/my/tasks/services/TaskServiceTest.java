@@ -37,9 +37,6 @@ public class TaskServiceTest {
    private static final Task FOO_TASK = new Task(FOO_PROJECT, "Foo", "The Foo task.", NORMAL, TO_DO);
    private static final Task BAR_TASK = new Task(FOO_PROJECT, "Bar", "The Bar task.", HIGH, DONE);
 
-   @Rule
-   public MockitoRule mockitoRule = MockitoJUnit.rule();
-
    @Mock
    private TaskRepository repository;
 
@@ -121,6 +118,11 @@ public class TaskServiceTest {
    public void savePassesTaskToRepository() {
       service.save(FOO_TASK);
       verify(repository).save(FOO_TASK);
+   }
+
+   @Rule
+   public MockitoRule mockitoRule() {
+      return MockitoJUnit.rule();
    }
 
 }
