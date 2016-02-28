@@ -102,6 +102,10 @@ public class Task {
       return updated;
    }
 
+   public void setId(final Long id) {
+      this.id = id;
+   }
+
    public void setSummary(final String summary) {
       this.summary = summary;
    }

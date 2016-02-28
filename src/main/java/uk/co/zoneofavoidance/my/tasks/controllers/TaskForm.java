@@ -25,6 +25,10 @@ public class TaskForm {
    public TaskForm() {
    }
 
+   public TaskForm(final Long project) {
+      this.project = project;
+   }
+
    public TaskForm(final Long project, final String summary, final String description, final Priority priority) {
       this.project = project;
       this.summary = summary;

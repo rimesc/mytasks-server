@@ -29,23 +29,19 @@ import uk.co.zoneofavoidance.my.tasks.services.TaskService;
 @RequestMapping(path = "projects")
 public class ProjectsController {
 
-   @Autowired
-   private ProjectRepository projects;
+   private final ProjectRepository projects;
+   private final TaskService tasks;
 
    @Autowired
-   private TaskService tasks;
+   public ProjectsController(final ProjectRepository projects, final TaskService tasks) {
+      this.projects = projects;
+      this.tasks = tasks;
+   }
 
    @RequestMapping(method = GET)
    public ModelAndView getProjects() {
       final ModelAndView modelAndView = new ModelAndView("projects/list");
       modelAndView.addObject("projects", projects.findAll());
-      return modelAndView;
-   }
-
-   @RequestMapping(path = "new", method = GET)
-   public ModelAndView getNewProject(final ProjectForm projectForm) {
-      final ModelAndView modelAndView = new ModelAndView("projects/new");
-      modelAndView.addObject("onCancel", "/projects");
       return modelAndView;
    }
 
@@ -57,6 +53,13 @@ public class ProjectsController {
          throw new NotFoundException("project");
       }
       modelAndView.addObject("project", project);
+      return modelAndView;
+   }
+
+   @RequestMapping(path = "new", method = GET)
+   public ModelAndView getNewProject(final ProjectForm projectForm) {
+      final ModelAndView modelAndView = new ModelAndView("projects/new");
+      modelAndView.addObject("onCancel", "/projects");
       return modelAndView;
    }
 
@@ -100,7 +103,7 @@ public class ProjectsController {
       project.setName(projectForm.getName());
       project.setDescription(projectForm.getDescription());
       projects.save(project);
-      return new ModelAndView("redirect:/projects/" + project.getId());
+      return new ModelAndView("redirect:/projects/" + projectId);
    }
 
    @RequestMapping(path = "delete/{projectId}", method = GET)
@@ -128,6 +131,9 @@ public class ProjectsController {
    public ModelAndView getEditDocument(@PathVariable("projectId") final Long projectId) {
       final ModelAndView modelAndView = new ModelAndView("projects/edit-documentation");
       final Project project = projects.findOne(projectId);
+      if (project == null) {
+         throw new NotFoundException("project");
+      }
       modelAndView.addObject("project", project);
       final Note readMe = project.getReadMe();
       modelAndView.addObject("text", readMe == null ? "" : readMe.getText());
@@ -140,7 +146,12 @@ public class ProjectsController {
       if (project == null) {
          throw new NotFoundException("project");
       }
-      project.getReadMe().setText(text);
+      if (project.getReadMe() == null) {
+         project.setReadMe(new Note(text));
+      }
+      else {
+         project.getReadMe().setText(text);
+      }
       projects.save(project);
       return new ModelAndView("redirect:/projects/" + projectId);
    }
