@@ -19,7 +19,7 @@ public class UserRecord implements Serializable {
 
    @Id
    @Column(name = "username", length = 50, nullable = false)
-   @Length(min = 8, max = 50)
+   @Length(max = 50)
    private String userName;
 
    @Column(length = 60, nullable = false)

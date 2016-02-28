@@ -1,16 +1,16 @@
 package uk.co.zoneofavoidance.my.tasks.controllers;
 
-import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.Length;
 
 /**
  * Bean backing the new user form.
  */
 public class UserForm {
 
-   @NotBlank
+   @Length(min = 2, max = 20)
    private String username;
 
-   @NotBlank
+   @Length(min = 8, max = 20)
    private String password;
 
    private boolean admin;
