@@ -72,7 +72,7 @@ public class ProjectsController {
          modelAndView.addObject("onCancel", "/projects");
          return modelAndView;
       }
-      final Project project = projects.save(new Project(projectForm.getName(), projectForm.getDescription()));
+      final Project project = projects.save(Project.create(projectForm.getName(), projectForm.getDescription()));
       return new ModelAndView("redirect:/projects/" + project.getId());
    }
 

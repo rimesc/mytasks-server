@@ -51,8 +51,8 @@ public class ProjectsControllerTest {
 
    private static final long PROJECT_ID = 157L;
 
-   private static final Project FOO_PROJECT = new Project("Foo", "The Foo project.");
-   private static final Project BAR_PROJECT = new Project("Bar", "The Bar project.");
+   private static final Project FOO_PROJECT = Project.create("Foo", "The Foo project.");
+   private static final Project BAR_PROJECT = Project.create("Bar", "The Bar project.");
 
    @Mock
    private TaskService taskService;
@@ -143,7 +143,7 @@ public class ProjectsControllerTest {
 
    @Test
    public void postEditProjectUpdatesProjectAndRedirectsToProjectView() throws Exception {
-      when(repository.findOne(PROJECT_ID)).thenReturn(new Project("My Project", "Old description."));
+      when(repository.findOne(PROJECT_ID)).thenReturn(Project.create("My Project", "Old description."));
       when(bindingResult.hasErrors()).thenReturn(false);
       final ProjectForm form = new ProjectForm("My Project", "New description.");
       final ModelAndView modelAndView = controller.postEditProject(PROJECT_ID, form, bindingResult);
@@ -200,7 +200,7 @@ public class ProjectsControllerTest {
 
    @Test
    public void getEditDocumentReturnsEditDocumentationViewWithProjectAndText() throws Exception {
-      final Project project = new Project("My Project", "Description of my project.");
+      final Project project = Project.create("My Project", "Description of my project.");
       final String markdown = "Some markdown text.";
       project.setReadMe(new Note(markdown));
       when(repository.findOne(PROJECT_ID)).thenReturn(project);
@@ -212,7 +212,7 @@ public class ProjectsControllerTest {
 
    @Test
    public void getEditDocumentReturnsModelWithEmptyTextIfNoDocumentation() throws Exception {
-      final Project project = new Project("My Project", "Description of my project.");
+      final Project project = Project.create("My Project", "Description of my project.");
       when(repository.findOne(PROJECT_ID)).thenReturn(project);
       final ModelAndView modelAndView = controller.getEditDocument(PROJECT_ID);
       assertViewName(modelAndView, "projects/edit-documentation");
@@ -228,7 +228,7 @@ public class ProjectsControllerTest {
 
    @Test
    public void postEditDocumentUpdatesExistingDocumentationAndRedirectsToProjectView() throws Exception {
-      final Project project = new Project("My Project", "Description of my project.");
+      final Project project = Project.create("My Project", "Description of my project.");
       project.setReadMe(new Note("Old markdown text."));
       when(repository.findOne(PROJECT_ID)).thenReturn(project);
       final ModelAndView modelAndView = controller.postEditDocument(PROJECT_ID, "New markdown text.");
@@ -242,7 +242,7 @@ public class ProjectsControllerTest {
 
    @Test
    public void postEditDocumentAddsNewDocumentationAndRedirectsToProjectView() throws Exception {
-      final Project project = new Project("My Project", "Description of my project.");
+      final Project project = Project.create("My Project", "Description of my project.");
       when(repository.findOne(PROJECT_ID)).thenReturn(project);
       final ModelAndView modelAndView = controller.postEditDocument(PROJECT_ID, "Some markdown text.");
       assertRedirect(modelAndView, "/projects/" + PROJECT_ID);
@@ -261,8 +261,8 @@ public class ProjectsControllerTest {
 
    @Test
    public void getTasksReturnsTasksViewFilteredToOpenTasks() throws Exception {
-      final Task firstTask = new Task(FOO_PROJECT, "First task", "The first task.", NORMAL, TO_DO);
-      final Task secondTask = new Task(FOO_PROJECT, "Second task", "The second task.", NORMAL, IN_PROGRESS);
+      final Task firstTask = Task.create(FOO_PROJECT, "First task", "The first task.", NORMAL, TO_DO);
+      final Task secondTask = Task.create(FOO_PROJECT, "Second task", "The second task.", NORMAL, IN_PROGRESS);
       final List<Task> tasks = asList(firstTask, secondTask);
       when(repository.findOne(PROJECT_ID)).thenReturn(FOO_PROJECT);
       when(taskService.getForProject(PROJECT_ID, new State[] { TO_DO, IN_PROGRESS, ON_HOLD })).thenReturn(tasks);
@@ -275,8 +275,8 @@ public class ProjectsControllerTest {
 
    @Test
    public void getTasksReturnsTasksViewFilteredToClosedTasks() throws Exception {
-      final Task firstTask = new Task(FOO_PROJECT, "First task", "The first task.", NORMAL, DONE);
-      final Task secondTask = new Task(FOO_PROJECT, "Second task", "The second task.", NORMAL, DONE);
+      final Task firstTask = Task.create(FOO_PROJECT, "First task", "The first task.", NORMAL, DONE);
+      final Task secondTask = Task.create(FOO_PROJECT, "Second task", "The second task.", NORMAL, DONE);
       final List<Task> tasks = asList(firstTask, secondTask);
       when(repository.findOne(PROJECT_ID)).thenReturn(FOO_PROJECT);
       when(taskService.getForProject(PROJECT_ID, new State[] { DONE })).thenReturn(tasks);
@@ -289,8 +289,8 @@ public class ProjectsControllerTest {
 
    @Test
    public void getTasksReturnsTasksViewFilteredToAllTasks() throws Exception {
-      final Task firstTask = new Task(FOO_PROJECT, "First task", "The first task.", NORMAL, TO_DO);
-      final Task secondTask = new Task(FOO_PROJECT, "Second task", "The second task.", NORMAL, DONE);
+      final Task firstTask = Task.create(FOO_PROJECT, "First task", "The first task.", NORMAL, TO_DO);
+      final Task secondTask = Task.create(FOO_PROJECT, "Second task", "The second task.", NORMAL, DONE);
       final List<Task> tasks = asList(firstTask, secondTask);
       when(repository.findOne(PROJECT_ID)).thenReturn(FOO_PROJECT);
       when(taskService.getForProject(PROJECT_ID, State.values())).thenReturn(tasks);

@@ -35,17 +35,17 @@ public class SampleData implements CommandLineRunner {
 
    @Override
    public void run(final String... args) throws Exception {
-      final Project firstProject = new Project("My first project", "This is my first sample project.");
-      final Project secondProject = new Project("My second project", "This is my second sample project. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
+      final Project firstProject = Project.create("My first project", "This is my first sample project.");
+      final Project secondProject = Project.create("My second project", "This is my second sample project. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
       final Note readMe = new Note(Resources.toString(SampleData.class.getResource("/samples/readme.md"), UTF_8));
       firstProject.setReadMe(readMe);
       projects.save(firstProject);
       projects.save(secondProject);
-      projects.save(new Project("My third project", "This is my third sample project. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
-      tasks.save(new Task(firstProject, "First sample task", Resources.toString(SampleData.class.getResource("/samples/readme.md"), UTF_8), HIGH, TO_DO));
-      tasks.save(new Task(firstProject, "Second sample task", "This is the second sample task.", CRITICAL, DONE));
-      tasks.save(new Task(firstProject, "Third sample task", "This is the third sample task.", LOW, TO_DO));
-      tasks.save(new Task(secondProject, "Fourth sample task", "This is the fourth sample task.", NORMAL, IN_PROGRESS));
-      tasks.save(new Task(secondProject, "Fifth sample task", "This is the fifth sample task.", HIGH, ON_HOLD));
+      projects.save(Project.create("My third project", "This is my third sample project. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
+      tasks.save(Task.create(firstProject, "First sample task", Resources.toString(SampleData.class.getResource("/samples/readme.md"), UTF_8), HIGH, TO_DO));
+      tasks.save(Task.create(firstProject, "Second sample task", "This is the second sample task.", CRITICAL, DONE));
+      tasks.save(Task.create(firstProject, "Third sample task", "This is the third sample task.", LOW, TO_DO));
+      tasks.save(Task.create(secondProject, "Fourth sample task", "This is the fourth sample task.", NORMAL, IN_PROGRESS));
+      tasks.save(Task.create(secondProject, "Fifth sample task", "This is the fifth sample task.", HIGH, ON_HOLD));
    }
 }

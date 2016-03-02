@@ -108,6 +108,15 @@ public class TaskService {
       return tasks.save(task);
    }
 
+   /**
+    * Deletes a task.
+    *
+    * @param task task to delete
+    */
+   public void delete(final Task task) {
+      tasks.delete(task);
+   }
+
    private void checkProjectExists(final long projectId) {
       if (projects.findOne(projectId) == null) {
          throw new NotFoundException("project");

@@ -23,8 +23,8 @@ import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
  */
 public class MyTasksControllerTest {
 
-   private static final Project FOO_PROJECT = new Project("Foo", "The Foo project.");
-   private static final Project BAR_PROJECT = new Project("Bar", "The Bar project.");
+   private static final Project FOO_PROJECT = Project.create("Foo", "The Foo project.");
+   private static final Project BAR_PROJECT = Project.create("Bar", "The Bar project.");
 
    @Mock
    private ProjectRepository repository;

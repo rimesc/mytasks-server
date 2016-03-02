@@ -59,7 +59,7 @@ public class TasksController {
          modelAndView.addObject("priorities", Priority.values());
          return modelAndView;
       }
-      final Task task = tasks.save(new Task(project, taskForm.getSummary(), taskForm.getDescription(), taskForm.getPriority()));
+      final Task task = tasks.save(Task.create(project, taskForm.getSummary(), taskForm.getDescription(), taskForm.getPriority()));
       return new ModelAndView("redirect:/tasks/" + task.getId());
    }
 
@@ -105,4 +105,20 @@ public class TasksController {
       tasks.save(task);
       return new ModelAndView("redirect:/tasks/" + taskId);
    }
+
+   @RequestMapping(path = "delete/{taskId}", method = GET)
+   public ModelAndView getDeleteTask(@PathVariable("taskId") final Long taskId) {
+      final ModelAndView modelAndView = new ModelAndView("tasks/delete");
+      final Task task = tasks.get(taskId);
+      modelAndView.addObject("task", task);
+      return modelAndView;
+   }
+
+   @RequestMapping(path = "delete/{taskId}", method = POST)
+   public ModelAndView postDeleteTask(@PathVariable("taskId") final Long taskId) {
+      final Task task = tasks.get(taskId);
+      tasks.delete(task);
+      return new ModelAndView("redirect:/projects/" + task.getProject().getId());
+   }
+
 }

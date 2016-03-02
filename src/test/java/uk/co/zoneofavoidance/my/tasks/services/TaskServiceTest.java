@@ -33,9 +33,9 @@ public class TaskServiceTest {
    private static final long PROJECT_ID = 157L;
    private static final long TASK_ID = 324L;
 
-   private static final Project FOO_PROJECT = new Project("Foo", "The Foo project.");
-   private static final Task FOO_TASK = new Task(FOO_PROJECT, "Foo", "The Foo task.", NORMAL, TO_DO);
-   private static final Task BAR_TASK = new Task(FOO_PROJECT, "Bar", "The Bar task.", HIGH, DONE);
+   private static final Project FOO_PROJECT = Project.create("Foo", "The Foo project.");
+   private static final Task FOO_TASK = Task.create(FOO_PROJECT, "Foo", "The Foo task.", NORMAL, TO_DO);
+   private static final Task BAR_TASK = Task.create(FOO_PROJECT, "Bar", "The Bar task.", HIGH, DONE);
 
    @Mock
    private TaskRepository repository;

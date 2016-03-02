@@ -44,8 +44,8 @@ public class TasksControllerTest {
    private static final long PROJECT_ID = 157L;
    private static final long TASK_ID = 324L;
 
-   private static final Project FOO_PROJECT = new Project("Foo", "The Foo project.");
-   private static final Task FOO_TASK = new Task(FOO_PROJECT, "Foo", "The Foo task.", NORMAL, TO_DO);
+   private static final Project FOO_PROJECT = Project.create(PROJECT_ID, "Foo", "The Foo project.");
+   private static final Task FOO_TASK = Task.create(FOO_PROJECT, TASK_ID, "Foo", "The Foo task.", NORMAL, TO_DO);
 
    @Mock
    private TaskService taskService;
@@ -79,7 +79,7 @@ public class TasksControllerTest {
 
    @Test
    public void postTaskUpdatesTaskStateAndReturnsTaskViewWithTask() {
-      when(taskService.get(TASK_ID)).thenReturn(new Task(FOO_PROJECT, "Open", "An open task.", NORMAL, TO_DO));
+      when(taskService.get(TASK_ID)).thenReturn(Task.create(FOO_PROJECT, "Open", "An open task.", NORMAL, TO_DO));
       final ModelAndView modelAndView = controller.postTask(TASK_ID, DONE);
       assertViewName(modelAndView, "tasks/view");
       final Task task = assertAndReturnModelAttributeOfType(modelAndView, "task", Task.class);
@@ -174,7 +174,7 @@ public class TasksControllerTest {
 
    @Test
    public void postEditTaskUpdatesTaskAndRedirectsToTaskView() throws Exception {
-      when(taskService.get(TASK_ID)).thenReturn(new Task(FOO_PROJECT, "My Task", "Old description.", NORMAL));
+      when(taskService.get(TASK_ID)).thenReturn(Task.create(FOO_PROJECT, "My Task", "Old description.", NORMAL));
       when(bindingResult.hasErrors()).thenReturn(false);
       final TaskForm form = new TaskForm(PROJECT_ID, "My Task", "New description.", HIGH);
       final ModelAndView modelAndView = controller.postEditTask(TASK_ID, form, bindingResult);
@@ -199,6 +199,28 @@ public class TasksControllerTest {
    public void postEditTaskPropagatesException() {
       when(taskService.get(TASK_ID)).thenThrow(new NotFoundException("task"));
       controller.postEditTask(TASK_ID, new TaskForm(), bindingResult);
+   }
+
+   @Test
+   public void getDeleteTaskReturnsDeleteTaskViewWithTask() throws Exception {
+      when(taskService.get(TASK_ID)).thenReturn(FOO_TASK);
+      final ModelAndView modelAndView = controller.getDeleteTask(TASK_ID);
+      assertViewName(modelAndView, "tasks/delete");
+      assertModelAttributeValue(modelAndView, "task", FOO_TASK);
+   }
+
+   @Test(expected = NotFoundException.class)
+   public void getDeleteTaskPropagatesException() throws Exception {
+      when(taskService.get(TASK_ID)).thenThrow(new NotFoundException("task"));
+      controller.getDeleteTask(TASK_ID);
+   }
+
+   @Test
+   public void postDeleteTaskDeletesTaskAndRedirectsToProjectView() throws Exception {
+      when(taskService.get(TASK_ID)).thenReturn(FOO_TASK);
+      final ModelAndView modelAndView = controller.postDeleteTask(TASK_ID);
+      assertRedirect(modelAndView, "/projects/" + PROJECT_ID);
+      verify(taskService).delete(FOO_TASK);
    }
 
    @Rule

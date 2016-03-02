@@ -44,12 +44,17 @@ public class Project {
    @OneToOne(fetch = LAZY, optional = true, cascade = ALL)
    private Note readMe;
 
-   public Project() {
+   public static Project create(final String name, final String description) {
+      final Project project = new Project();
+      project.setName(name);
+      project.setDescription(description);
+      return project;
    }
 
-   public Project(final String name, final String description) {
-      this.name = name;
-      this.description = description;
+   public static Project create(final Long id, final String name, final String description) {
+      final Project project = create(name, description);
+      project.setId(id);
+      return project;
    }
 
    public Long getId() {

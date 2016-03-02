@@ -55,19 +55,28 @@ public class Task {
    @UpdateTimestamp
    private Date updated;
 
+   public static Task create(final Project project, final Long id, final String summary, final String description, final Priority priority, final State state) {
+      final Task task = create(project, summary, description, priority, state);
+      task.setId(id);
+      return task;
+   }
+
+   public static Task create(final Project project, final String summary, final String description, final Priority priority, final State state) {
+      final Task task = create(project, summary, description, priority);
+      task.setState(state);
+      return task;
+   }
+
+   public static Task create(final Project project, final String summary, final String description, final Priority priority) {
+      final Task task = new Task();
+      task.setProject(project);
+      task.setSummary(summary);
+      task.setDescription(description);
+      task.setPriority(priority);
+      return task;
+   }
+
    public Task() {
-   }
-
-   public Task(final Project project, final String summary, final String description, final Priority priority) {
-      this.project = project;
-      this.summary = summary;
-      this.description = description;
-      this.priority = priority;
-   }
-
-   public Task(final Project project, final String summary, final String description, final Priority priority, final State state) {
-      this(project, summary, description, priority);
-      this.state = state;
    }
 
    public Long getId() {
