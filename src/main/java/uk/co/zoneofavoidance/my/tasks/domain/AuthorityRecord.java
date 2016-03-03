@@ -22,6 +22,9 @@ public class AuthorityRecord implements Serializable {
    @JoinColumn(name = "username", nullable = false, updatable = false)
    private UserRecord user;
 
+   public AuthorityRecord() {
+   }
+
    public AuthorityRecord(final UserRecord user, final String authority) {
       this.user = user;
       this.authority = authority;
