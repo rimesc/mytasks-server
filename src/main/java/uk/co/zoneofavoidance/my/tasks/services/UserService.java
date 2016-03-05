@@ -49,6 +49,15 @@ public class UserService {
    }
 
    /**
+    * Returns the number of registered users.
+    *
+    * @return number of users
+    */
+   public long size() {
+      return users.count();
+   }
+
+   /**
     * Checks if a user exists with the given username.
     *
     * @param username username to check

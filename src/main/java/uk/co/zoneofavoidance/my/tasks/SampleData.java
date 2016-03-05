@@ -22,6 +22,7 @@ import uk.co.zoneofavoidance.my.tasks.domain.Project;
 import uk.co.zoneofavoidance.my.tasks.domain.Task;
 import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
 import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
+import uk.co.zoneofavoidance.my.tasks.services.UserService;
 
 @Component
 @Profile("dev")
@@ -33,8 +34,12 @@ public class SampleData implements CommandLineRunner {
    @Autowired
    private TaskRepository tasks;
 
+   @Autowired
+   private UserService users;
+
    @Override
    public void run(final String... args) throws Exception {
+      users.createUser("dev", "secret", true);
       final Project firstProject = Project.create("My first project", "This is my first sample project.");
       final Project secondProject = Project.create("My second project", "This is my second sample project. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
       final Note readMe = new Note(Resources.toString(SampleData.class.getResource("/samples/readme.md"), UTF_8));
