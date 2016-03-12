@@ -30,18 +30,17 @@ public class TasksController {
 
    @Autowired
    public TasksController(final ProjectRepository projects, final TaskService tasks) {
-      super();
       this.projects = projects;
       this.tasks = tasks;
    }
 
    @RequestMapping(path = "new", method = GET)
-   public ModelAndView getNewTask(final TaskForm taskForm) {
-      final Project project = projects.findOne(taskForm.getProject());
-      if (project == null) {
+   public ModelAndView getNewTask(@RequestParam final long project) {
+      if (projects.findOne(project) == null) {
          throw new NotFoundException("project");
       }
       final ModelAndView modelAndView = new ModelAndView("tasks/new");
+      modelAndView.addObject("taskForm", new TaskForm(project));
       modelAndView.addObject("priorities", Priority.values());
       return modelAndView;
    }
@@ -87,6 +86,7 @@ public class TasksController {
       final TaskForm taskForm = new TaskForm(task.getProject().getId(), task.getSummary(), task.getDescription(), task.getPriority());
       modelAndView.addObject("taskForm", taskForm);
       modelAndView.addObject("priorities", Priority.values());
+      modelAndView.addObject("onCancel", "/tasks/" + taskId);
       return modelAndView;
    }
 
@@ -97,6 +97,7 @@ public class TasksController {
          final ModelAndView modelAndView = new ModelAndView("tasks/edit");
          modelAndView.addObject("taskForm", taskForm);
          modelAndView.addObject("priorities", Priority.values());
+         modelAndView.addObject("onCancel", "/tasks/" + taskId);
          return modelAndView;
       }
       task.setSummary(taskForm.getSummary());

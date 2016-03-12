@@ -18,7 +18,6 @@ public class LoginController {
       if (principal instanceof Authentication && ((Authentication) principal).isAuthenticated()) {
          return new ModelAndView("redirect:/");
       }
-      ;
       final ModelAndView modelAndView = new ModelAndView("login");
       if (logout != null) {
          modelAndView.addObject("success", "logout");

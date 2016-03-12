@@ -27,7 +27,13 @@
 					<div class="main">
 						<div class="content">
 							<h1 class="page-header">Edit Task</h1>
-							<form data-th-replace="tasks/fragments::form('Save')"></form>
+							<form data-th-action="@{${#httpServletRequest.requestURI}}" method="post" data-th-object="${taskForm}">
+								<div data-th-replace="tasks/fragments::summaryField"></div>
+								<div data-th-replace="tasks/fragments::descriptionField"></div>
+								<div data-th-replace="tasks/fragments::prioritySelector"></div>
+								<div data-th-replace="tasks/fragments::projectField"></div>
+								<div data-th-replace="projects/fragments::buttons('Save', ${onCancel})"></div>
+							</form>
 						</div>
 					</div>
 				</div>

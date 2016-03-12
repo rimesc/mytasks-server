@@ -98,23 +98,16 @@ public class TasksControllerTest {
    @Test
    public void getNewTaskReturnsNewTaskViewWithPriorities() {
       when(repository.findOne(PROJECT_ID)).thenReturn(FOO_PROJECT);
-      final ModelAndView modelAndView = controller.getNewTask(new TaskForm(PROJECT_ID));
+      final ModelAndView modelAndView = controller.getNewTask(PROJECT_ID);
       assertViewName(modelAndView, "tasks/new");
       final Priority[] priorities = assertAndReturnModelAttributeOfType(modelAndView, "priorities", Priority[].class);
       assertThat(priorities, arrayContainingInAnyOrder(Priority.values()));
    }
 
    @Test(expected = NotFoundException.class)
-   public void getNewTaskPropagatesException() {
-      when(repository.findOne(PROJECT_ID)).thenReturn(FOO_PROJECT);
-      when(taskService.get(TASK_ID)).thenThrow(new NotFoundException("task"));
-      controller.getNewTask(new TaskForm());
-   }
-
-   @Test(expected = NotFoundException.class)
    public void getNewTaskThrowsIfProjectNotFound() {
       when(repository.findOne(PROJECT_ID)).thenReturn(null);
-      controller.getNewTask(new TaskForm(PROJECT_ID));
+      controller.getNewTask(PROJECT_ID);
    }
 
    @Test

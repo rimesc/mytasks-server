@@ -105,4 +105,9 @@ public class Project {
       this.readMe = readMe;
    }
 
+   @Override
+   public String toString() {
+      return String.format("Task %d: '%s'", id, name);
+   }
+
 }

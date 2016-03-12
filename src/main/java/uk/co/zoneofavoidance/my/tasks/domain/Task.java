@@ -1,7 +1,6 @@
 package uk.co.zoneofavoidance.my.tasks.domain;
 
 import static javax.persistence.EnumType.STRING;
-import static javax.persistence.FetchType.LAZY;
 import static uk.co.zoneofavoidance.my.tasks.domain.Priority.NORMAL;
 import static uk.co.zoneofavoidance.my.tasks.domain.State.TO_DO;
 
@@ -46,7 +45,7 @@ public class Task {
    @NotNull
    private State state = TO_DO;
 
-   @ManyToOne(fetch = LAZY, optional = false)
+   @ManyToOne(optional = false)
    private Project project;
 
    @CreationTimestamp
@@ -147,4 +146,8 @@ public class Task {
       return getUpdated() != null && getCreated() != null && getUpdated().after(getCreated());
    }
 
+   @Override
+   public String toString() {
+      return String.format("Task %d: '%s'", id, summary);
+   }
 }
