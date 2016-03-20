@@ -1,0 +1,18 @@
+<h1 class="page-header">Dashboard</h1>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">Projects</h3>
+	</div>
+	<ul class="list-group project-list">
+		<li data-ng-repeat="project in projects" class="list-group-item">
+			<span class="badge">{{project.numberOfOpenTasks}}</span>
+			<h4 class="list-group-item-heading"><a data-ng-href="/projects/{{project.id}}">{{project.name}}</a></h4>
+			<p class="list-group-item-text">
+				{{project.description}}
+			</p>
+		</li>
+		<li data-ng-if="projects.empty" class="list-group-item list-group-placeholder">
+			No projects to show.
+		</li>
+ 	</ul>
+</div>
