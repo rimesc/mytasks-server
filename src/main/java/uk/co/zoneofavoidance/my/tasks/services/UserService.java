@@ -1,11 +1,14 @@
 package uk.co.zoneofavoidance.my.tasks.services;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
+import static uk.co.zoneofavoidance.my.tasks.security.SecurityConfiguration.ADMIN_ROLE;
+import static uk.co.zoneofavoidance.my.tasks.security.SecurityConfiguration.USER_ROLE;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,10 +20,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
+import com.google.common.collect.ImmutableSet;
+
 import uk.co.zoneofavoidance.my.tasks.domain.AuthorityRecord;
 import uk.co.zoneofavoidance.my.tasks.domain.UserRecord;
 import uk.co.zoneofavoidance.my.tasks.repositories.UserRepository;
-import uk.co.zoneofavoidance.my.tasks.security.SecurityConfiguration;
 
 /**
  * Provides access to the details of registered users.
@@ -93,8 +97,15 @@ public class UserService {
       if (exists(username)) {
          throw new UsernameAlreadyExistsException(username);
       }
-      final Collection<GrantedAuthority> authorities = admin ? singleton(new SimpleGrantedAuthority(SecurityConfiguration.ADMIN_ROLE)) : emptyList();
+      final Collection<GrantedAuthority> authorities = getRoles(admin).stream().map(SimpleGrantedAuthority::new).collect(toSet());
       manager.createUser(new User(username, encoder.encode(password), authorities));
+   }
+
+   private static Set<String> getRoles(final boolean admin) {
+      if (admin) {
+         return ImmutableSet.of(ADMIN_ROLE, USER_ROLE);
+      }
+      return singleton(USER_ROLE);
    }
 
    private static User convert(final UserRecord record) {
