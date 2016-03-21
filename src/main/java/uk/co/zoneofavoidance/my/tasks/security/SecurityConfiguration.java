@@ -16,6 +16,9 @@ public class SecurityConfiguration {
    /** Admin role. */
    public static final String ADMIN_ROLE = "ROLE_ADMIN";
 
+   /** User role. */
+   public static final String USER_ROLE = "ROLE_USER";
+
    @Autowired
    private DataSource dataSource;
 
