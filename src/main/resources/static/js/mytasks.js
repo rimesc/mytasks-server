@@ -15,26 +15,26 @@ angular.module('mytasks', ['ngRoute', 'ui.bootstrap'])
 	});
 })
 
-.controller('projects', function($scope, $http, $route, $uibModal) {
+.controller('projects', function($scope, $http, $uibModal) {
 	$http.get('/api/projects/').success(function(data) {
 		$scope.projects = data.projects;
 	});
 	$scope.openNewProjectModal = function() {
 		var modalInstance = $uibModal.open({templateUrl: 'modals/new-project.html', controller: 'new-project'});
 		modalInstance.result.then(function (project) {
-			$route.reload();
+			$scope.projects.push(project);
 		});
 	};
 })
 
-.controller('new-project', function($scope, $uibModalInstance, $http, $route) {
+.controller('new-project', function($scope, $uibModalInstance, $http) {
 	$scope.projectName = "";
 	$scope.projectDescription = "";
 	$scope.errors = {};
 
 	$scope.submit = function() {
-		$http.post('/api/projects/', {name: $scope.projectName, description: $scope.projectDescription}).then(function(project) {
-			$uibModalInstance.close(project);
+		$http.post('/api/projects/', {name: $scope.projectName, description: $scope.projectDescription}).then(function(response) {
+			$uibModalInstance.close(response.data);
 		},
 		function (response) {
 			$scope.errors = {};
@@ -43,7 +43,6 @@ angular.module('mytasks', ['ngRoute', 'ui.bootstrap'])
 					$scope.errors[error.field] = error.message;
 				}
 			});
-			$route.reload();
 		});
 	};
 
