@@ -1,22 +1,15 @@
 package uk.co.zoneofavoidance.my.tasks.controllers.rest.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class ProjectSummaryResponse {
 
-   @JsonProperty
    private final long id;
 
-   @JsonProperty
    private final String name;
 
-   @JsonProperty
    private final String description;
 
-   @JsonProperty
    private final int numberOfOpenTasks;
 
-   @JsonProperty
    private final String href;
 
    public ProjectSummaryResponse(final long id, final String name, final String description, final int numberOfOpenTasks, final String href) {

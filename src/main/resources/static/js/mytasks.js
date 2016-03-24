@@ -1,4 +1,4 @@
-angular.module('mytasks', ['ngRoute'])
+angular.module('mytasks', ['ngRoute', 'ui.bootstrap'])
 
 .config(function($routeProvider) {
 	$routeProvider
@@ -15,10 +15,41 @@ angular.module('mytasks', ['ngRoute'])
 	});
 })
 
-.controller('projects', function($scope, $http) {
+.controller('projects', function($scope, $http, $route, $uibModal) {
 	$http.get('/api/projects/').success(function(data) {
 		$scope.projects = data.projects;
 	});
+	$scope.openNewProjectModal = function() {
+		var modalInstance = $uibModal.open({templateUrl: 'modals/new-project.html', controller: 'new-project'});
+		modalInstance.result.then(function (project) {
+			$route.reload();
+		});
+	};
+})
+
+.controller('new-project', function($scope, $uibModalInstance, $http, $route) {
+	$scope.projectName = "";
+	$scope.projectDescription = "";
+	$scope.errors = {};
+
+	$scope.submit = function() {
+		$http.post('/api/projects/', {name: $scope.projectName, description: $scope.projectDescription}).then(function(project) {
+			$uibModalInstance.close(project);
+		},
+		function (response) {
+			$scope.errors = {};
+			response.data.errors.forEach(function(error) {
+				if ('field' in error) {
+					$scope.errors[error.field] = error.message;
+				}
+			});
+			$route.reload();
+		});
+	};
+
+	$scope.cancel = function () {
+		$uibModalInstance.dismiss('cancel');
+	};
 })
  
 .controller('navbar', function($scope, $location) { 
