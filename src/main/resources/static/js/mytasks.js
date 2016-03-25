@@ -37,6 +37,8 @@ angular.module('mytasks', ['ngRoute', 'ui.bootstrap'])
 			$uibModalInstance.close(response.data);
 		},
 		function (response) {
+			// TODO Handle unauthorized
+			// TODO Handle global errors
 			$scope.errors = {};
 			response.data.errors.forEach(function(error) {
 				if ('field' in error) {
