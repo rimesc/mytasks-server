@@ -9,6 +9,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import javax.validation.Valid;
 
+import org.pegdown.PegDownProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,7 +26,7 @@ import uk.co.zoneofavoidance.my.tasks.controllers.rest.response.BindingErrorsRes
 import uk.co.zoneofavoidance.my.tasks.controllers.rest.response.ErrorResponse;
 import uk.co.zoneofavoidance.my.tasks.controllers.rest.response.ProjectResponse;
 import uk.co.zoneofavoidance.my.tasks.controllers.rest.response.ProjectsResponse;
-import uk.co.zoneofavoidance.my.tasks.domain.Note;
+import uk.co.zoneofavoidance.my.tasks.controllers.rest.response.ReadMeResponse;
 import uk.co.zoneofavoidance.my.tasks.domain.Project;
 import uk.co.zoneofavoidance.my.tasks.exceptions.NotFoundException;
 import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
@@ -36,14 +37,17 @@ public class ProjectsRestController {
 
    private final ProjectRepository projects;
 
+   private final PegDownProcessor markdown;
+
    @Autowired
-   public ProjectsRestController(final ProjectRepository projects) {
+   public ProjectsRestController(final ProjectRepository projects, final PegDownProcessor markdown) {
       this.projects = projects;
+      this.markdown = markdown;
    }
 
    @RequestMapping(method = GET, produces = "application/json")
    public ProjectsResponse getProjects() {
-      return new ProjectsResponse(projects.findAll().stream().map(this::summarise).collect(toList()));
+      return new ProjectsResponse(projects.findAll().stream().map(this::convert).collect(toList()));
    }
 
    @RequestMapping(path = "{projectId}", method = GET, produces = "application/json")
@@ -55,6 +59,18 @@ public class ProjectsRestController {
       return convert(project);
    }
 
+   @RequestMapping(path = "{projectId}/readme", method = GET, produces = "application/json")
+   public ReadMeResponse getProjectReadMe(@PathVariable final Long projectId) {
+      final Project project = projects.findOne(projectId);
+      if (project == null) {
+         throw new NotFoundException("project");
+      }
+      if (project.getReadMe() == null) {
+         throw new NotFoundException("note");
+      }
+      return new ReadMeResponse(project.getId(), markdown.markdownToHtml(project.getReadMe().getText()), project.getReadMe().getText());
+   }
+
    @RequestMapping(method = POST, consumes = "application/json", produces = "application/json")
    @ResponseStatus(ACCEPTED)
    public ProjectResponse postNewProject(@Valid @RequestBody final ProjectForm form) {
@@ -63,12 +79,7 @@ public class ProjectsRestController {
    }
 
    private ProjectResponse convert(final Project project) {
-      final Note readMe = project.getReadMe();
-      return ProjectResponse.create(project.getId(), project.getName(), project.getDescription(), project.getNumberOfOpenTasks(), "/api/projects/" + project.getId(), readMe == null ? null : readMe.getText());
-   }
-
-   private ProjectResponse.Summary summarise(final Project project) {
-      return new ProjectResponse.Summary(project.getId(), project.getName(), project.getDescription(), project.getNumberOfOpenTasks(), "/api/projects/" + project.getId());
+      return new ProjectResponse(project.getId(), project.getName(), project.getDescription(), project.getNumberOfOpenTasks(), "/api/projects/" + project.getId());
    }
 
    @ExceptionHandler(MethodArgumentNotValidException.class)

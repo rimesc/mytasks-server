@@ -2,7 +2,6 @@ package uk.co.zoneofavoidance.my.tasks.controllers.rest;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -64,16 +63,14 @@ public class ProjectsRestControllerIT extends RestControllerIT {
          .andExpect(jsonPath("name", equalTo("My first project")))
          .andExpect(jsonPath("description", startsWith("This is my first sample project.")))
          .andExpect(jsonPath("numberOfOpenTasks", equalTo(2)))
-         .andExpect(jsonPath("href", equalTo("/api/projects/1")))
-         .andExpect(jsonPath("readMe", startsWith("# Lorem ipsum")));
+         .andExpect(jsonPath("href", equalTo("/api/projects/1")));
       get("/api/projects/2")
          .andExpect(status().isOk())
          .andExpect(jsonPath("id", equalTo(2)))
          .andExpect(jsonPath("name", equalTo("My second project")))
          .andExpect(jsonPath("description", startsWith("This is my second sample project.")))
          .andExpect(jsonPath("numberOfOpenTasks", equalTo(2)))
-         .andExpect(jsonPath("href", equalTo("/api/projects/2")))
-         .andExpect(jsonPath("readMe", nullValue()));
+         .andExpect(jsonPath("href", equalTo("/api/projects/2")));
    }
 
    @Test
@@ -87,6 +84,39 @@ public class ProjectsRestControllerIT extends RestControllerIT {
    @Test
    public void getInvalidProjectIsBadRequest() throws Exception {
       get("/api/projects/abc")
+         .andExpect(status().isBadRequest())
+         .andExpect(jsonPath("code", equalTo("Bad Request")))
+         .andExpect(jsonPath("message", equalTo("Invalid project ID: abc")));
+   }
+
+   @Test
+   public void getProjectReadMeReturnsReadMeIfAvailable() throws Exception {
+      get("/api/projects/1/readme")
+         .andExpect(status().isOk())
+         .andExpect(jsonPath("project", equalTo(1)))
+         .andExpect(jsonPath("markdown", startsWith("# Lorem ipsum")))
+         .andExpect(jsonPath("html", startsWith("<h1>Lorem ipsum</h1>")));
+   }
+
+   @Test
+   public void getUnknownProjectReadMeIsNotFound() throws Exception {
+      get("/api/projects/6/readme")
+         .andExpect(status().isNotFound())
+         .andExpect(jsonPath("code", equalTo("Not Found")))
+         .andExpect(jsonPath("message", equalTo("The requested project could not be found.")));
+   }
+
+   @Test
+   public void getProjectReadMeIsNotFoundIfUnavailable() throws Exception {
+      get("/api/projects/2/readme")
+         .andExpect(status().isNotFound())
+         .andExpect(jsonPath("code", equalTo("Not Found")))
+         .andExpect(jsonPath("message", equalTo("The requested note could not be found.")));
+   }
+
+   @Test
+   public void getInvalidProjectReadMeIsBadRequest() throws Exception {
+      get("/api/projects/abc/readme")
          .andExpect(status().isBadRequest())
          .andExpect(jsonPath("code", equalTo("Bad Request")))
          .andExpect(jsonPath("message", equalTo("Invalid project ID: abc")));
