@@ -1,6 +1,7 @@
 package uk.co.zoneofavoidance.my.tasks.controllers.rest;
 
 import static java.util.stream.Collectors.toList;
+import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import uk.co.zoneofavoidance.my.tasks.controllers.ProjectForm;
@@ -39,7 +41,8 @@ public class ProjectsRestController {
    }
 
    @RequestMapping(method = POST, consumes = "application/json", produces = "application/json")
-   public ProjectSummaryResponse postProjects(@Valid @RequestBody final ProjectForm form) {
+   @ResponseStatus(ACCEPTED)
+   public ProjectSummaryResponse postNewProject(@Valid @RequestBody final ProjectForm form) {
       final Project project = projects.save(Project.create(form.getName(), form.getDescription()));
       return convert(project);
    }
