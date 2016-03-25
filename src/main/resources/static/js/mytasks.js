@@ -1,4 +1,4 @@
-angular.module('mytasks', ['ngRoute', 'ui.bootstrap'])
+angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap'])
 
 .config(function($routeProvider) {
 	$routeProvider
@@ -9,6 +9,10 @@ angular.module('mytasks', ['ngRoute', 'ui.bootstrap'])
 	.when('/projects', {
 		templateUrl : 'partials/project-list.html',
 		controller : 'projects',
+	})
+	.when('/projects/:id', {
+		templateUrl : 'partials/project-view.html',
+		controller : 'project',
 	})
 	.otherwise({
 		redirectTo: '/'
@@ -53,6 +57,24 @@ angular.module('mytasks', ['ngRoute', 'ui.bootstrap'])
 	};
 })
  
+.controller('project', function($scope, $http, $uibModal, $routeParams) {
+	$scope.readMe = undefined;
+	$scope.isDefined = angular.isDefined;
+	$scope.isUndefined = angular.isUndefined;
+	$http.get('/api/projects/' + $routeParams.id).success(function(data) {
+		$scope.project = data;
+	});
+	$http.get('/api/projects/' + $routeParams.id + "/readme").success(function(data) {
+		$scope.readMe = data;
+	});
+//	$scope.openNewProjectModal = function() {
+//		var modalInstance = $uibModal.open({templateUrl: 'modals/new-project.html', controller: 'new-project'});
+//		modalInstance.result.then(function (project) {
+//			$scope.projects.push(project);
+//		});
+//	};
+})
+
 .controller('navbar', function($scope, $location) { 
 	$scope.isActive = function (viewLocation) {
 		return viewLocation === $location.path();
