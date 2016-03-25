@@ -106,7 +106,7 @@ public class UserServiceTest {
       service.createUser("foo", "abcdefgh", true);
       final ArgumentCaptor<UserDetails> argument = ArgumentCaptor.forClass(UserDetails.class);
       verify(userDetailsManager).createUser(argument.capture());
-      assertThat(argument.getValue(), sameDetails(new User("foo", "ijklmnop", singleton(new SimpleGrantedAuthority("ROLE_ADMIN")))));
+      assertThat(argument.getValue(), sameDetails(new User("foo", "ijklmnop", asList(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER")))));
    }
 
    @Test
@@ -115,7 +115,7 @@ public class UserServiceTest {
       service.createUser("foo", "abcdefgh", false);
       final ArgumentCaptor<UserDetails> argument = ArgumentCaptor.forClass(UserDetails.class);
       verify(userDetailsManager).createUser(argument.capture());
-      assertThat(argument.getValue(), sameDetails(new User("foo", "ijklmnop", emptyList())));
+      assertThat(argument.getValue(), sameDetails(new User("foo", "ijklmnop", singleton(new SimpleGrantedAuthority("ROLE_USER")))));
    }
 
    @Test(expected = UsernameAlreadyExistsException.class)
