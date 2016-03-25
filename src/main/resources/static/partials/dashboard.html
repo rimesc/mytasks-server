@@ -6,7 +6,7 @@
 	<ul class="list-group project-list">
 		<li data-ng-repeat="project in projects" class="list-group-item">
 			<span class="badge">{{project.numberOfOpenTasks}}</span>
-			<h4 class="list-group-item-heading"><a data-ng-href="/projects/{{project.id}}">{{project.name}}</a></h4>
+			<h4 class="list-group-item-heading"><a data-ng-href="#/projects/{{project.id}}">{{project.name}}</a></h4>
 			<p class="list-group-item-text">
 				{{project.description}}
 			</p>
