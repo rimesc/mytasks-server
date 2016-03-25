@@ -9,19 +9,19 @@ import org.springframework.validation.BindingResult;
 
 public class BindingErrorsResponse {
 
-   private final List<BindingErrorResponse> _errors;
+   private final List<ErrorResponse> _errors;
 
-   private BindingErrorsResponse(final List<BindingErrorResponse> errors) {
+   private BindingErrorsResponse(final List<ErrorResponse> errors) {
       _errors = errors;
    }
 
-   public List<BindingErrorResponse> getErrors() {
+   public List<ErrorResponse> getErrors() {
       return _errors;
    }
 
    public static BindingErrorsResponse create(final BindingResult bindingResult) {
       final Stream<FieldErrorResponse> fieldErrors = bindingResult.getFieldErrors().stream().map(FieldErrorResponse::create);
-      final Stream<BindingErrorResponse> globalErrors = bindingResult.getGlobalErrors().stream().map(BindingErrorResponse::create);
+      final Stream<ErrorResponse> globalErrors = bindingResult.getGlobalErrors().stream().map(ErrorResponse::create);
       return new BindingErrorsResponse(Stream.concat(fieldErrors, globalErrors).collect(toList()));
    }
 

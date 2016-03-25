@@ -5,7 +5,7 @@ import org.springframework.validation.FieldError;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({ "field", "code", "message" })
-public class FieldErrorResponse extends BindingErrorResponse {
+public class FieldErrorResponse extends ErrorResponse {
 
    private final String field;
 

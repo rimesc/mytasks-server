@@ -2,6 +2,7 @@ package uk.co.zoneofavoidance.my.tasks.controllers.rest;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -53,6 +54,42 @@ public class ProjectsRestControllerIT extends RestControllerIT {
          .andExpect(jsonPath("errors[0].field", equalTo("name")))
          .andExpect(jsonPath("errors[0].code", equalTo("Length")))
          .andExpect(jsonPath("errors[0].message", equalTo("length must be between 1 and 255")));
+   }
+
+   @Test
+   public void getProjectReturnsRequestedProject() throws Exception {
+      get("/api/projects/1")
+         .andExpect(status().isOk())
+         .andExpect(jsonPath("id", equalTo(1)))
+         .andExpect(jsonPath("name", equalTo("My first project")))
+         .andExpect(jsonPath("description", startsWith("This is my first sample project.")))
+         .andExpect(jsonPath("numberOfOpenTasks", equalTo(2)))
+         .andExpect(jsonPath("href", equalTo("/api/projects/1")))
+         .andExpect(jsonPath("readMe", startsWith("# Lorem ipsum")));
+      get("/api/projects/2")
+         .andExpect(status().isOk())
+         .andExpect(jsonPath("id", equalTo(2)))
+         .andExpect(jsonPath("name", equalTo("My second project")))
+         .andExpect(jsonPath("description", startsWith("This is my second sample project.")))
+         .andExpect(jsonPath("numberOfOpenTasks", equalTo(2)))
+         .andExpect(jsonPath("href", equalTo("/api/projects/2")))
+         .andExpect(jsonPath("readMe", nullValue()));
+   }
+
+   @Test
+   public void getUnknownProjectIsNotFound() throws Exception {
+      get("/api/projects/6")
+         .andExpect(status().isNotFound())
+         .andExpect(jsonPath("code", equalTo("Not Found")))
+         .andExpect(jsonPath("message", equalTo("The requested project could not be found.")));
+   }
+
+   @Test
+   public void getInvalidProjectIsBadRequest() throws Exception {
+      get("/api/projects/abc")
+         .andExpect(status().isBadRequest())
+         .andExpect(jsonPath("code", equalTo("Bad Request")))
+         .andExpect(jsonPath("message", equalTo("Invalid project ID: abc")));
    }
 
 }

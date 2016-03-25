@@ -4,13 +4,13 @@ import java.util.List;
 
 public class ProjectsResponse {
 
-   private final List<ProjectSummaryResponse> projects;
+   private final List<ProjectResponse.Summary> projects;
 
-   public ProjectsResponse(final List<ProjectSummaryResponse> projects) {
+   public ProjectsResponse(final List<ProjectResponse.Summary> projects) {
       this.projects = projects;
    }
 
-   public List<ProjectSummaryResponse> getProjects() {
+   public List<ProjectResponse.Summary> getProjects() {
       return projects;
    }
 
