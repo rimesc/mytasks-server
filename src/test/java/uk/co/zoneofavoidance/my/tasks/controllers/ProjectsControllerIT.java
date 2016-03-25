@@ -18,12 +18,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.junit.Assert.assertThat;
 
-import uk.co.zoneofavoidance.my.tasks.testing.MockMvcTest;
+import uk.co.zoneofavoidance.my.tasks.testing.ModelAndViewControllerIT;
 
 /**
  * Integration tests for {@link ProjectsController}.
  */
-public class ProjectsControllerIT extends MockMvcTest {
+public class ProjectsControllerIT extends ModelAndViewControllerIT {
 
    @Test
    public void getProjectsReturnsProjectListViewWithProjects() throws Exception {

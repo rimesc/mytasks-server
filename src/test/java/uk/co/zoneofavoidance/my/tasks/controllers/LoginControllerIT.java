@@ -6,12 +6,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.Test;
 
-import uk.co.zoneofavoidance.my.tasks.testing.MockMvcTest;
+import uk.co.zoneofavoidance.my.tasks.testing.ModelAndViewControllerIT;
 
 /**
  * Integration tests for {@link LoginController}.
  */
-public class LoginControllerIT extends MockMvcTest {
+public class LoginControllerIT extends ModelAndViewControllerIT {
 
    @Test
    public void getLoginReturnsLoginView() throws Exception {

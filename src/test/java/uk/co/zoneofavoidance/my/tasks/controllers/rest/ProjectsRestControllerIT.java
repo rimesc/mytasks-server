@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Test;
+import org.springframework.test.annotation.DirtiesContext;
 
 public class ProjectsRestControllerIT extends RestControllerIT {
 
@@ -33,6 +34,7 @@ public class ProjectsRestControllerIT extends RestControllerIT {
    }
 
    @Test
+   @DirtiesContext
    public void postNewProjectSavesProjectIfValid() throws Exception {
       final String project = "{\"name\": \"My new project\", \"description\": \"This is a new project.\"}";
       post("/api/projects/", project)

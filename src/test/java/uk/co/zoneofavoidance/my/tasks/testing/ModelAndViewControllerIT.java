@@ -11,24 +11,12 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import java.net.URI;
 
 import org.hamcrest.Matcher;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.junit.Assert.assertThat;
 
-import uk.co.zoneofavoidance.my.tasks.MyTasksApplication;
 import uk.co.zoneofavoidance.my.tasks.controllers.MyTasksControllerIT;
 import uk.co.zoneofavoidance.my.tasks.domain.Project;
 import uk.co.zoneofavoidance.my.tasks.domain.Task;
@@ -36,23 +24,9 @@ import uk.co.zoneofavoidance.my.tasks.domain.Task;
 /**
  * Integration test using {@link MockMvc}.
  */
-@WebIntegrationTest
-@SpringApplicationConfiguration
-@ActiveProfiles("dev")
-@RunWith(SpringJUnit4ClassRunner.class)
-public abstract class MockMvcTest {
+public abstract class ModelAndViewControllerIT extends BaseMockMvcTest {
 
    private static final String REDIRECT_PREFIX = "redirect:";
-
-   @Autowired
-   private WebApplicationContext webAppContext;
-
-   private MockMvc mockMvc;
-
-   @Before
-   public void setUp() throws Exception {
-      mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
-   }
 
    /**
     * Perform an HTTP GET request to the given path.
@@ -62,7 +36,7 @@ public abstract class MockMvcTest {
     * @throws Exception if something went wrong
     */
    protected ResultActions get(final String path) throws Exception {
-      return mockMvc.perform(MockMvcRequestBuilders.get(new URI(path)).with(csrf()));
+      return mockMvc().perform(MockMvcRequestBuilders.get(new URI(path)).with(csrf()));
    }
 
    /**
@@ -73,7 +47,7 @@ public abstract class MockMvcTest {
     * @throws Exception if something went wrong
     */
    protected ResultActions post(final String path) throws Exception {
-      return mockMvc.perform(MockMvcRequestBuilders.post(new URI(path)));
+      return mockMvc().perform(MockMvcRequestBuilders.post(new URI(path)));
    }
 
    /**
@@ -136,21 +110,6 @@ public abstract class MockMvcTest {
     */
    protected static Matcher<String> isRedirect() {
       return startsWith(REDIRECT_PREFIX);
-   }
-
-   /**
-    * @return the mock MVC
-    */
-   protected MockMvc mockMvc() {
-      return mockMvc;
-   }
-
-   /**
-    * Hook from which to hang an import of the main configuration.
-    */
-   @Configuration
-   @Import(MyTasksApplication.class)
-   public static class Config {
    }
 
 }

@@ -23,12 +23,12 @@ import com.google.common.base.Strings;
 import static org.junit.Assert.assertThat;
 
 import uk.co.zoneofavoidance.my.tasks.domain.Priority;
-import uk.co.zoneofavoidance.my.tasks.testing.MockMvcTest;
+import uk.co.zoneofavoidance.my.tasks.testing.ModelAndViewControllerIT;
 
 /**
  * Integration tests for {@link TasksController}.
  */
-public class TasksControllerIT extends MockMvcTest {
+public class TasksControllerIT extends ModelAndViewControllerIT {
 
    @Test
    public void getNewReturnsNewTaskViewWithEmptyFormAndOnCancel() throws Exception {
