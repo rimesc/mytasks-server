@@ -4,6 +4,8 @@ import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -30,6 +32,7 @@ import uk.co.zoneofavoidance.my.tasks.controllers.rest.response.ReadMeResponse;
 import uk.co.zoneofavoidance.my.tasks.domain.Project;
 import uk.co.zoneofavoidance.my.tasks.exceptions.NotFoundException;
 import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
+import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -37,11 +40,14 @@ public class ProjectsRestController {
 
    private final ProjectRepository projects;
 
+   private final TaskRepository tasks;
+
    private final PegDownProcessor markdown;
 
    @Autowired
-   public ProjectsRestController(final ProjectRepository projects, final PegDownProcessor markdown) {
+   public ProjectsRestController(final ProjectRepository projects, final TaskRepository tasks, final PegDownProcessor markdown) {
       this.projects = projects;
+      this.tasks = tasks;
       this.markdown = markdown;
    }
 
@@ -88,6 +94,17 @@ public class ProjectsRestController {
       project.setName(form.getName());
       project.setDescription(form.getDescription());
       return convert(projects.save(project));
+   }
+
+   @RequestMapping(path = "{projectId}", method = DELETE)
+   @ResponseStatus(NO_CONTENT)
+   public void deleteProject(@PathVariable final Long projectId) {
+      final Project project = projects.findOne(projectId);
+      if (project == null) {
+         throw new NotFoundException("project");
+      }
+      tasks.deleteByProjectId(projectId);
+      projects.delete(projectId);
    }
 
    private ProjectResponse convert(final Project project) {

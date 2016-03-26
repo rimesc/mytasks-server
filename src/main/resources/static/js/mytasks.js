@@ -83,7 +83,24 @@ angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap'])
 	};
 })
  
-.controller('project', function($scope, $http, $uibModal, $routeParams) {
+.controller('delete-project', function($scope, $uibModalInstance, $http, project) {
+	$scope.projectName = project.name;
+	$scope.submit = function() {
+		$http.delete('/api/projects/' + project.id).then(function(response) {
+			$uibModalInstance.close();
+		},
+		function (response) {
+			// TODO Handle unauthorized
+			// TODO Handle global errors
+		});
+	};
+
+	$scope.cancel = function () {
+		$uibModalInstance.dismiss('cancel');
+	};
+})
+ 
+.controller('project', function($scope, $http, $uibModal, $routeParams, $location) {
 	$scope.isDefined = angular.isDefined;
 	$scope.isUndefined = angular.isUndefined;
 	$http.get('/api/projects/' + $routeParams.id).then(function(response) {
@@ -100,6 +117,12 @@ angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap'])
 		var modalInstance = $uibModal.open({templateUrl: 'modals/edit-project.html', controller: 'edit-project', resolve: {project: function() {return $scope.project}}});
 		modalInstance.result.then(function (project) {
 			$scope.project = project;
+		});
+	};
+	$scope.openDeleteProjectModal = function() {
+		var modalInstance = $uibModal.open({templateUrl: 'modals/delete-project.html', controller: 'delete-project', size: 'sm', resolve: {project: function() {return $scope.project}}});
+		modalInstance.result.then(function () {
+			$location.path('/projects');
 		});
 	};
 })
