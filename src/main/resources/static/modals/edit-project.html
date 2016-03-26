@@ -1,0 +1,27 @@
+<div class="modal-content">
+	<div class="modal-header">
+		<h4 class="modal-title">Edit Project</h4>
+	</div>
+	<form data-ng-submit="submit()">
+		<div class="modal-body">
+			<div class="form-group" data-ng-class="{'has-error' : errors['name']}">
+				<label for="name" class="control-label">
+					Name<span data-ng-if="errors['name']"> ({{errors['name']}})</span>
+				</label>
+				<input class="form-control" type="text" autofocus required id="projectName" name="name" placeholder="My new project" data-ng-model="projectName">
+			</div>
+			<div class="form-group" data-ng-class="{'has-error' : errors['description']}">
+				<label for="description" class="control-label">
+					Description<span data-ng-if="errors['description']"> ({{errors['description']}})</span>
+				</label>
+				<textarea rows="2" class="form-control" id="projectDescription" name="description" placeholder="A short description of the project." data-ng-model="projectDescription"></textarea>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<div>
+				<button type="submit" class="btn btn-primary">Save</button>
+				<button type="button" class="btn btn-default" data-ng-click="cancel()">Cancel</button>
+			</div>
+		</div>
+	</form>
+</div>

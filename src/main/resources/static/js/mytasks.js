@@ -57,22 +57,51 @@ angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap'])
 	};
 })
  
+.controller('edit-project', function($scope, $uibModalInstance, $http, project) {
+	$scope.projectName = project.name;
+	$scope.projectDescription = project.description;
+	$scope.errors = {};
+
+	$scope.submit = function() {
+		$http.post('/api/projects/' + project.id, {name: $scope.projectName, description: $scope.projectDescription}).then(function(response) {
+			$uibModalInstance.close(response.data);
+		},
+		function (response) {
+			// TODO Handle unauthorized
+			// TODO Handle global errors
+			$scope.errors = {};
+			response.data.errors.forEach(function(error) {
+				if ('field' in error) {
+					$scope.errors[error.field] = error.message;
+				}
+			});
+		});
+	};
+
+	$scope.cancel = function () {
+		$uibModalInstance.dismiss('cancel');
+	};
+})
+ 
 .controller('project', function($scope, $http, $uibModal, $routeParams) {
-	$scope.readMe = undefined;
 	$scope.isDefined = angular.isDefined;
 	$scope.isUndefined = angular.isUndefined;
-	$http.get('/api/projects/' + $routeParams.id).success(function(data) {
-		$scope.project = data;
+	$http.get('/api/projects/' + $routeParams.id).then(function(response) {
+		$scope.project = response.data;
+	}, function() {
+		// TODO handle 404
 	});
-	$http.get('/api/projects/' + $routeParams.id + "/readme").success(function(data) {
-		$scope.readMe = data;
+	$http.get('/api/projects/' + $routeParams.id + "/readme").then(function(response) {
+		$scope.readMe = response.data;
+	}, function() {
+		$scope.readMe = undefined;
 	});
-//	$scope.openNewProjectModal = function() {
-//		var modalInstance = $uibModal.open({templateUrl: 'modals/new-project.html', controller: 'new-project'});
-//		modalInstance.result.then(function (project) {
-//			$scope.projects.push(project);
-//		});
-//	};
+	$scope.openEditProjectModal = function() {
+		var modalInstance = $uibModal.open({templateUrl: 'modals/edit-project.html', controller: 'edit-project', resolve: {project: function() {return $scope.project}}});
+		modalInstance.result.then(function (project) {
+			$scope.project = project;
+		});
+	};
 })
 
 .controller('navbar', function($scope, $location) { 

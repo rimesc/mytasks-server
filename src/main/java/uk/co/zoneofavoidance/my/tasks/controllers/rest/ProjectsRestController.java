@@ -78,6 +78,18 @@ public class ProjectsRestController {
       return convert(project);
    }
 
+   @RequestMapping(path = "{projectId}", method = POST, consumes = "application/json", produces = "application/json")
+   @ResponseStatus(ACCEPTED)
+   public ProjectResponse postEditProject(@PathVariable final Long projectId, @Valid @RequestBody final ProjectForm form) {
+      final Project project = projects.findOne(projectId);
+      if (project == null) {
+         throw new NotFoundException("project");
+      }
+      project.setName(form.getName());
+      project.setDescription(form.getDescription());
+      return convert(projects.save(project));
+   }
+
    private ProjectResponse convert(final Project project) {
       return new ProjectResponse(project.getId(), project.getName(), project.getDescription(), project.getNumberOfOpenTasks(), "/api/projects/" + project.getId());
    }
