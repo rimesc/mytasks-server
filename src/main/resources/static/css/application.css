@@ -186,6 +186,9 @@ span.on_hold:BEFORE {
 	color: #000;
 	opacity: 0.2;
 	float: right;
+	padding: 0;
+	border: 0;
+	background: none;
 }
 
 .edit:HOVER {

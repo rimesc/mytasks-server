@@ -91,6 +91,34 @@ angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'angularMome
 	};
 })
  
+.controller('edit-readme', function($scope, $uibModalInstance, $http, project, readMe) {
+	$scope.markdown = readMe.markdown;
+	$scope.errors = {};
+	console.log(project, readMe);
+
+	$scope.submit = function() {
+		// clean up the data - undefined means empty string in this context
+		var markdown = angular.isDefined($scope.markdown) ? $scope.markdown : '';
+		$http.post('/api/projects/' + project.id + '/readme', {markdown: markdown}).then(function(response) {
+			$uibModalInstance.close(response.data);
+		},
+		function (response) {
+			// TODO Handle unauthorized
+			// TODO Handle global errors
+			$scope.errors = {};
+			response.data.errors.forEach(function(error) {
+				if ('field' in error) {
+					$scope.errors[error.field] = error.message;
+				}
+			});
+		});
+	};
+
+	$scope.cancel = function () {
+		$uibModalInstance.dismiss('cancel');
+	};
+})
+ 
 .controller('delete-project', function($scope, $uibModalInstance, $http, project) {
 	$scope.submit = function() {
 		$http.delete('/api/projects/' + project.id).then(function(response) {
@@ -121,9 +149,15 @@ angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'angularMome
 		$scope.readMe = undefined;
 	});
 	$scope.openEditProjectModal = function() {
-		var modalInstance = $uibModal.open({templateUrl: 'modals/edit-project.html', controller: 'edit-project', resolve: {project: function() {return $scope.project}}});
+		var modalInstance = $uibModal.open({templateUrl: 'modals/edit-project.html', controller: 'edit-project', resolve: {project: function() { return $scope.project }}});
 		modalInstance.result.then(function (project) {
 			$scope.project = project;
+		});
+	};
+	$scope.openEditReadMeModal = function() {
+		var modalInstance = $uibModal.open({templateUrl: 'modals/edit-readme.html', controller: 'edit-readme', resolve: {project: function() { return $scope.project; }, readMe: function() { return $scope.readMe; }}});
+		modalInstance.result.then(function (readMe) {
+			$scope.readMe = readMe;
 		});
 	};
 	$scope.openDeleteProjectModal = function() {
@@ -287,7 +321,7 @@ angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'angularMome
 		$uibModalInstance.dismiss('cancel');
 	};
 })
- 
+
 .controller('delete-task', function($scope, $uibModalInstance, $http, task) {
 	$scope.submit = function() {
 		$http.delete('/api/tasks/' + task.id).then(function(response) {

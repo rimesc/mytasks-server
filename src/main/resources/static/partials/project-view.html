@@ -31,14 +31,14 @@
 	</ul>
 </div>
 <div class="readme">
-	<a role="button" title="Edit" class="btn edit" data-ng-if="isDefined(readMe)" data-ng-href="/projects/edit/{{project.id}}/documentation">
+	<button title="Edit" class="btn edit" data-ng-if="isDefined(readMe)" data-ng-click="openEditReadMeModal()">
 		<span class="glyphicon glyphicon-edit"></span>
-	</a>
+	</button>
 	<div class="markdown" data-ng-if="isDefined(readMe)" data-ng-bind-html="readMe.html"></div>
 	<div data-ng-if="isUndefined(readMe)">
-		<a role="button" class="btn btn-primary" data-ng-href="/projects/edit/{{project.id}}/documentation">
+		<button class="btn btn-primary" data-ng-click="openEditReadMeModal()">
 			Edit notes
-		</a>
+		</button>
 	</div>
 </div>
 

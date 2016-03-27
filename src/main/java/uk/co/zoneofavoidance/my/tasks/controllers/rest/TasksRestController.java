@@ -9,10 +9,10 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static uk.co.zoneofavoidance.my.tasks.controllers.rest.ControllerUtils.setIfNotNull;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.function.Consumer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -103,12 +103,6 @@ public class TasksRestController {
       setIfNotNull(request.getPriority(), task::setPriority);
       setIfNotNull(request.getState(), task::setState);
       return convert(tasks.save(task));
-   }
-
-   private <T> void setIfNotNull(final T valueOrNull, final Consumer<T> setter) {
-      if (valueOrNull != null) {
-         setter.accept(valueOrNull);
-      }
    }
 
    @RequestMapping(path = "{taskId}", method = DELETE)
