@@ -37,7 +37,7 @@
 			</div>		
 			<div style="clear: both"></div>
 		</li>
-		<li data-ng-if="isUndefined(tasks)" class="list-group-item list-group-placeholder">
+		<li data-ng-if="isUndefined(tasks) || tasks.length == 0" class="list-group-item list-group-placeholder">
 			No tasks to show.
 		</li>
 	</ul>
