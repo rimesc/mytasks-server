@@ -94,7 +94,6 @@ angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'angularMome
 .controller('edit-readme', function($scope, $uibModalInstance, $http, project, readMe) {
 	$scope.markdown = readMe.markdown;
 	$scope.errors = {};
-	console.log(project, readMe);
 
 	$scope.submit = function() {
 		// clean up the data - undefined means empty string in this context
@@ -188,7 +187,6 @@ angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'angularMome
 			query += filterStates[activeFilter].map(function(state) { return '&state=' + state; }).join('');
 		}
 		$http.get('/api/tasks/?' + query).success(function(data) {
-			console.log(data.tasks);
 			$scope.tasks = data.tasks;
 		});
 	};
@@ -221,7 +219,6 @@ angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'angularMome
 	                   'ON_HOLD': [{'label': 'Resume work', 'target': 'IN_PROGRESS'}]};
 	$scope.label = function(state) { return stateLabels[state]; };
 	$scope.doTransition = function(transition) {
-		console.log({state: transition.target});
 		$http.post('/api/tasks/' + $scope.task.id, {state: transition.target}).then(function(response) {
 			$scope.task = response.data;
 			$scope.transitions = transitions[$scope.task.state];
