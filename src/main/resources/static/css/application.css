@@ -170,10 +170,12 @@ span.state-on_hold:BEFORE {
 	content: "\e073\202f"; /* glyphicon-pause */
 }
 
+/*
 span.state-done:BEFORE {
-	content: "\e013\202f"; /* glyphicon-ok */
+	content: "\e013\202f"; glyphicon-ok
 }
-
+*/
+ 
 .edit {
 	color: #000;
 	opacity: 0.2;

@@ -113,6 +113,16 @@
          <artifactId>json-path</artifactId>
          <scope>test</scope>
       </dependency>
+      <dependency>
+          <groupId>org.webjars</groupId>
+          <artifactId>momentjs</artifactId>
+          <version>2.12.0</version>
+      </dependency>
+      <dependency>
+          <groupId>org.webjars</groupId>
+          <artifactId>angular-moment</artifactId>
+          <version>0.10.3</version>
+      </dependency> 
    </dependencies>
 
    <build>

@@ -1,4 +1,4 @@
-angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap'])
+angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'angularMoment'])
 
 .config(function($routeProvider) {
 	$routeProvider
@@ -13,6 +13,10 @@ angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap'])
 	.when('/projects/:id', {
 		templateUrl : 'partials/project-view.html',
 		controller : 'project',
+	})
+	.when('/projects/:id/tasks', {
+		templateUrl : 'partials/task-list.html',
+		controller : 'tasks',
 	})
 	.otherwise({
 		redirectTo: '/'
@@ -125,6 +129,38 @@ angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap'])
 			$location.path('/projects');
 		});
 	};
+})
+
+.controller('tasks', function($scope, $http, $uibModal, $routeParams) {
+	$scope.isDefined = angular.isDefined;
+	$scope.isUndefined = angular.isUndefined;
+	var filterStates = {'OPEN': ['TO_DO', 'IN_PROGRESS', 'ON_HOLD'], 'CLOSED': ['DONE']};
+	var activeFilter = 'OPEN';
+	$scope.isActive = function(filter) {
+		return activeFilter === filter;
+	}
+	function loadTasks() {
+		var query = 'project=' + $routeParams.id;
+		if (activeFilter in filterStates) {
+			query += filterStates[activeFilter].map(function(state) { return '&state=' + state; }).join('');
+		}
+		$http.get('/api/tasks/?' + query).success(function(data) {
+			console.log(data.tasks);
+			$scope.tasks = data.tasks;
+		});
+	};
+	$scope.activateFilter = function(filter) {
+		activeFilter = filter;
+		loadTasks();
+	}
+	
+	$http.get('/api/projects/' + $routeParams.id).then(function(response) {
+		$scope.project = response.data;
+	}, function() {
+		// TODO handle 404, 403
+	});
+
+	loadTasks();
 })
 
 .controller('navbar', function($scope, $location) { 

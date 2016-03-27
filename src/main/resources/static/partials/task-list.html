@@ -1,0 +1,44 @@
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<div class="pull-left">
+			<ul class="nav nav-pills">
+			  	<li role="presentation" data-ng-class="{active: isActive('OPEN')}">
+			  		<a role="button" data-ng-click="activateFilter('OPEN')">Open</a>
+		  	  	</li>
+			  	<li role="presentation" data-ng-class="{active: isActive('CLOSED')}">
+			  		<a role="button" data-ng-click="activateFilter('CLOSED')">Closed</a>
+		  	  	</li>
+			  	<li role="presentation" data-ng-class="{active: isActive('ALL')}">
+			  		<a role="button" data-ng-click="activateFilter('ALL')">All</a>
+		  	  	</li>
+			</ul>
+		</div>
+		<form class="navbar-form navbar-right" method="get" data-ng-submit="openNewTaskModal()">
+			<input type="hidden" name="project" data-ng-model="project.id"/>
+			<button type="submit" class="btn btn-primary">
+				<span class="glyphicon glyphicon-plus"></span> New Task
+			</button>
+		</form>
+		<div style="clear: both"></div>
+	</div>
+	<ul class="list-group task-list">
+		<li data-ng-repeat="task in tasks" class="list-group-item">
+			<div class="task-summary list-group-item-heading">
+				<a data-ng-href="/tasks/{{task.id}}">
+					<span class="glyphicon" data-ng-class="'state-' + task.state.toLowerCase()"> </span><span data-ng-class="{'line-through': task.state == 'DONE'}">{{task.summary}}</span>
+				</a>
+			</div>
+			<div class="pull-left">
+				<span class="text-muted">{{task.modified ? 'Last modified' : 'Created'}}</span>
+				<span class="text-muted" data-am-time-ago="task.updated"></span>
+			</div>
+			<div class="pull-right">
+				<span class="priority" data-ng-class="'priority-' + task.priority.toLowerCase()"></span>
+			</div>		
+			<div style="clear: both"></div>
+		</li>
+		<li data-ng-if="isUndefined(tasks)" class="list-group-item list-group-placeholder">
+			No tasks to show.
+		</li>
+	</ul>
+</div>
