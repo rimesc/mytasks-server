@@ -13,12 +13,9 @@
 		  	  	</li>
 			</ul>
 		</div>
-		<form class="navbar-form navbar-right" method="get" data-ng-submit="openNewTaskModal()">
-			<input type="hidden" name="project" data-ng-model="project.id"/>
-			<button type="submit" class="btn btn-primary">
-				<span class="glyphicon glyphicon-plus"></span> New Task
-			</button>
-		</form>
+		<div class="navbar-form navbar-right">
+			<button type="button" class="btn btn-primary" data-ng-click="openNewTaskModal()"><span class="glyphicon glyphicon-plus"></span> New Task</button>
+		</div>
 		<div style="clear: both"></div>
 	</div>
 	<ul class="list-group task-list">

@@ -2,6 +2,7 @@ package uk.co.zoneofavoidance.my.tasks.controllers.rest;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import uk.co.zoneofavoidance.my.tasks.controllers.TaskForm;
 import uk.co.zoneofavoidance.my.tasks.controllers.rest.request.UpdateTaskRequest;
 import uk.co.zoneofavoidance.my.tasks.controllers.rest.response.BindingErrorsResponse;
 import uk.co.zoneofavoidance.my.tasks.controllers.rest.response.ErrorResponse;
@@ -68,6 +70,17 @@ public class TasksRestController {
       }
       final List<Task> tasksForProject = state != null ? tasks.findByProjectIdAndStateIn(projectId, asList(state)) : tasks.findByProjectId(projectId);
       return new TasksResponse(tasksForProject.stream().map(this::convert).collect(toList()));
+   }
+
+   @RequestMapping(method = POST, consumes = "application/json", produces = "application/json")
+   @ResponseStatus(ACCEPTED)
+   public TaskResponse postNewProject(@Valid @RequestBody final TaskForm form) {
+      final Project project = projects.findOne(form.getProject());
+      if (project == null) {
+         throw new NotFoundException("project");
+      }
+      final Task task = tasks.save(Task.create(project, form.getSummary(), form.getDescription(), form.getPriority()));
+      return convert(task);
    }
 
    @RequestMapping(path = "{taskId}", method = GET, produces = "application/json")

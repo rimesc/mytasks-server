@@ -132,6 +132,12 @@ angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'angularMome
 			$location.path('/projects');
 		});
 	};
+	$scope.openNewTaskModal = function() {
+		var modalInstance = $uibModal.open({templateUrl: 'modals/new-task.html', controller: 'new-task', resolve: {projectId: function() { return $scope.project.id; }}});
+		modalInstance.result.then(function (task) {
+			$scope.project.numberOfOpenTasks += 1;
+		});
+	};
 })
 
 .controller('tasks', function($scope, $http, $uibModal, $routeParams) {
@@ -156,6 +162,12 @@ angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'angularMome
 		activeFilter = filter;
 		loadTasks();
 	}
+	$scope.openNewTaskModal = function() {
+		var modalInstance = $uibModal.open({templateUrl: 'modals/new-task.html', controller: 'new-task', resolve: {projectId: function() { return $scope.project.id; }}});
+		modalInstance.result.then(function (task) {
+			$scope.tasks.push(task);
+		});
+	};
 	
 	$http.get('/api/projects/' + $routeParams.id).then(function(response) {
 		$scope.project = response.data;
@@ -212,6 +224,37 @@ angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'angularMome
 	refreshReadMe();
 })
 
+.controller('new-task', function($scope, $uibModalInstance, $http, projectId) {
+	$scope.taskSummary = '';
+	$scope.taskDescription = '';
+	$scope.taskPriority = 'NORMAL';
+	$scope.priorities = ['CRITICAL', 'HIGH', 'NORMAL', 'LOW'];
+	$scope.errors = {};
+
+	$scope.submit = function() {
+		// clean up the data - undefined means empty string in this context
+		var taskSummary = angular.isDefined($scope.taskSummary) ? $scope.taskSummary : '';
+		var taskDescription = angular.isDefined($scope.taskDescription) ? $scope.taskDescription : '';
+		$http.post('/api/tasks/', {project: projectId, summary: taskSummary, description: taskDescription, priority: $scope.taskPriority}).then(function(response) {
+			$uibModalInstance.close(response.data);
+		},
+		function (response) {
+			// TODO Handle unauthorized
+			// TODO Handle global errors
+			$scope.errors = {};
+			response.data.errors.forEach(function(error) {
+				if ('field' in error) {
+					$scope.errors[error.field] = error.message;
+				}
+			});
+		});
+	};
+
+	$scope.cancel = function () {
+		$uibModalInstance.dismiss('cancel');
+	};
+})
+ 
 .controller('edit-task', function($scope, $uibModalInstance, $http, task) {
 	$scope.isDefined = angular.isDefined;
 	$scope.isUndefined = angular.isUndefined;

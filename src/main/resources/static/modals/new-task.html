@@ -1,0 +1,37 @@
+<div class="modal-content">
+	<div class="modal-header">
+		<h4 class="modal-title">New Task</h4>
+	</div>
+	<form data-ng-submit="submit()">
+		<div class="modal-body">
+			<div class="form-group" data-ng-class="{'has-error' : errors['summary']}">
+				<label for="summary" class="control-label">
+					Summary<span data-ng-if="errors['summary']"> ({{errors['summary']}})</span>
+				</label>
+				<input class="form-control" type="text" autofocus required id="taskSummary" name="summary" placeholder="My new task" data-ng-model="taskSummary">
+			</div>
+			<div class="form-group" data-ng-class="{'has-error' : errors['description']}">
+				<label for="description" class="control-label">
+					Description<span data-ng-if="errors['description']"> ({{errors['description']}})</span>
+				</label>
+				<textarea rows="12" class="form-control" id="taskDescription" name="description" placeholder="A description of the task" data-ng-model="taskDescription"></textarea>
+			</div>
+			<div class="form-group" data-ng-class="{'has-error' : errors['priority']}">
+				<div class="row">
+					<div class="col-md-4 col-sm-6 col-xs-12">
+						<label for="priority" class="control-label">Priority<span data-ng-if="errors['summary']"> ({{errors['priority']}})</span></label>
+						<select class="form-control" id="taskPriority" name="priority" data-ng-model="taskPriority">
+							<option data-ng-repeat="p in priorities" data-ng-value="p" data-ng-selected="(isDefined(taskPriority) && p == taskPriority) ||  p == 'NORMAL'">{{p}}</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<div>
+				<button type="submit" class="btn btn-primary">Create</button>
+				<button type="button" class="btn btn-default" data-ng-click="cancel()">Cancel</button>
+			</div>
+		</div>
+	</form>
+</div>
