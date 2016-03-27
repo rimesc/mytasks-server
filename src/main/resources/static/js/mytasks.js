@@ -18,6 +18,10 @@ angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'angularMome
 		templateUrl : 'partials/task-list.html',
 		controller : 'tasks',
 	})
+	.when('/tasks/:id', {
+		templateUrl : 'partials/task-view.html',
+		controller : 'task',
+	})
 	.otherwise({
 		redirectTo: '/'
 	});
@@ -161,6 +165,35 @@ angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'angularMome
 	});
 
 	loadTasks();
+})
+
+.controller('task', function($scope, $http, $uibModal, $routeParams) {
+	$scope.isDefined = angular.isDefined;
+	$scope.isUndefined = angular.isUndefined;
+	var stateLabels = {TO_DO: 'To do', IN_PROGRESS: 'In progress', ON_HOLD: 'On hold', DONE: 'Done'};
+	var transitions = {'TO_DO': [{'label': 'Start work', 'target': 'IN_PROGRESS'}],
+	                   'IN_PROGRESS': [{'label': 'Pause work', 'target': 'ON_HOLD'}, {'label': 'Done', 'target': 'DONE'}],
+	                   'ON_HOLD': [{'label': 'Resume work', 'target': 'IN_PROGRESS'}]};
+	$scope.label = function(state) { return stateLabels[state]; };
+	$scope.doTransition = function(transition) {
+		console.log({state: transition.target});
+		$http.post('/api/tasks/' + $scope.task.id, {state: transition.target}).then(function(response) {
+			$scope.task = response.data;
+			$scope.transitions = transitions[$scope.task.state];
+		});
+	}
+	
+	$http.get('/api/tasks/' + $routeParams.id).then(function(response) {
+		$scope.task = response.data;
+		$scope.transitions = transitions[$scope.task.state];
+	}, function() {
+		// TODO handle 404, 403
+	});
+	$http.get('/api/tasks/' + $routeParams.id + "/readme").then(function(response) {
+		$scope.readMe = response.data;
+	}, function() {
+		$scope.readMe = undefined;
+	});
 })
 
 .controller('navbar', function($scope, $location) { 

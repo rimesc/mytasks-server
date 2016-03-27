@@ -24,7 +24,7 @@
 	<ul class="list-group task-list">
 		<li data-ng-repeat="task in tasks" class="list-group-item">
 			<div class="task-summary list-group-item-heading">
-				<a data-ng-href="/tasks/{{task.id}}">
+				<a data-ng-href="#/tasks/{{task.id}}">
 					<span class="glyphicon" data-ng-class="task.state.toLowerCase()"> </span><span data-ng-class="{'line-through': task.state == 'DONE'}">{{task.summary}}</span>
 				</a>
 			</div>

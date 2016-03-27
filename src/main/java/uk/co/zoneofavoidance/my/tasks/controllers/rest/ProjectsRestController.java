@@ -74,7 +74,7 @@ public class ProjectsRestController {
       if (project.getReadMe() == null) {
          throw new NotFoundException("note");
       }
-      return new ReadMeResponse(project.getId(), markdown.markdownToHtml(project.getReadMe().getText()), project.getReadMe().getText());
+      return new ReadMeResponse(markdown.markdownToHtml(project.getReadMe().getText()), project.getReadMe().getText());
    }
 
    @RequestMapping(method = POST, consumes = "application/json", produces = "application/json")

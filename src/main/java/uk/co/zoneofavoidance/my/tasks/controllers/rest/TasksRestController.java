@@ -5,20 +5,31 @@ import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
+import org.pegdown.PegDownProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import uk.co.zoneofavoidance.my.tasks.controllers.rest.request.TaskStateRequest;
 import uk.co.zoneofavoidance.my.tasks.controllers.rest.response.BindingErrorsResponse;
 import uk.co.zoneofavoidance.my.tasks.controllers.rest.response.ErrorResponse;
+import uk.co.zoneofavoidance.my.tasks.controllers.rest.response.ReadMeResponse;
 import uk.co.zoneofavoidance.my.tasks.controllers.rest.response.TaskResponse;
 import uk.co.zoneofavoidance.my.tasks.controllers.rest.response.TasksResponse;
 import uk.co.zoneofavoidance.my.tasks.domain.Project;
@@ -36,10 +47,13 @@ public class TasksRestController {
 
    private final TaskRepository tasks;
 
+   private final PegDownProcessor markdown;
+
    @Autowired
-   public TasksRestController(final ProjectRepository projects, final TaskRepository tasks) {
+   public TasksRestController(final ProjectRepository projects, final TaskRepository tasks, final PegDownProcessor markdown) {
       this.projects = projects;
       this.tasks = tasks;
+      this.markdown = markdown;
    }
 
    @RequestMapping(method = GET, produces = "application/json")
@@ -52,12 +66,48 @@ public class TasksRestController {
       return new TasksResponse(tasksForProject.stream().map(this::convert).collect(toList()));
    }
 
+   @RequestMapping(path = "{taskId}", method = GET, produces = "application/json")
+   public TaskResponse getTask(@PathVariable final Long taskId) {
+      final Task task = tasks.findOne(taskId);
+      if (task == null) {
+         throw new NotFoundException("task");
+      }
+      return convert(task);
+   }
+
+   @RequestMapping(path = "{taskId}", method = POST, produces = "application/json")
+   public TaskResponse postTask(@PathVariable final Long taskId, @Valid @RequestBody final TaskStateRequest request) {
+      final Task task = tasks.findOne(taskId);
+      if (task == null) {
+         throw new NotFoundException("task");
+      }
+      task.setState(request.getState());
+      return convert(tasks.save(task));
+   }
+
+   @RequestMapping(path = "{taskId}/readme", method = GET, produces = "application/json")
+   public ReadMeResponse getTaskReadMe(@PathVariable final Long taskId) {
+      final Task task = tasks.findOne(taskId);
+      if (task == null) {
+         throw new NotFoundException("task");
+      }
+      if (task.getDescription() == null) {
+         throw new NotFoundException("note");
+      }
+      return new ReadMeResponse(markdown.markdownToHtml(task.getDescription()), task.getDescription());
+   }
+
    private TaskResponse convert(final Task task) {
       return new TaskResponse(task.getId(), task.getSummary(), task.getDescription(), task.getPriority(), task.getState(), task.getCreated(), task.getUpdated(), task.getProject().getId(), "/api/tasks/" + task.getId());
    }
 
    @ExceptionHandler(MethodArgumentNotValidException.class)
    public ResponseEntity<BindingErrorsResponse> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex) {
+      return new ResponseEntity<>(BindingErrorsResponse.create(ex.getBindingResult()), BAD_REQUEST);
+   }
+
+   @ExceptionHandler(BindException.class)
+   public ResponseEntity<BindingErrorsResponse> handleMethodArgumentNotValid(final BindException ex, final HttpServletRequest req) throws IOException {
       return new ResponseEntity<>(BindingErrorsResponse.create(ex.getBindingResult()), BAD_REQUEST);
    }
 
