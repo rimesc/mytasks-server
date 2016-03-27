@@ -92,7 +92,6 @@ angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'angularMome
 })
  
 .controller('delete-project', function($scope, $uibModalInstance, $http, project) {
-	$scope.projectName = project.name;
 	$scope.submit = function() {
 		$http.delete('/api/projects/' + project.id).then(function(response) {
 			$uibModalInstance.close();
@@ -167,7 +166,7 @@ angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'angularMome
 	loadTasks();
 })
 
-.controller('task', function($scope, $http, $uibModal, $routeParams) {
+.controller('task', function($scope, $http, $uibModal, $routeParams, $location) {
 	$scope.isDefined = angular.isDefined;
 	$scope.isUndefined = angular.isUndefined;
 	var stateLabels = {TO_DO: 'To do', IN_PROGRESS: 'In progress', ON_HOLD: 'On hold', DONE: 'Done'};
@@ -182,6 +181,27 @@ angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'angularMome
 			$scope.transitions = transitions[$scope.task.state];
 		});
 	}
+	$scope.openEditTaskModal = function() {
+		var modalInstance = $uibModal.open({templateUrl: 'modals/edit-task.html', controller: 'edit-task', resolve: {task: function() {return $scope.task}}});
+		modalInstance.result.then(function (task) {
+			$scope.task = task;
+			refreshReadMe();
+		});
+	};
+	$scope.openDeleteTaskModal = function() {
+		var modalInstance = $uibModal.open({templateUrl: 'modals/delete-task.html', controller: 'delete-task', size: 'sm', resolve: {task: function() {return $scope.task}}});
+		modalInstance.result.then(function () {
+			$location.path('/projects/' + $scope.task.project);
+		});
+	};
+	
+	function refreshReadMe() {
+		$http.get('/api/tasks/' + $routeParams.id + "/readme").then(function(response) {
+			$scope.readMe = response.data;
+		}, function() {
+			$scope.readMe = undefined;
+		});
+	}
 	
 	$http.get('/api/tasks/' + $routeParams.id).then(function(response) {
 		$scope.task = response.data;
@@ -189,13 +209,58 @@ angular.module('mytasks', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'angularMome
 	}, function() {
 		// TODO handle 404, 403
 	});
-	$http.get('/api/tasks/' + $routeParams.id + "/readme").then(function(response) {
-		$scope.readMe = response.data;
-	}, function() {
-		$scope.readMe = undefined;
-	});
+	refreshReadMe();
 })
 
+.controller('edit-task', function($scope, $uibModalInstance, $http, task) {
+	$scope.isDefined = angular.isDefined;
+	$scope.isUndefined = angular.isUndefined;
+	$scope.taskSummary = task.summary;
+	$scope.taskDescription = task.description;
+	$scope.taskPriority = task.priority;
+	$scope.errors = {};
+	$scope.priorities = ['CRITICAL', 'HIGH', 'NORMAL', 'LOW'];
+
+	$scope.submit = function() {
+		// clean up the data - undefined means empty string in this context
+		var taskSummary = angular.isDefined($scope.taskSummary) ? $scope.taskSummary : '';
+		var taskDescription = angular.isDefined($scope.taskDescription) ? $scope.taskDescription : '';
+		$http.post('/api/tasks/' + task.id, {summary: taskSummary, description: taskDescription, priority: $scope.taskPriority}).then(function(response) {
+			$uibModalInstance.close(response.data);
+		},
+		function (response) {
+			// TODO Handle unauthorized
+			// TODO Handle global errors
+			$scope.errors = {};
+			response.data.errors.forEach(function(error) {
+				if ('field' in error) {
+					$scope.errors[error.field] = error.message;
+				}
+			});
+		});
+	};
+
+	$scope.cancel = function () {
+		$uibModalInstance.dismiss('cancel');
+	};
+})
+ 
+.controller('delete-task', function($scope, $uibModalInstance, $http, task) {
+	$scope.submit = function() {
+		$http.delete('/api/tasks/' + task.id).then(function(response) {
+			$uibModalInstance.close();
+		},
+		function (response) {
+			// TODO Handle unauthorized
+			// TODO Handle global errors
+		});
+	};
+
+	$scope.cancel = function () {
+		$uibModalInstance.dismiss('cancel');
+	};
+})
+ 
 .controller('navbar', function($scope, $location) { 
 	$scope.isActive = function (viewLocation) {
 		return viewLocation === $location.path();

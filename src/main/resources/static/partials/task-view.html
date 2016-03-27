@@ -4,12 +4,12 @@
 		<button type="submit" class="btn btn-default" data-ng-repeat="transition in transitions" data-ng-click="doTransition(transition)">{{transition.label}}</button>
 	</div>
 	<div class="btn-group" role="group">
-		<a role="button" class="btn btn-default" data-ng-href="/tasks/edit/{{task.id}}">
+		<button class="btn btn-default" data-ng-click="openEditTaskModal()">
 			<span class="glyphicon glyphicon-edit"></span>
-		</a>
-		<a role="button" class="btn btn-default" data-ng-href="/tasks/delete/{{task.id}}">
+		</button>
+		<button class="btn btn-default" data-ng-click="openDeleteTaskModal()">
 			<span class="glyphicon glyphicon-trash"></span>
-		</a>
+		</button>
 	</div>
 </div>
 <div>

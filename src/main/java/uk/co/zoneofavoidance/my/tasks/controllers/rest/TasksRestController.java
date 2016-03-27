@@ -4,11 +4,14 @@ import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -23,10 +26,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import uk.co.zoneofavoidance.my.tasks.controllers.rest.request.TaskStateRequest;
+import uk.co.zoneofavoidance.my.tasks.controllers.rest.request.UpdateTaskRequest;
 import uk.co.zoneofavoidance.my.tasks.controllers.rest.response.BindingErrorsResponse;
 import uk.co.zoneofavoidance.my.tasks.controllers.rest.response.ErrorResponse;
 import uk.co.zoneofavoidance.my.tasks.controllers.rest.response.ReadMeResponse;
@@ -76,13 +80,32 @@ public class TasksRestController {
    }
 
    @RequestMapping(path = "{taskId}", method = POST, produces = "application/json")
-   public TaskResponse postTask(@PathVariable final Long taskId, @Valid @RequestBody final TaskStateRequest request) {
+   public TaskResponse postTask(@PathVariable final Long taskId, @Valid @RequestBody final UpdateTaskRequest request) {
       final Task task = tasks.findOne(taskId);
       if (task == null) {
          throw new NotFoundException("task");
       }
-      task.setState(request.getState());
+      setIfNotNull(request.getSummary(), task::setSummary);
+      setIfNotNull(request.getDescription(), task::setDescription);
+      setIfNotNull(request.getPriority(), task::setPriority);
+      setIfNotNull(request.getState(), task::setState);
       return convert(tasks.save(task));
+   }
+
+   private <T> void setIfNotNull(final T valueOrNull, final Consumer<T> setter) {
+      if (valueOrNull != null) {
+         setter.accept(valueOrNull);
+      }
+   }
+
+   @RequestMapping(path = "{taskId}", method = DELETE)
+   @ResponseStatus(NO_CONTENT)
+   public void deleteTask(@PathVariable final Long taskId) {
+      final Task task = tasks.findOne(taskId);
+      if (task == null) {
+         throw new NotFoundException("task");
+      }
+      tasks.delete(taskId);
    }
 
    @RequestMapping(path = "{taskId}/readme", method = GET, produces = "application/json")
