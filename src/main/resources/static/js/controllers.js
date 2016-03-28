@@ -36,7 +36,7 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 			$scope.readMe = response.data;
 		}, function(response) {
 			if (response.status == 404) {
-				$scope.readMe = '';
+				$scope.readMe = {html: ''};
 			}
 		});
 	}
