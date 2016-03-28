@@ -20,7 +20,7 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 .controller('projectController', function($scope, $routeParams, $http, $location, $uibModal) {
 	function loadProject() {
 		$http.get('/api/projects/' + $routeParams.id).then(function(response) {
-			$scope.messages = [];
+			$scope.error = undefined;
 			$scope.project = response.data;
 		}, function(response) {
 			if (response.status == 404) {
@@ -73,7 +73,6 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 	$scope.editReadMe = editReadMe;
 	$scope.deleteProject = deleteProject;
 	$scope.newTask = newTask;
-	$scope.error = {};
 	loadProject();
 	loadReadMe();
 })
