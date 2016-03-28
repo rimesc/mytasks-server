@@ -7,7 +7,7 @@
 		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 		<link rel="icon" type="image/png" data-th-attr="href=@{/images/logo.png}">
 
-		<title>myTasks - Home</title>
+		<title>myTasks</title>
 		
 		<base data-th-href="@{/}">
 
@@ -20,7 +20,7 @@
 		<link data-th-attr="href=@{/css/markdown.css}" rel="stylesheet">
 	</head>
 
-	<body data-ng-app="mytasks">
+	<body data-ng-app="myTasksApplication" data-ng-cloak>
 
 		<nav class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container">
@@ -33,7 +33,7 @@
 					</button>
 					<a class="navbar-brand" href="#/">myTasks</a>
 				</div>
-				<div id="navbar" class="navbar-collapse collapse" data-ng-controller="navbar">
+				<div id="navbar" class="navbar-collapse collapse" data-ng-controller="navigationController">
 					<ul class="nav navbar-nav navbar-left">
 						<li data-ng-class="{ active: isActive('/') || isActive('')}"><a href="#/">Dashboard</a></li>
 						<li data-ng-class="{ active: isActive('/projects')}"><a href="#/projects">Projects</a></li>
@@ -75,6 +75,7 @@
   		<script data-th-src="@{/webjars/angular-ui-bootstrap/1.2.5/ui-bootstrap-tpls.js}" type="text/javascript"></script>
   		<script data-th-src="@{/webjars/angular-moment/0.10.3/angular-moment.min.js}" type="text/javascript"></script>
 
+		<script data-th-src="@{/js/controllers.js}"></script>
 		<script data-th-src="@{/js/mytasks.js}"></script>
 
 		<!-- Bootstrap core JavaScript -->

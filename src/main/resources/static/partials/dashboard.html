@@ -1,5 +1,5 @@
 <h1 class="page-header">Dashboard</h1>
-<div class="panel panel-default">
+<div data-ng-if="isDefined(projects)" class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">Projects</h3>
 	</div>
@@ -11,7 +11,7 @@
 				{{project.description}}
 			</p>
 		</li>
-		<li data-ng-if="projects.empty" class="list-group-item list-group-placeholder">
+		<li data-ng-if="projects.length == 0" class="list-group-item list-group-placeholder">
 			No projects to show.
 		</li>
 	</ul>

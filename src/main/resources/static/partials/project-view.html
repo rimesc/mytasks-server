@@ -1,13 +1,18 @@
-<div class="project-header">
+<uib-alert class="alert-centered" type="danger">
+	<p><span class="glyphicon glyphicon-remove-sign"></span></p>
+	<p data-ng-if="isDefined(error.code)"><strong>{{error.code}}</strong></p>
+	<p data-ng-if="isDefined(error.detail)">{{error.detail}}</p>
+</uib-alert>
+<div data-ng-if="isDefined(project)" class="project-header">
 	<div class="btn-toobar pull-left">
 		<div class="btn-group">
-			<button type="button" class="btn btn-primary" data-ng-click="openNewTaskModal()"><span class="glyphicon glyphicon-plus"></span> New Task</button>
+			<button type="button" class="btn btn-primary" data-ng-click="newTask()"><span class="glyphicon glyphicon-plus"></span> New Task</button>
 		</div>
 	</div>
 	<div class="btn-toobar pull-right">
 		<div class="btn-group">
-			<button type="button" class="btn btn-default" data-ng-click="openEditProjectModal()"><span class="glyphicon glyphicon-edit"></span> Edit</button>
-			<button type="button" class="btn btn-default" data-ng-click="openDeleteProjectModal()"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+			<button type="button" class="btn btn-default" data-ng-click="editProject()"><span class="glyphicon glyphicon-edit"></span> Edit</button>
+			<button type="button" class="btn btn-default" data-ng-click="deleteProject()"><span class="glyphicon glyphicon-trash"></span> Delete</button>
 		</div>
 	</div>
 	<div style="clear: both"></div>
@@ -30,13 +35,15 @@
 		</li>
 	</ul>
 </div>
-<div class="readme">
-	<button title="Edit" class="btn edit" data-ng-if="isDefined(readMe)" data-ng-click="openEditReadMeModal()">
-		<span class="glyphicon glyphicon-edit"></span>
-	</button>
-	<div class="markdown" data-ng-if="isDefined(readMe)" data-ng-bind-html="readMe.html"></div>
-	<div data-ng-if="isUndefined(readMe)">
-		<button class="btn btn-primary" data-ng-click="openEditReadMeModal()">
+<div data-ng-if="isDefined(readMe)" class="readme">
+	<div data-ng-if="readMe.html.length > 0">
+		<button title="Edit" class="btn edit" data-ng-click="editReadMe()">
+			<span class="glyphicon glyphicon-edit"></span>
+		</button>
+		<div class="markdown" data-ng-bind-html="readMe.html"></div>
+	</div>
+	<div data-ng-if="readMe.html.length == 0">
+		<button class="btn btn-primary" data-ng-click="editReadMe()">
 			Edit notes
 		</button>
 	</div>
