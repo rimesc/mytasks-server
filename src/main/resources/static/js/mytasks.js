@@ -32,4 +32,10 @@ var myTasksApplication = angular.module('myTasksApplication', ['myTasksControlle
 .run(function($rootScope) {
     $rootScope.isDefined = angular.isDefined;
     $rootScope.isUndefined = angular.isUndefined;
+    
+    $rootScope.priorities = priorities;
+    $rootScope.states = states;
+
+    $rootScope.labels = labels;
+
 });

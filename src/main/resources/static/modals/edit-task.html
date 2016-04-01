@@ -20,9 +20,8 @@
 				<div class="row">
 					<div class="col-md-4 col-sm-6 col-xs-12">
 						<label for="priority" class="control-label">Priority<span data-ng-if="errors['summary']"> ({{errors['priority']}})</span></label>
-						<select class="form-control" id="taskPriority" name="priority" data-ng-model="taskPriority">
-							<option data-ng-repeat="p in priorities" data-ng-value="p" data-ng-selected="(isDefined(taskPriority) && p == taskPriority) ||  p == 'NORMAL'">{{p}}</option>
-						</select>
+						<select class="form-control" id="taskPriority" name="priority" data-ng-model="taskPriority"
+      							data-ng-options="labels.priorities[p] for p in priorities"></select>
 					</div>
 				</div>
 			</div>

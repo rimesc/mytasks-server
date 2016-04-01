@@ -2,19 +2,19 @@
 	<div class="panel-heading">
 		<div class="pull-left">
 			<ul class="nav nav-pills">
-			  	<li role="presentation" data-ng-class="{active: isActive('OPEN')}">
+			  	<li role="presentation" data-ng-class="{active: isFilterActive('OPEN')}">
 			  		<a role="button" data-ng-click="activateFilter('OPEN')">Open</a>
 		  	  	</li>
-			  	<li role="presentation" data-ng-class="{active: isActive('CLOSED')}">
+			  	<li role="presentation" data-ng-class="{active: isFilterActive('CLOSED')}">
 			  		<a role="button" data-ng-click="activateFilter('CLOSED')">Closed</a>
 		  	  	</li>
-			  	<li role="presentation" data-ng-class="{active: isActive('ALL')}">
+			  	<li role="presentation" data-ng-class="{active: isFilterActive('ALL')}">
 			  		<a role="button" data-ng-click="activateFilter('ALL')">All</a>
 		  	  	</li>
 			</ul>
 		</div>
 		<div class="navbar-form navbar-right">
-			<button type="button" class="btn btn-primary" data-ng-click="openNewTaskModal()"><span class="glyphicon glyphicon-plus"></span> New Task</button>
+			<button type="button" class="btn btn-primary" data-ng-click="newTask()"><span class="glyphicon glyphicon-plus"></span> New Task</button>
 		</div>
 		<div style="clear: both"></div>
 	</div>
