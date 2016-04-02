@@ -26,3 +26,7 @@ labels = {
 		'LOW' : 'Low'
 	}
 };
+
+function contains(list, element) {
+	return list.indexOf(element) >= 0;
+}

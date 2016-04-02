@@ -1,5 +1,71 @@
 var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'angularMoment'])
 
+.controller('adminController', function($scope, $http) {
+	function loadCurrentUser() {
+		$http.get('/api/admin/users/current').then(function(response) {
+			$scope.currentUser = response.data;
+		}, function (response) {
+			if (response.status == 403) {
+				$scope.error = {code: response.statusText, detail: 'You do not have permission to access this page.'};
+			}
+			else {
+				// TODO handle unauthorised
+				$scope.error = {code: response.statusText};
+			}
+		});
+	}
+	function loadUsers() {
+		$http.get('/api/admin/users/').then(function(response) {
+			$scope.users = response.data.users;
+		}, function (response) {
+			if (response.status == 403) {
+				$scope.error = {code: response.statusText, detail: 'You do not have permission to access this page.'};
+			}
+			else {
+				// TODO handle unauthorised
+				$scope.error = {code: response.statusText};
+			}
+		});
+	}
+	function isCurrentUser(user) {
+		return $scope.currentUser.username == user.username;
+	}
+	function isAdmin(user) {
+		return contains(user.authorities, 'ROLE_ADMIN');
+	}
+	function createUser() {
+		if (angular.isDefined($scope.newUser.username)) {
+			var authorities = ['ROLE_USER'];
+			if ($scope.newUser.isAdmin) {
+				authorities.push('ROLE_ADMIN');
+			}
+			$http
+				.post('/api/admin/users/', {username: $scope.newUser.username, password: $scope.newUser.password, authorities: authorities})
+				.then(function(response) {
+					$scope.users.push(response.data);
+					$scope.errors = {};
+					$scope.newUser = {};
+				}, function(response) {
+					// TODO handle unauthorised
+					$scope.errors = {};
+					response.data.errors.forEach(function(error) {
+						if ('field' in error) {
+							$scope.errors[error.field] = error.message;
+						}
+					});
+				});
+		}
+	}
+
+	$scope.errors = {};
+	$scope.newUser = {};
+	$scope.isCurrentUser = isCurrentUser;
+	$scope.isAdmin = isAdmin;
+	$scope.createUser = createUser;
+	loadCurrentUser();
+	loadUsers();
+})
+
 .controller('projectsController', function($scope, $http, $uibModal) {
 	function loadProjects() {
 		$http.get('/api/projects/').then(function(response) {
@@ -372,8 +438,14 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 
 // NAVIGATION
 
-.controller('navigationController', function($scope, $location) { 
-	$scope.isActive = function (viewLocation) {
+.controller('navigationController', function($scope, $location, $http) {
+	function isActive(viewLocation) {
 		return viewLocation === $location.path();
-	};
+	}
+	$scope.isActive = isActive;
+	$scope.showAdminOptions = false;
+	$http.get('/api/admin/users/current').then(function(response) {
+		$scope.showAdminOptions = contains(response.data.authorities, 'ROLE_ADMIN');
+		console.log($scope.showAdminOptions);
+	});
 });

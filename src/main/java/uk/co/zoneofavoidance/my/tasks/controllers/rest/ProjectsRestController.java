@@ -8,7 +8,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static uk.co.zoneofavoidance.my.tasks.controllers.rest.ControllerUtils.setIfNotNull;
+import static uk.co.zoneofavoidance.my.tasks.util.BeanUtils.setIfNotNull;
 
 import javax.validation.Valid;
 

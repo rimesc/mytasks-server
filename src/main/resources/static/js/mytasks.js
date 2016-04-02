@@ -22,6 +22,10 @@ var myTasksApplication = angular.module('myTasksApplication', ['myTasksControlle
 		templateUrl : 'partials/task-view.html',
 		controller : 'taskController',
 	})
+	.when('/admin', {
+		templateUrl : 'partials/admin.html',
+		controller : 'adminController',
+	})
 	.otherwise({
 		redirectTo: '/'
 	});
