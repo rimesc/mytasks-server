@@ -1,4 +1,4 @@
-package uk.co.zoneofavoidance.my.tasks.controllers.rest.request;
+package uk.co.zoneofavoidance.my.tasks.rest.request;
 
 public class ReadMeRequest {
 

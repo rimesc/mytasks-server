@@ -1,4 +1,4 @@
-package uk.co.zoneofavoidance.my.tasks.controllers.rest;
+package uk.co.zoneofavoidance.my.tasks.rest.controllers;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 

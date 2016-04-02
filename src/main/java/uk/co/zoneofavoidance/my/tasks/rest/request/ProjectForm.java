@@ -1,4 +1,4 @@
-package uk.co.zoneofavoidance.my.tasks.controllers;
+package uk.co.zoneofavoidance.my.tasks.rest.request;
 
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;

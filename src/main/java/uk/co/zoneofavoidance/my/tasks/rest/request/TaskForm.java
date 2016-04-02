@@ -1,4 +1,4 @@
-package uk.co.zoneofavoidance.my.tasks.controllers;
+package uk.co.zoneofavoidance.my.tasks.rest.request;
 
 import javax.validation.constraints.NotNull;
 

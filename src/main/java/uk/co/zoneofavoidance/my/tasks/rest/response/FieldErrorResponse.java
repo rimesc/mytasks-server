@@ -1,4 +1,4 @@
-package uk.co.zoneofavoidance.my.tasks.controllers.rest.response;
+package uk.co.zoneofavoidance.my.tasks.rest.response;
 
 import org.springframework.validation.FieldError;
 

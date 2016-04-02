@@ -1,4 +1,4 @@
-package uk.co.zoneofavoidance.my.tasks.controllers.rest;
+package uk.co.zoneofavoidance.my.tasks.rest.controllers;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -51,10 +51,13 @@ public class ProjectsRestControllerIT extends RestControllerIT {
       final String project = "{\"name\": \"\", \"description\": \"This is a new project.\"}";
       post("/api/projects/", project)
          .andExpect(status().isBadRequest())
-         .andExpect(jsonPath("errors", hasSize(1)))
+         .andExpect(jsonPath("errors", hasSize(2)))
          .andExpect(jsonPath("errors[0].field", equalTo("name")))
          .andExpect(jsonPath("errors[0].code", equalTo("Length")))
-         .andExpect(jsonPath("errors[0].message", equalTo("length must be between 1 and 255")));
+         .andExpect(jsonPath("errors[0].message", equalTo("length must be between 1 and 255")))
+         .andExpect(jsonPath("errors[1].field", equalTo("name")))
+         .andExpect(jsonPath("errors[1].code", equalTo("NotEmpty")))
+         .andExpect(jsonPath("errors[1].message", equalTo("may not be empty")));
    }
 
    @Test
@@ -95,7 +98,6 @@ public class ProjectsRestControllerIT extends RestControllerIT {
    public void getProjectReadMeReturnsReadMeIfAvailable() throws Exception {
       get("/api/projects/1/readme")
          .andExpect(status().isOk())
-         .andExpect(jsonPath("project", equalTo(1)))
          .andExpect(jsonPath("markdown", startsWith("# Lorem ipsum")))
          .andExpect(jsonPath("html", startsWith("<h1>Lorem ipsum</h1>")));
    }

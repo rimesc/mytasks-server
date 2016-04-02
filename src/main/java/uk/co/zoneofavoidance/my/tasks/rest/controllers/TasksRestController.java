@@ -1,4 +1,4 @@
-package uk.co.zoneofavoidance.my.tasks.controllers.rest;
+package uk.co.zoneofavoidance.my.tasks.rest.controllers;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -31,19 +31,19 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import uk.co.zoneofavoidance.my.tasks.controllers.TaskForm;
-import uk.co.zoneofavoidance.my.tasks.controllers.rest.request.UpdateTaskRequest;
-import uk.co.zoneofavoidance.my.tasks.controllers.rest.response.BindingErrorsResponse;
-import uk.co.zoneofavoidance.my.tasks.controllers.rest.response.ErrorResponse;
-import uk.co.zoneofavoidance.my.tasks.controllers.rest.response.ReadMeResponse;
-import uk.co.zoneofavoidance.my.tasks.controllers.rest.response.TaskResponse;
-import uk.co.zoneofavoidance.my.tasks.controllers.rest.response.TasksResponse;
 import uk.co.zoneofavoidance.my.tasks.domain.Project;
 import uk.co.zoneofavoidance.my.tasks.domain.State;
 import uk.co.zoneofavoidance.my.tasks.domain.Task;
 import uk.co.zoneofavoidance.my.tasks.exceptions.NotFoundException;
 import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
 import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
+import uk.co.zoneofavoidance.my.tasks.rest.request.TaskForm;
+import uk.co.zoneofavoidance.my.tasks.rest.request.UpdateTaskRequest;
+import uk.co.zoneofavoidance.my.tasks.rest.response.BindingErrorsResponse;
+import uk.co.zoneofavoidance.my.tasks.rest.response.ErrorResponse;
+import uk.co.zoneofavoidance.my.tasks.rest.response.ReadMeResponse;
+import uk.co.zoneofavoidance.my.tasks.rest.response.TaskResponse;
+import uk.co.zoneofavoidance.my.tasks.rest.response.TasksResponse;
 
 @RestController
 @RequestMapping("/api/tasks")
