@@ -90,15 +90,18 @@ public class UserService {
     * @param username name of the user to create
     * @param password password for the new user
     * @param admin whether the new user should have admin privileges
+    * @return details of the new user
     * @throws UsernameAlreadyExistsException if a user already exists with the
     *            given name
     */
-   public void createUser(final String username, final String password, final boolean admin) {
+   public UserDetails createUser(final String username, final String password, final boolean admin) {
       if (exists(username)) {
          throw new UsernameAlreadyExistsException(username);
       }
       final Collection<GrantedAuthority> authorities = getRoles(admin).stream().map(SimpleGrantedAuthority::new).collect(toSet());
-      manager.createUser(new User(username, encoder.encode(password), authorities));
+      final User user = new User(username, encoder.encode(password), authorities);
+      manager.createUser(user);
+      return user;
    }
 
    private static Set<String> getRoles(final boolean admin) {

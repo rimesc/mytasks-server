@@ -1,12 +1,14 @@
 package uk.co.zoneofavoidance.my.tasks.controllers;
 
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * Bean backing the new project form.
  */
 public class ProjectForm {
 
+   @NotEmpty
    @Length(min = 1, max = 255)
    private String name;
 

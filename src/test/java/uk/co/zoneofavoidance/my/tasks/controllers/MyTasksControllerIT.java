@@ -6,12 +6,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.Test;
 
-import uk.co.zoneofavoidance.my.tasks.testing.MockMvcTest;
+import uk.co.zoneofavoidance.my.tasks.testing.ModelAndViewControllerIT;
 
 /**
  * Integration tests for {@link MyTasksController}.
  */
-public class MyTasksControllerIT extends MockMvcTest {
+public class MyTasksControllerIT extends ModelAndViewControllerIT {
 
    @Test
    public void getRootReturnsHomeViewWithProjects() throws Exception {

@@ -171,13 +171,24 @@ span.state-on_hold:BEFORE {
 }
 
 span.state-done:BEFORE {
-	content: "\e013\202f"; /* glyphicon-ok */
+	content: "\e013\202f"; glyphicon-ok
+}
+ 
+span.in_progress:BEFORE {
+	content: "\e072\202f"; /* glyphicon-play */
+}
+
+span.on_hold:BEFORE {
+	content: "\e073\202f"; /* glyphicon-pause */
 }
 
 .edit {
 	color: #000;
 	opacity: 0.2;
 	float: right;
+	padding: 0;
+	border: 0;
+	background: none;
 }
 
 .edit:HOVER {

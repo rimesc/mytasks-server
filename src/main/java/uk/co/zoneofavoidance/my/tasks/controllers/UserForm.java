@@ -1,5 +1,7 @@
 package uk.co.zoneofavoidance.my.tasks.controllers;
 
+import java.util.List;
+
 import org.hibernate.validator.constraints.Length;
 
 /**
@@ -13,15 +15,15 @@ public class UserForm {
    @Length(min = 8, max = 20)
    private String password;
 
-   private boolean admin;
+   private List<String> authorities;
 
    public UserForm() {
    }
 
-   public UserForm(final String username, final String password, final boolean admin) {
+   public UserForm(final String username, final String password, final List<String> authorities) {
       this.username = username;
       this.password = password;
-      this.admin = admin;
+      this.authorities = authorities;
    }
 
    public String getUsername() {
@@ -32,8 +34,8 @@ public class UserForm {
       return password;
    }
 
-   public boolean isAdmin() {
-      return admin;
+   public List<String> getAuthorities() {
+      return authorities;
    }
 
    public void setUsername(final String username) {
@@ -44,8 +46,8 @@ public class UserForm {
       this.password = password;
    }
 
-   public void setAdmin(final boolean admin) {
-      this.admin = admin;
+   public void setAuthorities(final List<String> authorities) {
+      this.authorities = authorities;
    }
 
 }

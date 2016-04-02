@@ -1,0 +1,22 @@
+<h1 class="page-header">Projects</h1>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<div style="float: right" class="btn-group btn-group-sm">
+			<button class="btn btn-primary" data-ng-click="newProject()"><span class="glyphicon glyphicon-plus"></span> New Project</button>
+		</div>
+		<div style="clear: both"></div>
+	</div>
+	<ul data-ng-if="isDefined(projects)" class="list-group project-list">
+		<li data-ng-repeat="project in projects" class="list-group-item">
+			<span class="badge">{{project.numberOfOpenTasks}}</span>
+			<h4 class="list-group-item-heading"><a data-ng-href="#/projects/{{project.id}}">{{project.name}}</a></h4>
+			<p class="list-group-item-text">
+				{{project.description}}
+			</p>
+		</li>
+		<li data-ng-if="projects.length == 0" class="list-group-item list-group-placeholder">
+			No projects to show.
+		</li>
+ 	</ul>
+</div>
+
