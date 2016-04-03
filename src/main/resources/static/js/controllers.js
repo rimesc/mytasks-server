@@ -195,7 +195,8 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 	var transitions = {
 		'TO_DO': [{'label': 'Start work', 'target': 'IN_PROGRESS'}],
 	    'IN_PROGRESS': [{'label': 'Pause work', 'target': 'ON_HOLD'}, {'label': 'Done', 'target': 'DONE'}],
-	    'ON_HOLD': [{'label': 'Resume work', 'target': 'IN_PROGRESS'}]};
+	    'ON_HOLD': [{'label': 'Resume work', 'target': 'IN_PROGRESS'}],
+	    'DONE': []};
 	function loadTask() {
 		$http.get('/api/tasks/' + $routeParams.id).then(function(response) {
 			$scope.error = undefined;
