@@ -1,4 +1,9 @@
-<div class="panel panel-default">
+<uib-alert class="alert-centered" type="danger" data-ng-if="error">
+	<p><span class="glyphicon glyphicon-remove-sign"></span></p>
+	<p data-ng-if="isDefined(error.code)"><strong>{{error.code}}</strong></p>
+	<p data-ng-if="isDefined(error.detail)">{{error.detail}}</p>
+</uib-alert>
+<div data-ng-if="isDefined(project)" class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-left">
 			<ul class="nav nav-pills">
