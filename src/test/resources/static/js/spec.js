@@ -598,7 +598,7 @@ describe("myTasksControllers", function() {
 		it("returns the new project on success", function() {
 			var createdProject;
 			var newProject = {"id": 4, "name": "My new project", "description": "This is a new project.", "numberOfOpenTasks": 0, "href": "/api/projects/4"};
-			$httpBackend.expectPOST('/api/projects/').respond(201, newProject);
+			$httpBackend.expectPOST('/api/projects/').respond(200, newProject);
 			var controller = $controller('newProjectModalController', {
 				$scope: $scope,
 				$uibModalInstance: {
@@ -613,6 +613,350 @@ describe("myTasksControllers", function() {
 			expect(createdProject).toEqual(newProject);
 		});
 		
+	});
+
+	describe("editProjectModalController", function() {
+
+		var project = {id : 1, name : 'My first project', description : 'This is my first sample project.', numberOfOpenTasks : 3, href : '/api/projects/1'};
+
+		var $scope;
+
+		beforeEach(function() {
+			$scope = {};
+		});
+
+		it("handles field errors", function() {
+			var errors = [
+				{'field': 'name', 'code': 'invalid', 'message': 'invalid name'},
+				{'field': 'description', 'code': 'invalid', 'message': 'invalid description'}
+			];
+			$httpBackend.expectPOST('/api/projects/1').respond(400, {'errors': errors});
+			var controller = $controller('editProjectModalController', {
+				$scope: $scope,
+				$uibModalInstance: undefined,
+				project: project
+			});
+			$scope.submit();
+			$httpBackend.flush();
+			expect($scope.errors).toEqual({'name': 'invalid name', 'description': 'invalid description'});
+		});
+		
+		it("resets field errors on resubmission", function() {
+			var nameError = {'field': 'name', 'code': 'invalid', 'message': 'invalid name'};
+			var descriptionError = {'field': 'description', 'code': 'invalid', 'message': 'invalid description'}
+			$httpBackend.expectPOST('/api/projects/1').respond(400, {'errors': [nameError]});
+			var controller = $controller('editProjectModalController', {
+				$scope: $scope,
+				$uibModalInstance: undefined,
+				project: project
+			});
+			$scope.submit();
+			$httpBackend.flush();
+			expect($scope.errors).toEqual({'name': 'invalid name'});
+			$httpBackend.expectPOST('/api/projects/1').respond(400, {'errors': [descriptionError]});
+			$scope.submit();
+			$httpBackend.flush();
+			expect($scope.errors).toEqual({'description': 'invalid description'});
+		});
+		
+		it("returns the updated project on success", function() {
+			var savedProject;
+			var updatedProject = {"id": 1, "name": "My updated project", "description": "This is the updated project.", "numberOfOpenTasks": 0, "href": "/api/projects/1"};
+			$httpBackend.expectPOST('/api/projects/1').respond(200, updatedProject);
+			var controller = $controller('editProjectModalController', {
+				$scope: $scope,
+				$uibModalInstance: {
+					close: function(data) {
+						savedProject = data
+					}
+				},
+				project: project
+			});
+			$scope.submit();
+			$httpBackend.flush();
+			expect($scope.errors).toEqual({});
+			expect(savedProject).toEqual(updatedProject);
+		});
+		
+	});
+	
+	describe('editReadmeModalController', function() {
+		
+		var savedReadMe;
+		var project = {id : 1, name : 'My first project', description : 'This is my first sample project.', numberOfOpenTasks : 3, href : '/api/projects/1'};
+		var readMe = {markdown: '# Some documentation'};
+		
+		var $scope;
+
+		beforeEach(function() {
+			$scope = {};
+		});
+
+		it("returns the updated readme on success", function() {
+			var updatedReadMe = {markdown: '# Some updated documentation'};
+			$httpBackend.expectPOST('/api/projects/1/readme').respond(200, updatedReadMe);
+			var controller = $controller('editReadmeModalController', {
+				$scope: $scope,
+				$uibModalInstance: {
+					close: function(data) {
+						savedReadMe = data
+					}
+				},
+				project: project,
+				readMe: readMe
+			});
+			$scope.submit();
+			$httpBackend.flush();
+			expect(savedReadMe).toEqual(updatedReadMe);
+		});
+		
+	});
+
+	describe('deleteProjectModalController', function() {
+
+		var project = {id : 1, name : 'My first project', description : 'This is my first sample project.', numberOfOpenTasks : 3, href : '/api/projects/1'};
+
+		var $scope;
+
+		beforeEach(function() {
+			$scope = {};
+		});
+
+		it ('deletes the project on submit', function() {
+			$httpBackend.expectDELETE('/api/projects/1').respond(200);
+			var controller = $controller('deleteProjectModalController', {
+				$scope: $scope,
+				$uibModalInstance: { close: function(data) { } },
+				project: project
+			});
+			$scope.submit();
+			$httpBackend.flush();
+		});
+
+	});
+
+	describe('newTaskModalController', function() {
+
+		var $scope;
+
+		beforeEach(function() {
+			$scope = {};
+		});
+
+		it("handles field errors", function() {
+			var errors = [
+				{'field': 'summary', 'code': 'invalid', 'message': 'invalid summary'},
+				{'field': 'description', 'code': 'invalid', 'message': 'invalid description'}
+			];
+			$httpBackend.expectPOST('/api/tasks/').respond(400, {'errors': errors});
+			var controller = $controller('newTaskModalController', {
+				$scope: $scope,
+				$uibModalInstance: undefined,
+				projectId: 1
+			});
+			$scope.submit();
+			$httpBackend.flush();
+			expect($scope.errors).toEqual({'summary': 'invalid summary', 'description': 'invalid description'});
+		});
+		
+		it("resets field errors on resubmission", function() {
+			var summaryError = {'field': 'summary', 'code': 'invalid', 'message': 'invalid summary'};
+			var descriptionError = {'field': 'description', 'code': 'invalid', 'message': 'invalid description'}
+			$httpBackend.expectPOST('/api/tasks/').respond(400, {'errors': [summaryError]});
+			var controller = $controller('newTaskModalController', {
+				$scope: $scope,
+				$uibModalInstance: undefined,
+				projectId: 1
+			});
+			$scope.submit();
+			$httpBackend.flush();
+			expect($scope.errors).toEqual({'summary': 'invalid summary'});
+			$httpBackend.expectPOST('/api/tasks/').respond(400, {'errors': [descriptionError]});
+			$scope.submit();
+			$httpBackend.flush();
+			expect($scope.errors).toEqual({'description': 'invalid description'});
+		});
+		
+		it("treats undefined summary and description as empty", function() {
+			var createdTask;
+			var newTask = {"project": 1, "summary": "", "description": "", "priority": "HIGH"};
+			$httpBackend.expectPOST('/api/tasks/', newTask).respond(200, newTask);
+			var controller = $controller('newTaskModalController', {
+				$scope: $scope,
+				$uibModalInstance: {
+					close: function(data) {
+						createdTask = data
+					}
+				},
+				projectId: 1
+			});
+			$scope.taskPriority = newTask.priority;
+			$scope.submit();
+			$httpBackend.flush();
+			expect($scope.errors).toEqual({});
+			expect(createdTask).toEqual(newTask);
+		});
+		
+		it("returns the new task on success", function() {
+			var createdTask;
+			var newTask = {"project": 1, "summary": "A new task", "description": "This is a new task.", "priority": "HIGH"};
+			$httpBackend.expectPOST('/api/tasks/', newTask).respond(200, newTask);
+			var controller = $controller('newTaskModalController', {
+				$scope: $scope,
+				$uibModalInstance: {
+					close: function(data) {
+						createdTask = data
+					}
+				},
+				projectId: 1
+			});
+			$scope.taskSummary = newTask.summary;
+			$scope.taskDescription = newTask.description;
+			$scope.taskPriority = newTask.priority;
+			$scope.submit();
+			$httpBackend.flush();
+			expect($scope.errors).toEqual({});
+			expect(createdTask).toEqual(newTask);
+		});
+		
+	});
+
+	describe('editTaskModalController', function() {
+
+		var task = {id: '1', summary: 'First sample task', description: 'This is the first sample task.', priority: 'HIGH', state: 'TO_DO', created: '2016-04-03T19:52:00Z', updated: '2016-04-03T19:52:00Z', project: '1', href: '/api/tasks/1'};
+
+		var $scope;
+
+		beforeEach(function() {
+			$scope = {};
+		});
+
+		it("handles field errors", function() {
+			var errors = [
+				{'field': 'summary', 'code': 'invalid', 'message': 'invalid summary'},
+				{'field': 'description', 'code': 'invalid', 'message': 'invalid description'}
+			];
+			$httpBackend.expectPOST('/api/tasks/1').respond(400, {'errors': errors});
+			var controller = $controller('editTaskModalController', {
+				$scope: $scope,
+				$uibModalInstance: undefined,
+				task: task
+			});
+			$scope.submit();
+			$httpBackend.flush();
+			expect($scope.errors).toEqual({'summary': 'invalid summary', 'description': 'invalid description'});
+		});
+		
+		it("resets field errors on resubmission", function() {
+			var summaryError = {'field': 'summary', 'code': 'invalid', 'message': 'invalid summary'};
+			var descriptionError = {'field': 'description', 'code': 'invalid', 'message': 'invalid description'}
+			$httpBackend.expectPOST('/api/tasks/1').respond(400, {'errors': [summaryError]});
+			var controller = $controller('editTaskModalController', {
+				$scope: $scope,
+				$uibModalInstance: undefined,
+				task: task
+			});
+			$scope.submit();
+			$httpBackend.flush();
+			expect($scope.errors).toEqual({'summary': 'invalid summary'});
+			$httpBackend.expectPOST('/api/tasks/1').respond(400, {'errors': [descriptionError]});
+			$scope.submit();
+			$httpBackend.flush();
+			expect($scope.errors).toEqual({'description': 'invalid description'});
+		});
+		
+		it("returns the updated task on success", function() {
+			var savedTask;
+			var updatedTask = {id: '1', summary: 'Renamed task', description: 'This is an edited task.', priority: 'Low', state: 'TO_DO', created: '2016-04-03T19:52:00Z', updated: '2016-04-03T19:52:00Z', project: '1', href: '/api/tasks/1'};
+			$httpBackend.expectPOST('/api/tasks/1', {summary: updatedTask.summary, description: updatedTask.description, priority: updatedTask.priority}).respond(200, updatedTask);
+			var controller = $controller('editTaskModalController', {
+				$scope: $scope,
+				$uibModalInstance: {
+					close: function(data) {
+						savedTask = data
+					}
+				},
+				task: task
+			});
+			$scope.taskSummary = updatedTask.summary;
+			$scope.taskDescription = updatedTask.description;
+			$scope.taskPriority = updatedTask.priority;
+			$scope.submit();
+			$httpBackend.flush();
+			expect($scope.errors).toEqual({});
+			expect(savedTask).toEqual(updatedTask);
+		});
+		
+	});
+
+	describe('deleteTaskModalController', function() {
+
+		var task = {id: '1', summary: 'First sample task', description: 'This is the first sample task.', priority: 'HIGH', state: 'TO_DO', created: '2016-04-03T19:52:00Z', updated: '2016-04-03T19:52:00Z', project: '1', href: '/api/tasks/1'};
+
+		var $scope;
+
+		beforeEach(function() {
+			$scope = {};
+		});
+
+		it ('deletes the task on submit', function() {
+			$httpBackend.expectDELETE('/api/tasks/1').respond(200);
+			var controller = $controller('deleteTaskModalController', {
+				$scope: $scope,
+				$uibModalInstance: { close: function(data) { } },
+				task: task
+			});
+			$scope.submit();
+			$httpBackend.flush();
+		});
+	});
+
+	describe('navigationController', function() {
+		
+		var $scope;
+		var $location;
+
+		beforeEach(function() {
+			$scope = {};
+			inject(function($injector) {
+				$location = $injector.get('$location');
+			})
+		});
+
+		it ('can tell what the active route is', function() {
+	        spyOn($location, 'path').and.returnValue('/any/path');
+			$httpBackend.expectGET('/api/admin/users/current').respond(200, {"authorities": []});
+			var controller = $controller('navigationController', {
+				$scope: $scope
+			});
+			$httpBackend.flush();
+
+			expect($scope.isActive('/any/path')).toEqual(true);
+			expect($scope.isActive('/any/other/path')).toEqual(false);
+		});
+			
+		it ('shows the admin options when the current user has the correct authorities', function() {
+	        spyOn($location, 'path').and.returnValue('/any/path');
+			$httpBackend.expectGET('/api/admin/users/current').respond(200, {"authorities": ['ROLE_USER', 'ROLE_ADMIN']});
+			var controller = $controller('navigationController', {
+				$scope: $scope
+			});
+			$httpBackend.flush();
+
+			expect($scope.showAdminOptions).toEqual(true);
+		});
+			
+		it ('hides the admin options when the current user does not have the correct authorities', function() {
+	        spyOn($location, 'path').and.returnValue('/any/path');
+			$httpBackend.expectGET('/api/admin/users/current').respond(200, {"authorities": ['ROLE_USER']});
+			var controller = $controller('navigationController', {
+				$scope: $scope
+			});
+			$httpBackend.flush();
+
+			expect($scope.showAdminOptions).toEqual(false);
+		});
+			
 	});
 
 });

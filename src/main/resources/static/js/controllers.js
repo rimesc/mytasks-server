@@ -447,6 +447,5 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 	$scope.showAdminOptions = false;
 	$http.get('/api/admin/users/current').then(function(response) {
 		$scope.showAdminOptions = contains(response.data.authorities, 'ROLE_ADMIN');
-		console.log($scope.showAdminOptions);
 	});
 });
