@@ -1,6 +1,6 @@
 var myTasksApplication = angular.module('myTasksApplication', ['myTasksControllers', 'ngRoute'])
 
-.config(function($routeProvider, $httpProvider) {
+.config(function($routeProvider, $httpProvider, $resourceProvider) {
 	$routeProvider
 	.when('/', {
 		templateUrl : 'partials/dashboard.html',
@@ -31,6 +31,8 @@ var myTasksApplication = angular.module('myTasksApplication', ['myTasksControlle
 	});
 
 	$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+	$resourceProvider.defaults.stripTrailingSlashes = false;
+
 })
 
 .run(function($rootScope) {

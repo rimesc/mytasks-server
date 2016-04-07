@@ -1,30 +1,32 @@
-var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'angularMoment'])
+var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'angularMoment', 'myTasksServices'])
 
-.controller('adminController', function($scope, $http) {
+.controller('adminController', function($scope, userService) {
 	function loadCurrentUser() {
-		$http.get('/api/admin/users/current').then(function(response) {
-			$scope.currentUser = response.data;
-		}, function (response) {
-			if (response.status == 403) {
-				$scope.error = {code: response.statusText, detail: 'You do not have permission to access this page.'};
-			}
-			else {
-				// TODO handle unauthorised
-				$scope.error = {code: response.statusText};
-			}
-		});
+		userService.getCurrent(
+			function(user) { $scope.currentUser = user },
+			function (response) {
+				switch (response.status) {
+					case 403:
+						$scope.error = {code: response.statusText, detail: 'You do not have permission to access this page.'};
+						break;
+					default:
+						// TODO handle unauthorised
+						$scope.error = {code: response.statusText};
+				}
+			});
 	}
 	function loadUsers() {
-		$http.get('/api/admin/users/').then(function(response) {
-			$scope.users = response.data.users;
-		}, function (response) {
-			if (response.status == 403) {
-				$scope.error = {code: response.statusText, detail: 'You do not have permission to access this page.'};
-			}
-			else {
-				// TODO handle unauthorised
-				$scope.error = {code: response.statusText};
-			}
+		userService.list(
+			function(users) { $scope.users = users },
+			function (response) {
+				switch (response.status) {
+					case 403:
+						$scope.error = {code: response.statusText, detail: 'You do not have permission to access this page.'};
+						break;
+					default:
+						// TODO handle unauthorised
+						$scope.error = {code: response.statusText};
+				}
 		});
 	}
 	function isCurrentUser(user) {
@@ -39,13 +41,13 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 			if ($scope.newUser.isAdmin) {
 				authorities.push('ROLE_ADMIN');
 			}
-			$http
-				.post('/api/admin/users/', {username: $scope.newUser.username, password: $scope.newUser.password, authorities: authorities})
-				.then(function(response) {
-					$scope.users.push(response.data);
+			userService.save({}, {username: $scope.newUser.username, password: $scope.newUser.password, authorities: authorities},
+				function(user) {
+					$scope.users.push(user);
 					$scope.errors = {};
 					$scope.newUser = {};
-				}, function(response) {
+				},
+				function(response) {
 					// TODO handle unauthorised
 					$scope.errors = {};
 					response.data.errors.forEach(function(error) {
@@ -66,11 +68,9 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 	loadUsers();
 })
 
-.controller('projectsController', function($scope, $http, $uibModal) {
+.controller('projectsController', function($scope, $uibModal, projectService) {
 	function loadProjects() {
-		$http.get('/api/projects/').then(function(response) {
-			$scope.projects = response.data.projects;
-		});
+		projectService.list(function(projects) { $scope.projects = projects });
 	}
 	function newProject() {
 		var modalInstance = $uibModal.open({templateUrl: 'modals/new-project.html', controller: 'newProjectModalController'});
@@ -83,28 +83,33 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 	loadProjects();
 })
 
-.controller('projectController', function($scope, $routeParams, $http, $location, $uibModal) {
+.controller('projectController', function($scope, $routeParams, $location, $uibModal, projectService) {
 	function loadProject() {
-		$http.get('/api/projects/' + $routeParams.id).then(function(response) {
-			$scope.error = undefined;
-			$scope.project = response.data;
-		}, function(response) {
-			if (response.status == 404) {
-				$scope.error = {code: response.statusText, detail: 'The requested project could not be found.'};
+		projectService.get({id: $routeParams.id},
+			function(project) { $scope.project = project },
+			function(response) {
+				switch (response.status) {
+					case 404: 
+						$scope.error = {code: response.statusText, detail: 'The requested project could not be found.'};
+						break;
+					default:
+						$scope.error = {code: response.statusText};
+				}
 			}
-			else {
-				$scope.error = {code: response.statusText};
-			}
-		});
+		);
 	}
 	function loadReadMe() {
-		$http.get('/api/projects/' + $routeParams.id + "/readme").then(function(response) {
-			$scope.readMe = response.data;
-		}, function(response) {
-			if (response.status == 404) {
-				$scope.readMe = {html: ''};
-			}
-		});
+		projectService.getReadMe({id: $routeParams.id},
+			function(readMe) { $scope.readMe = readMe },
+			function(response) {
+				switch (response.status) {
+					case 404:
+						$scope.readMe = {html: ''};
+						break;
+					default:
+						//TODO handle other errors
+				}
+			});
 	}
 	function editProject() {
 		$uibModal
@@ -143,30 +148,26 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 	loadReadMe();
 })
 
-.controller('projectTasksController', function($scope, $http, $uibModal, $routeParams) {
+.controller('projectTasksController', function($scope, $uibModal, $routeParams, projectService, taskService) {
 	var filterStates = {'OPEN': ['TO_DO', 'IN_PROGRESS', 'ON_HOLD'], 'CLOSED': ['DONE']};
 	var activeFilter = 'OPEN';
 	function loadProject() {
-		$http.get('/api/projects/' + $routeParams.id).then(function(response) {
-			$scope.error = undefined;
-			$scope.project = response.data;
-		}, function(response) {
-			if (response.status == 404) {
-				$scope.error = {code: response.statusText, detail: 'The requested project could not be found.'};
-			}
-			else {
-				$scope.error = {code: response.statusText};
-			}
-		});
+		projectService.get({id: $routeParams.id},
+			function(project) { $scope.project = project },
+			function(response) {
+				switch (response.status) {
+					case 404: 
+						$scope.error = {code: response.statusText, detail: 'The requested project could not be found.'};
+						break;
+					default:
+						$scope.error = {code: response.statusText};
+				}
+			});
 	}
 	function loadTasks() {
-		var query = 'project=' + $routeParams.id;
-		if (activeFilter in filterStates) {
-			query += filterStates[activeFilter].map(function(state) { return '&state=' + state; }).join('');
-		}
-		$http.get('/api/tasks/?' + query).then(function(response) {
-			$scope.tasks = response.data.tasks;
-		});
+		taskService.query({project: $routeParams.id, state: filterStates[activeFilter]},
+			function(tasks) { $scope.tasks = tasks }
+		);
 	};
 	function isFilterActive(filter) {
 		return activeFilter === filter;
@@ -191,53 +192,50 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 	loadTasks();
 })
 
-.controller('taskController', function($scope, $http, $uibModal, $routeParams, $location) {
+.controller('taskController', function($scope, $uibModal, $routeParams, $location, taskService) {
 	var transitions = {
 		'TO_DO': [{'label': 'Start work', 'target': 'IN_PROGRESS'}],
 	    'IN_PROGRESS': [{'label': 'Pause work', 'target': 'ON_HOLD'}, {'label': 'Done', 'target': 'DONE'}],
 	    'ON_HOLD': [{'label': 'Resume work', 'target': 'IN_PROGRESS'}],
 	    'DONE': []};
 	function loadTask() {
-		$http.get('/api/tasks/' + $routeParams.id).then(function(response) {
-			$scope.error = undefined;
-			$scope.task = response.data;
-			$scope.transitions = transitions[$scope.task.state];
-		}, function(response) {
-			if (response.status == 404) {
-				$scope.error = {code: response.statusText, detail: 'The requested task could not be found.'};
-			}
-			else {
-				$scope.error = {code: response.statusText};
-			}
-		});
+		taskService.get({id: $routeParams.id},
+			function(task) { $scope.task = task; $scope.transitions = transitions[$scope.task.state] },
+			function(response) {
+				switch (response.status) {
+					case 404:
+						$scope.error = {code: response.statusText, detail: 'The requested task could not be found.'};
+						break;
+					default:
+						$scope.error = {code: response.statusText};
+				}
+			});
 	}
 	function performTransition(transition) {
-		$http.post('/api/tasks/' + $scope.task.id, {state: transition.target}).then(function(response) {
-			$scope.task = response.data;
-			$scope.transitions = transitions[$scope.task.state];
-		});
+		taskService.save({id: $routeParams.id}, {state: transition.target},
+			function(task) { $scope.task = task; $scope.transitions = transitions[$scope.task.state] }
+		);
 	}
 	function editTask() {
 		$uibModal
 			.open({templateUrl: 'modals/edit-task.html', controller: 'editTaskModalController', resolve: {task: function() {return $scope.task}}})
-			.result.then(function (response) {
-				$scope.task = response.data;
+			.result.then(function (task) {
+				$scope.task = task;
 				refreshReadMe();
 			});
 	}
 	function deleteTask() {
 		$uibModal
 			.open({templateUrl: 'modals/delete-task.html', controller: 'deleteTaskModalController', size: 'sm', resolve: {task: function() {return $scope.task}}})
-			.result.then(function (response) {
+			.result.then(function () {
 				$location.path('/projects/' + $scope.task.project);
 			});
 	};
 	function refreshReadMe() {
-		$http.get('/api/tasks/' + $routeParams.id + "/readme").then(function(response) {
-			$scope.readMe = response.data;
-		}, function() {
-			$scope.readMe = undefined;
-		});
+		taskService.getReadMe({id: $routeParams.id},
+				function(readMe) { $scope.readMe = readMe },
+				function() { $scope.readMe = undefined }
+		);
 	}
 
 	$scope.performTransition = performTransition;
@@ -249,13 +247,11 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 
 // MODALS
 
-.controller('newProjectModalController', function($scope, $uibModalInstance, $http) {
+.controller('newProjectModalController', function($scope, $uibModalInstance, projectService) {
 	function submit() {
-		$http
-			.post('/api/projects/', {name: $scope.projectName, description: $scope.projectDescription})
-			.then(function(response) {
-				$uibModalInstance.close(response.data);
-			}, function (response) {
+		projectService.save({}, {name: $scope.projectName, description: $scope.projectDescription},
+			function(project) { $uibModalInstance.close(project) },
+			function (response) {
 				// TODO Handle unauthorized
 				// TODO Handle global errors
 				$scope.errors = {};
@@ -277,13 +273,11 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 	$scope.cancel = cancel;
 })
  
-.controller('editProjectModalController', function($scope, $uibModalInstance, $http, project) {
+.controller('editProjectModalController', function($scope, $uibModalInstance, projectService, project) {
 	function submit() {
-		$http
-			.post('/api/projects/' + project.id, {name: $scope.projectName, description: $scope.projectDescription})
-			.then(function(response) {
-				$uibModalInstance.close(response.data);
-			}, function (response) {
+		projectService.save({id: project.id}, {name: $scope.projectName, description: $scope.projectDescription},
+			function(project) { $uibModalInstance.close(project) },
+			function (response) {
 				// TODO Handle unauthorized
 				// TODO Handle global errors
 				$scope.errors = {};
@@ -305,14 +299,13 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 	$scope.cancel = cancel;
 })
  
-.controller('editReadmeModalController', function($scope, $uibModalInstance, $http, project, readMe) {
+.controller('editReadmeModalController', function($scope, $uibModalInstance, projectService, project, readMe) {
 	function submit() {
 		// clean up the data - undefined means empty string in this context
 		var markdown = angular.isDefined($scope.markdown) ? $scope.markdown : '';
-		$http
-			.post('/api/projects/' + project.id + '/readme', {markdown: markdown})
-			.then(function(response) {
-				$uibModalInstance.close(response.data);
+		projectService.saveReadMe({id: project.id}, {markdown: markdown},
+			function(readMe) {
+				$uibModalInstance.close(readMe);
 			}, function (response) {
 				// TODO Handle unauthorized
 				// TODO Handle global errors
@@ -334,17 +327,15 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 	$scope.cancel = cancel;
 })
  
-.controller('deleteProjectModalController', function($scope, $uibModalInstance, $http, project) {
+.controller('deleteProjectModalController', function($scope, $uibModalInstance, projectService, project) {
 	function submit() {
-		$http
-			.delete('/api/projects/' + project.id)
-			.then(function(response) {
+		projectService.delete({id: project.id},
+			function() {
 				$uibModalInstance.close();
 			}, function (response) {
 				// TODO Handle unauthorized
 				// TODO Handle global errors
 			});
-		
 	}
 	function cancel() {
 		$uibModalInstance.dismiss('cancel');
@@ -354,16 +345,16 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 	$scope.cancel = cancel;
 })
 
-.controller('newTaskModalController', function($scope, $uibModalInstance, $http, projectId) {
+.controller('newTaskModalController', function($scope, $uibModalInstance, taskService, projectId) {
 	function submit() {
 		// clean up the data - undefined means empty string in this context
 		var taskSummary = angular.isDefined($scope.taskSummary) ? $scope.taskSummary : '';
 		var taskDescription = angular.isDefined($scope.taskDescription) ? $scope.taskDescription : '';
-		$http
-			.post('/api/tasks/', {project: projectId, summary: taskSummary, description: taskDescription, priority: $scope.taskPriority})
-			.then(function(response) {
-				$uibModalInstance.close(response.data);
-			}, function (response) {
+		taskService.save({}, {project: projectId, summary: taskSummary, description: taskDescription, priority: $scope.taskPriority},
+			function(task) {
+				$uibModalInstance.close(task);
+			},
+			function (response) {
 				// TODO Handle unauthorized
 				// TODO Handle global errors
 				$scope.errors = {};
@@ -386,16 +377,16 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 	$scope.cancel = cancel;
 })
  
-.controller('editTaskModalController', function($scope, $uibModalInstance, $http, task) {
+.controller('editTaskModalController', function($scope, $uibModalInstance, taskService, task) {
 	function submit() {
 		// clean up the data - undefined means empty string in this context
 		var taskSummary = angular.isDefined($scope.taskSummary) ? $scope.taskSummary : '';
 		var taskDescription = angular.isDefined($scope.taskDescription) ? $scope.taskDescription : '';
-		$http
-			.post('/api/tasks/' + task.id, {summary: taskSummary, description: taskDescription, priority: $scope.taskPriority})
-			.then(function(response) {
-				$uibModalInstance.close(response.data);
-			}, function (response) {
+		taskService.save({id: task.id}, {summary: taskSummary, description: taskDescription, priority: $scope.taskPriority},
+			function(task) {
+				$uibModalInstance.close(task);
+			},
+			function (response) {
 				// TODO Handle unauthorized
 				// TODO Handle global errors
 				$scope.errors = {};
@@ -418,11 +409,10 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 	$scope.cancel = cancel;
 })
 
-.controller('deleteTaskModalController', function($scope, $uibModalInstance, $http, task) {
+.controller('deleteTaskModalController', function($scope, $uibModalInstance, taskService, task) {
 	function submit() {
-		$http
-			.delete('/api/tasks/' + task.id)
-			.then(function(response) {
+		taskService.delete({id: task.id},
+			function() {
 				$uibModalInstance.close();
 			}, function (response) {
 				// TODO Handle unauthorized
@@ -439,13 +429,11 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 
 // NAVIGATION
 
-.controller('navigationController', function($scope, $location, $http) {
+.controller('navigationController', function($scope, $location, userService) {
 	function isActive(viewLocation) {
 		return viewLocation === $location.path();
 	}
 	$scope.isActive = isActive;
 	$scope.showAdminOptions = false;
-	$http.get('/api/admin/users/current').then(function(response) {
-		$scope.showAdminOptions = contains(response.data.authorities, 'ROLE_ADMIN');
-	});
+	userService.getCurrent(function(user) { $scope.showAdminOptions = contains(user.authorities, 'ROLE_ADMIN') });
 });

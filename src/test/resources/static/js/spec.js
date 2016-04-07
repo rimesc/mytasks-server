@@ -17,6 +17,12 @@ var mockModalInstance = {
 		
 describe("myTasksControllers", function() {
 
+	beforeEach(function() {
+		jasmine.addCustomEqualityTester(function(first, second) { return angular.equals(first, second) });
+	});
+
+	beforeEach(module('myTasksApplication'));
+	beforeEach(module('myTasksServices'));
 	beforeEach(module('myTasksControllers'));
 
 	var $httpBackend, $controller;
@@ -432,7 +438,7 @@ describe("myTasksControllers", function() {
 			$scope.editTask();
 			var updatedTask = {id: '1', summary: 'Edited task', description: 'This is an edited task.', priority: 'LOW', state: 'TO_DO', created: '2016-04-03T19:52:00Z', updated: '2016-04-03T19:52:00Z', project: '1', href: '/api/tasks/1'};
 			$httpBackend.expectGET('/api/tasks/1/readme').respond(200, readMe);
-			mockModalInstance.close({data: updatedTask});
+			mockModalInstance.close(updatedTask);
 			$httpBackend.flush();
 			expect($scope.task).toEqual(updatedTask);
 		});
@@ -955,6 +961,136 @@ describe("myTasksControllers", function() {
 			$httpBackend.flush();
 
 			expect($scope.showAdminOptions).toEqual(false);
+		});
+			
+	});
+
+	describe('adminController', function() {
+
+		var currentUser = {"username": "user", "authorities": ['ROLE_USER']};
+		var otherUser = {"username": "other", "authorities": ['ROLE_USER']};
+		var adminUser = {"username": "admin", "authorities": ['ROLE_USER', 'ROLE_ADMIN']};
+		var users = [ currentUser, otherUser, adminUser ];
+		
+		var $scope;
+
+		beforeEach(function() {
+			$scope = {};
+		});
+
+		it ('loads the list of users', function() {
+			$httpBackend.expectGET('/api/admin/users/current').respond(200, currentUser);
+			$httpBackend.expectGET('/api/admin/users/').respond(200, {"users": users});
+			var controller = $controller('adminController', {
+				$scope: $scope
+			});
+			$httpBackend.flush();
+			expect($scope.currentUser).toEqual(currentUser);
+			expect($scope.users).toEqual(users);
+		});
+			
+		it ('knows which user is the current user', function() {
+			$httpBackend.expectGET('/api/admin/users/current').respond(200, currentUser);
+			$httpBackend.expectGET('/api/admin/users/').respond(200, {"users": users});
+			var controller = $controller('adminController', {
+				$scope: $scope
+			});
+			$httpBackend.flush();
+			expect($scope.isCurrentUser(currentUser)).toEqual(true);
+			expect($scope.isCurrentUser(otherUser)).toEqual(false);
+			expect($scope.isCurrentUser(adminUser)).toEqual(false);
+		});
+			
+		it ('knows which users are admins', function() {
+			$httpBackend.expectGET('/api/admin/users/current').respond(200, currentUser);
+			$httpBackend.expectGET('/api/admin/users/').respond(200, {"users": users});
+			var controller = $controller('adminController', {
+				$scope: $scope
+			});
+			$httpBackend.flush();
+			expect($scope.isAdmin(currentUser)).toEqual(false);
+			expect($scope.isAdmin(otherUser)).toEqual(false);
+			expect($scope.isAdmin(adminUser)).toEqual(true);
+		});
+
+		it ("creates a new user on submit", function() {
+			$httpBackend.expectGET('/api/admin/users/current').respond(200, currentUser);
+			$httpBackend.expectGET('/api/admin/users/').respond(200, {"users": users});
+			var controller = $controller('adminController', {
+				$scope: $scope
+			});
+			$httpBackend.flush();
+			var newUser = {'username': 'new', 'password': 'secret', 'authorities': ['ROLE_USER']};
+			$httpBackend.expectPOST('/api/admin/users/').respond(200, newUser);
+			$scope.newUser = newUser;
+			$scope.createUser();
+			$httpBackend.flush();
+		});
+			
+		it ("creates a new admin user and adds it to the list on submit", function() {
+			$httpBackend.expectGET('/api/admin/users/current').respond(200, currentUser);
+			$httpBackend.expectGET('/api/admin/users/').respond(200, {"users": users});
+			var controller = $controller('adminController', {
+				$scope: $scope
+			});
+			$httpBackend.flush();
+			var newUser = {'username': 'new', 'password': 'secret', 'authorities': ['ROLE_USER', 'ROLE_ADMIN']};
+			$httpBackend.expectPOST('/api/admin/users/').respond(200, newUser);
+			$scope.newUser = newUser;
+			$scope.createUser();
+			$httpBackend.flush();
+			expect($scope.users).toEqual(users.concat([newUser]));
+		});
+			
+		it ("handles field errors", function() {
+			$httpBackend.expectGET('/api/admin/users/current').respond(200, currentUser);
+			$httpBackend.expectGET('/api/admin/users/').respond(200, {"users": users});
+			var controller = $controller('adminController', {
+				$scope: $scope
+			});
+			$httpBackend.flush();
+			var errors = [
+							{'field': 'username', 'code': 'invalid', 'message': 'invalid credentials'},
+							{'field': 'password', 'code': 'invalid', 'message': 'invalid credentials'}
+						];
+			$scope.newUser = {'username': 'new', 'password': 'secret', 'authorities': ['ROLE_USER', 'ROLE_ADMIN']};
+			$httpBackend.expectPOST('/api/admin/users/').respond(400, {'errors': errors});
+			$scope.createUser();
+			$httpBackend.flush();
+			expect($scope.errors).toEqual({'username': 'invalid credentials', 'password': 'invalid credentials'});
+		});
+			
+		it ("resets field errors on resubmission", function() {
+			$httpBackend.expectGET('/api/admin/users/current').respond(200, currentUser);
+			$httpBackend.expectGET('/api/admin/users/').respond(200, {"users": users});
+			var controller = $controller('adminController', {
+				$scope: $scope
+			});
+			$httpBackend.flush();
+			var errors = [
+							{'field': 'username', 'code': 'invalid', 'message': 'invalid credentials'},
+							{'field': 'password', 'code': 'invalid', 'message': 'invalid credentials'}
+						];
+			newUser = {'username': 'new', 'password': 'secret', 'authorities': ['ROLE_USER', 'ROLE_ADMIN']};
+			$scope.newUser = newUser;
+			$httpBackend.expectPOST('/api/admin/users/').respond(400, {'errors': errors});
+			$scope.createUser();
+			$httpBackend.flush();
+			expect($scope.errors).toEqual({'username': 'invalid credentials', 'password': 'invalid credentials'});
+			$httpBackend.expectPOST('/api/admin/users/').respond(200, newUser);
+			$scope.createUser();
+			$httpBackend.flush();
+			expect($scope.errors).toEqual({});
+		});
+			
+		it ("is in an error state if the current user does not have the correct authorities", function() {
+			$httpBackend.expectGET('/api/admin/users/current').respond(200, currentUser);
+			$httpBackend.expectGET('/api/admin/users/').respond(403, {}, {}, 'Access Forbidden');
+			var controller = $controller('adminController', {
+				$scope: $scope
+			});
+			$httpBackend.flush();
+			expect($scope.error).toEqual({'code': 'Access Forbidden', 'detail': 'You do not have permission to access this page.'});
 		});
 			
 	});
