@@ -2,25 +2,28 @@
 	<div class="modal-header">
 		<h4 class="modal-title">Edit Task</h4>
 	</div>
-	<form data-ng-submit="submit()">
+	<form name="form" data-ng-submit="submit()">
 		<div class="modal-body">
-			<div class="form-group" data-ng-class="{'has-error' : errors['summary']}">
+			<my-messages messages="errors" type="danger"></my-messages>
+			<div class="form-group" data-ng-class="{'has-error' : (form.summary.$dirty || form.summary.$touched) && form.summary.$invalid}">
 				<label for="summary" class="control-label">
-					Summary<span data-ng-if="errors['summary']"> ({{errors['summary']}})</span>
+					Summary
+					<span data-ng-messages="form.summary.$error" role="alert" data-ng-show="form.summary.$dirty || form.summary.$touched">
+		    			<span data-ng-message="required">(please enter a summary of the task)</span>
+		    			<span data-ng-message="maxlength">(may be no more than 255 characters long)</span>
+	    			</span>
 				</label>
-				<input class="form-control" type="text" autofocus required id="taskSummary" name="summary" placeholder="My task" data-ng-model="taskSummary">
+				<input class="form-control" type="text" autofocus required data-ng-maxlength="255" id="taskSummary" name="summary" placeholder="My task" data-ng-model="task.summary">
 			</div>
-			<div class="form-group" data-ng-class="{'has-error' : errors['description']}">
-				<label for="description" class="control-label">
-					Description<span data-ng-if="errors['description']"> ({{errors['description']}})</span>
-				</label>
-				<textarea rows="12" class="form-control" id="taskDescription" name="description" placeholder="A description of the task" data-ng-model="taskDescription"></textarea>
+			<div class="form-group">
+				<label for="description" class="control-label">Description</label>
+				<textarea rows="12" class="form-control" id="taskDescription" name="description" placeholder="A description of the task" data-ng-model="task.description"></textarea>
 			</div>
-			<div class="form-group" data-ng-class="{'has-error' : errors['priority']}">
+			<div class="form-group">
 				<div class="row">
 					<div class="col-md-4 col-sm-6 col-xs-12">
-						<label for="priority" class="control-label">Priority<span data-ng-if="errors['summary']"> ({{errors['priority']}})</span></label>
-						<select class="form-control" id="taskPriority" name="priority" data-ng-model="taskPriority"
+						<label for="priority" class="control-label">Priority</label>
+						<select class="form-control" id="taskPriority" name="priority" data-ng-model="task.priority"
       							data-ng-options="labels.priorities[p] for p in priorities"></select>
 					</div>
 				</div>
@@ -28,7 +31,7 @@
 		</div>
 		<div class="modal-footer">
 			<div>
-				<button type="submit" class="btn btn-primary">Save</button>
+				<button type="submit" class="btn btn-primary" data-ng-disabled="form.$invalid">Save</button>
 				<button type="button" class="btn btn-default" data-ng-click="cancel()">Cancel</button>
 			</div>
 		</div>

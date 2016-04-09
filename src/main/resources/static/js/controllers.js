@@ -273,15 +273,15 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
  
 .controller('editProjectModalController', function($scope, $uibModalInstance, projectService, project) {
 	function submit() {
-		projectService.save({id: project.id}, {name: $scope.projectName, description: $scope.projectDescription},
+		projectService.save({id: project.id}, $scope.project,
 			function(project) { $uibModalInstance.close(project) },
 			function (response) {
 				// TODO Handle unauthorized
 				// TODO Handle global errors
-				$scope.errors = {};
+				$scope.errors = [];
 				response.data.errors.forEach(function(error) {
 					if ('field' in error) {
-						$scope.errors[error.field] = error.message;
+						$scope.errors.push({message: 'Invalid ' + error.field, explanation: error.message});
 					}
 				});
 			});
@@ -290,8 +290,7 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 		$uibModalInstance.dismiss('cancel');
 	}
 
-	$scope.projectName = project.name;
-	$scope.projectDescription = project.description;
+	$scope.project = {name: project.name, description: project.description};
 	$scope.errors = {};
 	$scope.submit = submit;
 	$scope.cancel = cancel;
@@ -345,20 +344,20 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 
 .controller('newTaskModalController', function($scope, $uibModalInstance, taskService, projectId) {
 	function submit() {
-		// clean up the data - undefined means empty string in this context
-		var taskSummary = angular.isDefined($scope.taskSummary) ? $scope.taskSummary : '';
-		var taskDescription = angular.isDefined($scope.taskDescription) ? $scope.taskDescription : '';
-		taskService.save({}, {project: projectId, summary: taskSummary, description: taskDescription, priority: $scope.taskPriority},
+		if (angular.isUndefined($scope.task.summary)) {
+			$scope.task.summary = '';
+		}
+		taskService.save({}, $scope.task,
 			function(task) {
 				$uibModalInstance.close(task);
 			},
 			function (response) {
 				// TODO Handle unauthorized
 				// TODO Handle global errors
-				$scope.errors = {};
+				$scope.errors = [];
 				response.data.errors.forEach(function(error) {
 					if ('field' in error) {
-						$scope.errors[error.field] = error.message;
+						$scope.errors.push({message: 'Invalid ' + error.field, explanation: error.message});
 					}
 				});
 			});
@@ -367,30 +366,27 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 		$uibModalInstance.dismiss('cancel');
 	}
 
-	$scope.taskSummary = '';
-	$scope.taskDescription = '';
-	$scope.taskPriority = 'NORMAL';
-	$scope.errors = {};
+	$scope.task = {project: projectId, priority: 'NORMAL'};
 	$scope.submit = submit;
 	$scope.cancel = cancel;
 })
  
 .controller('editTaskModalController', function($scope, $uibModalInstance, taskService, task) {
 	function submit() {
-		// clean up the data - undefined means empty string in this context
-		var taskSummary = angular.isDefined($scope.taskSummary) ? $scope.taskSummary : '';
-		var taskDescription = angular.isDefined($scope.taskDescription) ? $scope.taskDescription : '';
-		taskService.save({id: task.id}, {summary: taskSummary, description: taskDescription, priority: $scope.taskPriority},
+		if (angular.isUndefined($scope.task.summary)) {
+			$scope.task.summary = '';
+		}
+		taskService.save({id: task.id}, $scope.task,
 			function(task) {
 				$uibModalInstance.close(task);
 			},
 			function (response) {
 				// TODO Handle unauthorized
 				// TODO Handle global errors
-				$scope.errors = {};
+				$scope.errors = [];
 				response.data.errors.forEach(function(error) {
 					if ('field' in error) {
-						$scope.errors[error.field] = error.message;
+						$scope.errors.push({message: 'Invalid ' + error.field, explanation: error.message});
 					}
 				});
 			});
@@ -399,10 +395,7 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 		$uibModalInstance.dismiss('cancel');
 	}
 
-	$scope.taskSummary = task.summary;
-	$scope.taskDescription = task.description;
-	$scope.taskPriority = task.priority;
-	$scope.errors = {};
+	$scope.task = {summary: task.summary, description: task.description, priority: task.priority, project: task.project};
 	$scope.submit = submit;
 	$scope.cancel = cancel;
 })

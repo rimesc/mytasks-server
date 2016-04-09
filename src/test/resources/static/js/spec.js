@@ -645,7 +645,7 @@ describe("myTasksControllers", function() {
 			});
 			$scope.submit();
 			$httpBackend.flush();
-			expect($scope.errors).toEqual({'name': 'invalid name', 'description': 'invalid description'});
+			expect($scope.errors).toEqual([{message: 'Invalid name', explanation: 'invalid name'}, {message: 'Invalid description', explanation: 'invalid description'}]);
 		});
 		
 		it("resets field errors on resubmission", function() {
@@ -659,11 +659,11 @@ describe("myTasksControllers", function() {
 			});
 			$scope.submit();
 			$httpBackend.flush();
-			expect($scope.errors).toEqual({'name': 'invalid name'});
+			expect($scope.errors).toEqual([{message: 'Invalid name', explanation: 'invalid name'}]);
 			$httpBackend.expectPOST('/api/projects/1').respond(400, {'errors': [descriptionError]});
 			$scope.submit();
 			$httpBackend.flush();
-			expect($scope.errors).toEqual({'description': 'invalid description'});
+			expect($scope.errors).toEqual([{message: 'Invalid description', explanation: 'invalid description'}]);
 		});
 		
 		it("returns the updated project on success", function() {
@@ -763,7 +763,7 @@ describe("myTasksControllers", function() {
 			});
 			$scope.submit();
 			$httpBackend.flush();
-			expect($scope.errors).toEqual({'summary': 'invalid summary', 'description': 'invalid description'});
+			expect($scope.errors).toEqual([{message: 'Invalid summary', explanation: 'invalid summary'}, {message: 'Invalid description', explanation: 'invalid description'}]);
 		});
 		
 		it("resets field errors on resubmission", function() {
@@ -777,14 +777,14 @@ describe("myTasksControllers", function() {
 			});
 			$scope.submit();
 			$httpBackend.flush();
-			expect($scope.errors).toEqual({'summary': 'invalid summary'});
+			expect($scope.errors).toEqual([{message: 'Invalid summary', explanation: 'invalid summary'}]);
 			$httpBackend.expectPOST('/api/tasks/').respond(400, {'errors': [descriptionError]});
 			$scope.submit();
 			$httpBackend.flush();
-			expect($scope.errors).toEqual({'description': 'invalid description'});
+			expect($scope.errors).toEqual([{message: 'Invalid description', explanation: 'invalid description'}]);
 		});
 		
-		it("treats undefined summary and description as empty", function() {
+		it("treats undefined summary as empty", function() {
 			var createdTask;
 			var newTask = {"project": 1, "summary": "", "description": "", "priority": "HIGH"};
 			$httpBackend.expectPOST('/api/tasks/', newTask).respond(200, newTask);
@@ -797,10 +797,10 @@ describe("myTasksControllers", function() {
 				},
 				projectId: 1
 			});
-			$scope.taskPriority = newTask.priority;
+			$scope.task = newTask;
 			$scope.submit();
 			$httpBackend.flush();
-			expect($scope.errors).toEqual({});
+			expect($scope.errors).toBeUndefined();
 			expect(createdTask).toEqual(newTask);
 		});
 		
@@ -817,12 +817,10 @@ describe("myTasksControllers", function() {
 				},
 				projectId: 1
 			});
-			$scope.taskSummary = newTask.summary;
-			$scope.taskDescription = newTask.description;
-			$scope.taskPriority = newTask.priority;
+			$scope.task = newTask;
 			$scope.submit();
 			$httpBackend.flush();
-			expect($scope.errors).toEqual({});
+			expect($scope.errors).toBeUndefined();
 			expect(createdTask).toEqual(newTask);
 		});
 		
@@ -851,7 +849,7 @@ describe("myTasksControllers", function() {
 			});
 			$scope.submit();
 			$httpBackend.flush();
-			expect($scope.errors).toEqual({'summary': 'invalid summary', 'description': 'invalid description'});
+			expect($scope.errors).toEqual([{message: 'Invalid summary', explanation: 'invalid summary'}, {message: 'Invalid description', explanation: 'invalid description'}]);
 		});
 		
 		it("resets field errors on resubmission", function() {
@@ -865,17 +863,17 @@ describe("myTasksControllers", function() {
 			});
 			$scope.submit();
 			$httpBackend.flush();
-			expect($scope.errors).toEqual({'summary': 'invalid summary'});
+			expect($scope.errors).toEqual([{message: 'Invalid summary', explanation: 'invalid summary'}]);
 			$httpBackend.expectPOST('/api/tasks/1').respond(400, {'errors': [descriptionError]});
 			$scope.submit();
 			$httpBackend.flush();
-			expect($scope.errors).toEqual({'description': 'invalid description'});
+			expect($scope.errors).toEqual([{message: 'Invalid description', explanation: 'invalid description'}]);
 		});
 		
 		it("returns the updated task on success", function() {
 			var savedTask;
-			var updatedTask = {id: '1', summary: 'Renamed task', description: 'This is an edited task.', priority: 'Low', state: 'TO_DO', created: '2016-04-03T19:52:00Z', updated: '2016-04-03T19:52:00Z', project: '1', href: '/api/tasks/1'};
-			$httpBackend.expectPOST('/api/tasks/1', {summary: updatedTask.summary, description: updatedTask.description, priority: updatedTask.priority}).respond(200, updatedTask);
+			var updatedTask = {summary: 'Renamed task', description: 'This is an edited task.', priority: 'LOW'};
+			$httpBackend.expectPOST('/api/tasks/1', updatedTask).respond(200, updatedTask);
 			var controller = $controller('editTaskModalController', {
 				$scope: $scope,
 				$uibModalInstance: {
@@ -885,12 +883,10 @@ describe("myTasksControllers", function() {
 				},
 				task: task
 			});
-			$scope.taskSummary = updatedTask.summary;
-			$scope.taskDescription = updatedTask.description;
-			$scope.taskPriority = updatedTask.priority;
+			$scope.task = updatedTask;
 			$scope.submit();
 			$httpBackend.flush();
-			expect($scope.errors).toEqual({});
+			expect($scope.errors).toBeUndefined();
 			expect(savedTask).toEqual(updatedTask);
 		});
 		
