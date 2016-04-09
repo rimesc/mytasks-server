@@ -1,5 +1,6 @@
 package uk.co.zoneofavoidance.my.tasks.rest.controllers;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.startsWith;
@@ -52,12 +53,9 @@ public class ProjectsRestControllerIT extends RestControllerIT {
       post("/api/projects/", project)
          .andExpect(status().isBadRequest())
          .andExpect(jsonPath("errors", hasSize(2)))
-         .andExpect(jsonPath("errors[0].field", equalTo("name")))
-         .andExpect(jsonPath("errors[0].code", equalTo("Length")))
-         .andExpect(jsonPath("errors[0].message", equalTo("length must be between 1 and 255")))
-         .andExpect(jsonPath("errors[1].field", equalTo("name")))
-         .andExpect(jsonPath("errors[1].code", equalTo("NotEmpty")))
-         .andExpect(jsonPath("errors[1].message", equalTo("may not be empty")));
+         .andExpect(jsonPath("errors[*].field", containsInAnyOrder("name", "name")))
+         .andExpect(jsonPath("errors[*].code", containsInAnyOrder("Length", "NotEmpty")))
+         .andExpect(jsonPath("errors[*].message", containsInAnyOrder("length must be between 1 and 255", "may not be empty")));
    }
 
    @Test
