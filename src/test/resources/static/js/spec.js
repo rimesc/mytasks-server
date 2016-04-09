@@ -24,6 +24,7 @@ describe("myTasksControllers", function() {
 	beforeEach(module('myTasksApplication'));
 	beforeEach(module('myTasksServices'));
 	beforeEach(module('myTasksControllers'));
+	beforeEach(module('myTasksComponents'));
 
 	var $httpBackend, $controller;
 	beforeEach(inject(function($injector) {
@@ -581,7 +582,7 @@ describe("myTasksControllers", function() {
 			});
 			$scope.submit();
 			$httpBackend.flush();
-			expect($scope.errors).toEqual({'name': 'invalid name', 'description': 'invalid description'});
+			expect($scope.errors).toEqual([{message: 'Invalid name', explanation: 'invalid name'}, {message: 'Invalid description', explanation: 'invalid description'}]);
 		});
 		
 		it("resets field errors on resubmission", function() {
@@ -594,11 +595,11 @@ describe("myTasksControllers", function() {
 			});
 			$scope.submit();
 			$httpBackend.flush();
-			expect($scope.errors).toEqual({'name': 'invalid name'});
+			expect($scope.errors).toEqual([{message: 'Invalid name', explanation: 'invalid name'}]);
 			$httpBackend.expectPOST('/api/projects/').respond(400, {'errors': [descriptionError]});
 			$scope.submit();
 			$httpBackend.flush();
-			expect($scope.errors).toEqual({'description': 'invalid description'});
+			expect($scope.errors).toEqual([{message: 'Invalid description', explanation: 'invalid description'}]);
 		});
 		
 		it("returns the new project on success", function() {
@@ -615,7 +616,7 @@ describe("myTasksControllers", function() {
 			});
 			$scope.submit();
 			$httpBackend.flush();
-			expect($scope.errors).toEqual({});
+			expect($scope.messages).toBeUndefined();
 			expect(createdProject).toEqual(newProject);
 		});
 		

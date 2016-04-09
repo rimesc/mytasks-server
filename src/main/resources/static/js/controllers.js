@@ -249,15 +249,15 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 
 .controller('newProjectModalController', function($scope, $uibModalInstance, projectService) {
 	function submit() {
-		projectService.save({}, {name: $scope.projectName, description: $scope.projectDescription},
+		projectService.save({}, $scope.project,
 			function(project) { $uibModalInstance.close(project) },
 			function (response) {
 				// TODO Handle unauthorized
 				// TODO Handle global errors
-				$scope.errors = {};
+				$scope.errors = [];
 				response.data.errors.forEach(function(error) {
 					if ('field' in error) {
-						$scope.errors[error.field] = error.message;
+						$scope.errors.push({message: 'Invalid ' + error.field, explanation: error.message});
 					}
 				});
 			});
@@ -266,9 +266,7 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 		$uibModalInstance.dismiss('cancel');
 	}
 
-	$scope.projectName = "";
-	$scope.projectDescription = "";
-	$scope.errors = {};
+	$scope.project = {};
 	$scope.submit = submit;
 	$scope.cancel = cancel;
 })

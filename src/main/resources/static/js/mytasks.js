@@ -1,4 +1,4 @@
-var myTasksApplication = angular.module('myTasksApplication', ['myTasksControllers', 'ngRoute'])
+var myTasksApplication = angular.module('myTasksApplication', ['myTasksControllers', 'myTasksComponents', 'ngRoute', 'ngMessages'])
 
 .config(function($routeProvider, $httpProvider, $resourceProvider) {
 	$routeProvider

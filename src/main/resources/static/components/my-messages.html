@@ -1,0 +1,5 @@
+<div>
+	<uib-alert data-ng-repeat="message in $ctrl.messages" class="alert" type="{{message.type ? message.type : type}}" close="close($index)">
+		<strong>{{message.message}}:</strong> {{message.explanation}}
+	</uib-alert>
+</div>

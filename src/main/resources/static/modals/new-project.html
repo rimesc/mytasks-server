@@ -2,24 +2,27 @@
 	<div class="modal-header">
 		<h4 class="modal-title">New Project</h4>
 	</div>
-	<form data-ng-submit="submit()">
+	<form name="form" data-ng-submit="submit()">
 		<div class="modal-body">
-			<div class="form-group" data-ng-class="{'has-error' : errors['name']}">
+			<my-messages messages="errors" type="danger"></my-messages>
+			<div class="form-group" data-ng-class="{'has-error' : (form.name.$dirty || form.name.$touched) && form.name.$invalid}">
 				<label for="name" class="control-label">
-					Name<span data-ng-if="errors['name']"> ({{errors['name']}})</span>
+					Name
+					<span data-ng-messages="form.name.$error" role="alert" data-ng-show="form.name.$dirty || form.name.$touched">
+		    			<span data-ng-message="required">(please enter a name for the project)</span>
+		    			<span data-ng-message="maxlength">(please choose a shorter name)</span>
+	    			</span>
 				</label>
-				<input class="form-control" type="text" autofocus required id="projectName" name="name" placeholder="My new project" data-ng-model="projectName">
+				<input class="form-control" type="text" autofocus required data-ng-maxlength="255" id="projectName" name="name" placeholder="My new project" data-ng-model="project.name">
 			</div>
-			<div class="form-group" data-ng-class="{'has-error' : errors['description']}">
-				<label for="description" class="control-label">
-					Description<span data-ng-if="errors['description']"> ({{errors['description']}})</span>
-				</label>
-				<textarea rows="2" class="form-control" id="projectDescription" name="description" placeholder="A short description of the project." data-ng-model="projectDescription"></textarea>
+			<div class="form-group">
+				<label for="description" class="control-label">Description</label>
+				<textarea rows="2" class="form-control" id="projectDescription" name="description" placeholder="A short description of the project." data-ng-model="project.description"></textarea>
 			</div>
 		</div>
 		<div class="modal-footer">
 			<div>
-				<button type="submit" class="btn btn-primary">Create</button>
+				<button type="submit" class="btn btn-primary" data-ng-disabled="form.$invalid">Create</button>
 				<button type="button" class="btn btn-default" data-ng-click="cancel()">Cancel</button>
 			</div>
 		</div>
