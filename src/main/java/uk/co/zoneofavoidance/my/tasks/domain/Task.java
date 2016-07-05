@@ -1,7 +1,6 @@
 package uk.co.zoneofavoidance.my.tasks.domain;
 
 import static javax.persistence.EnumType.STRING;
-import static javax.persistence.FetchType.LAZY;
 import static uk.co.zoneofavoidance.my.tasks.domain.Priority.NORMAL;
 import static uk.co.zoneofavoidance.my.tasks.domain.State.TO_DO;
 
@@ -46,7 +45,7 @@ public class Task {
    @NotNull
    private State state = TO_DO;
 
-   @ManyToOne(fetch = LAZY, optional = false)
+   @ManyToOne(optional = false)
    private Project project;
 
    @CreationTimestamp
@@ -55,19 +54,28 @@ public class Task {
    @UpdateTimestamp
    private Date updated;
 
+   public static Task create(final Project project, final Long id, final String summary, final String description, final Priority priority, final State state) {
+      final Task task = create(project, summary, description, priority, state);
+      task.setId(id);
+      return task;
+   }
+
+   public static Task create(final Project project, final String summary, final String description, final Priority priority, final State state) {
+      final Task task = create(project, summary, description, priority);
+      task.setState(state);
+      return task;
+   }
+
+   public static Task create(final Project project, final String summary, final String description, final Priority priority) {
+      final Task task = new Task();
+      task.setProject(project);
+      task.setSummary(summary);
+      task.setDescription(description);
+      task.setPriority(priority);
+      return task;
+   }
+
    public Task() {
-   }
-
-   public Task(final Project project, final String summary, final String description, final Priority priority) {
-      this.project = project;
-      this.summary = summary;
-      this.description = description;
-      this.priority = priority;
-   }
-
-   public Task(final Project project, final String summary, final String description, final Priority priority, final State state) {
-      this(project, summary, description, priority);
-      this.state = state;
    }
 
    public Long getId() {
@@ -102,6 +110,10 @@ public class Task {
       return updated;
    }
 
+   public void setId(final Long id) {
+      this.id = id;
+   }
+
    public void setSummary(final String summary) {
       this.summary = summary;
    }
@@ -134,4 +146,8 @@ public class Task {
       return getUpdated() != null && getCreated() != null && getUpdated().after(getCreated());
    }
 
+   @Override
+   public String toString() {
+      return String.format("Task %d: '%s'", id, summary);
+   }
 }

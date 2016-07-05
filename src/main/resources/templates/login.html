@@ -19,7 +19,6 @@
 
 	<body>
 
-		<nav data-th-replace="fragments :: navbar(active='overview')"></nav>
 
 		<div class="container">
 			<div class="row">
@@ -28,7 +27,7 @@
 						<div class="content">
 							<div class="alert alert-success" role="alert" data-th-if="${success}" data-th-text="#{${success}}"></div>
 							<div class="alert alert-danger" role="alert" data-th-if="${error}" data-th-text="#{${error}}"></div>
-							<form class="form-horizontal" method="post">
+							<form class="form-horizontal" data-th-action="@{/login}" method="post">
 								<div class="form-group" data-th-classappend="${error} ? 'has-error'">
 									<label for="username" class="col-sm-3 control-label">User name</label>
 								<div class="col-sm-9">
@@ -52,7 +51,6 @@
 									</div>
 								</div>
 								-->
-								<input data-th-replace="fragments :: csrf"/>
 								<div class="form-group">
 									<div class="col-sm-offset-3 col-sm-9">
 										<button type="submit" class="btn btn-default">Sign in</button>

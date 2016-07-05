@@ -38,15 +38,23 @@ public class Project {
    @Formula("(select count(*) from Task t where t.project_id = id)")
    private int numberOfTasks;
 
+   @Formula("(select count(*) from Task t where t.project_id = id and t.state != 'DONE')")
+   private int numberOfOpenTasks;
+
    @OneToOne(fetch = LAZY, optional = true, cascade = ALL)
    private Note readMe;
 
-   public Project() {
+   public static Project create(final String name, final String description) {
+      final Project project = new Project();
+      project.setName(name);
+      project.setDescription(description);
+      return project;
    }
 
-   public Project(final String name, final String description) {
-      this.name = name;
-      this.description = description;
+   public static Project create(final Long id, final String name, final String description) {
+      final Project project = create(name, description);
+      project.setId(id);
+      return project;
    }
 
    public Long getId() {
@@ -67,6 +75,10 @@ public class Project {
 
    public int getNumberOfTasks() {
       return numberOfTasks;
+   }
+
+   public int getNumberOfOpenTasks() {
+      return numberOfOpenTasks;
    }
 
    public Note getReadMe() {
@@ -91,6 +103,11 @@ public class Project {
 
    public void setReadMe(final Note readMe) {
       this.readMe = readMe;
+   }
+
+   @Override
+   public String toString() {
+      return String.format("Task %d: '%s'", id, name);
    }
 
 }

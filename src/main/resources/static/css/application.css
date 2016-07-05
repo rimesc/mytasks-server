@@ -20,10 +20,19 @@ body {
 }
 
 @media (min-width: 768px) {
-  .navbar-nav > li > form > button.btn-link {
-    padding-top: 15px;
-    padding-bottom: 15px;
+	.navbar-nav > li > form > button.btn-link {
+	padding-top: 15px;
+	padding-bottom: 15px;
   }
+}
+
+.panel-heading .navbar-form {
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+
+span.line-through {
+	text-decoration: line-through;
 }
 
 .main {
@@ -68,6 +77,18 @@ li.list-group-placeholder {
 	color: #777;
 }
 
+.task-list .list-group-item-heading {
+	font-weight: 500;
+	font-size: 15px;
+}
+
+.task-list .list-group-item-heading>a {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 .alert-centered {
 	text-align: center;
 }
@@ -76,26 +97,47 @@ li.list-group-placeholder {
 	font-size: 36px;
 }
 
-span.priority {
-	border-radius: 4px;
-	color: #fff;
-	padding: 4px 8px;
+span.priority:BEFORE {
+	position: relative;
+	top: 1px;
+	font-family: 'Glyphicons Halflings';
+	font-style: normal;
+	font-weight: 400;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 span.priority-critical {
-	background-color: #d9534f;
+	color: #d9534f;
+}
+
+span.priority-critical:BEFORE {
+	content: "\e034\2009\e034\2009\e034\2009\e034";
 }
 
 span.priority-high {
-	background-color: #f0ad4e;
+	color: #f0ad4e;
+}
+
+span.priority-high:BEFORE {
+	content: "\e034\2009\e034\2009\e034";
 }
 
 span.priority-normal {
-	background-color: #5bc0de;
+	color: #5bc0de;
+}
+
+span.priority-normal:BEFORE {
+	content: "\e034\2009\e034";
 }
 
 span.priority-low {
-	background-color: #5cb85c;
+	color: #5cb85c;
+}
+
+span.priority-low:BEFORE {
+	content: "\e034";
 }
 
 span.state {
@@ -129,16 +171,28 @@ span.state-on_hold:BEFORE {
 }
 
 span.state-done:BEFORE {
-	content: "\e013\202f"; /* glyphicon-ok */
+	content: "\e013\202f"; glyphicon-ok
+}
+ 
+span.in_progress:BEFORE {
+	content: "\e072\202f"; /* glyphicon-play */
+}
+
+span.on_hold:BEFORE {
+	content: "\e073\202f"; /* glyphicon-pause */
 }
 
 .edit {
 	color: #000;
 	opacity: 0.2;
 	float: right;
+	padding: 0;
+	border: 0;
+	background: none;
 }
 
 .edit:HOVER {
+	color: #000;
 	opacity: 1.0;
 }
 

@@ -1,0 +1,46 @@
+<uib-alert class="alert-centered" type="danger" data-ng-if="error">
+	<p><span class="glyphicon glyphicon-remove-sign"></span></p>
+	<p data-ng-if="isDefined(error.code)"><strong>{{error.code}}</strong></p>
+	<p data-ng-if="isDefined(error.detail)">{{error.detail}}</p>
+</uib-alert>
+<div data-ng-if="isDefined(project)" class="panel panel-default">
+	<div class="panel-heading">
+		<div class="pull-left">
+			<ul class="nav nav-pills">
+			  	<li role="presentation" data-ng-class="{active: isFilterActive('OPEN')}">
+			  		<a role="button" data-ng-click="activateFilter('OPEN')">Open</a>
+		  	  	</li>
+			  	<li role="presentation" data-ng-class="{active: isFilterActive('CLOSED')}">
+			  		<a role="button" data-ng-click="activateFilter('CLOSED')">Closed</a>
+		  	  	</li>
+			  	<li role="presentation" data-ng-class="{active: isFilterActive('ALL')}">
+			  		<a role="button" data-ng-click="activateFilter('ALL')">All</a>
+		  	  	</li>
+			</ul>
+		</div>
+		<div class="navbar-form navbar-right">
+			<button type="button" class="btn btn-primary" data-ng-click="newTask()"><span class="glyphicon glyphicon-plus"></span> New Task</button>
+		</div>
+		<div style="clear: both"></div>
+	</div>
+	<ul class="list-group task-list">
+		<li data-ng-repeat="task in tasks" class="list-group-item">
+			<div class="task-summary list-group-item-heading">
+				<a data-ng-href="#/tasks/{{task.id}}">
+					<span class="glyphicon" data-ng-class="task.state.toLowerCase()"> </span><span data-ng-class="{'line-through': task.state == 'DONE'}">{{task.summary}}</span>
+				</a>
+			</div>
+			<div class="pull-left">
+				<span class="text-muted">{{task.modified ? 'Last modified' : 'Created'}}</span>
+				<span class="text-muted" data-am-time-ago="task.updated"></span>
+			</div>
+			<div class="pull-right">
+				<span class="priority" data-ng-class="'priority-' + task.priority.toLowerCase()"></span>
+			</div>		
+			<div style="clear: both"></div>
+		</li>
+		<li data-ng-if="isUndefined(tasks) || tasks.length == 0" class="list-group-item list-group-placeholder">
+			No tasks to show.
+		</li>
+	</ul>
+</div>
