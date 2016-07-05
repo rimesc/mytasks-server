@@ -40,4 +40,15 @@ public abstract class RestControllerIT extends BaseMockMvcTest {
          .contentType(APPLICATION_JSON).content(json));
    }
 
+   /**
+    * Perform an HTTP POST request to the given path.
+    *
+    * @param path the path within the servlet context
+    * @return an instance of {@link ResultActions}; never {@code null}
+    * @throws Exception if something went wrong
+    */
+   protected ResultActions post(final String path) throws Exception {
+      return mockMvc().perform(MockMvcRequestBuilders.post(path).with(csrf()));
+   }
+
 }
