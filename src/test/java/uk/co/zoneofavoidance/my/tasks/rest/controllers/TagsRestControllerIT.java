@@ -16,7 +16,7 @@ public class TagsRestControllerIT extends RestControllerIT {
          .andExpect(jsonPath("tags", hasSize(3)))
          .andExpect(jsonPath("tags[0]", equalTo("Bug")))
          .andExpect(jsonPath("tags[1]", equalTo("Feature")))
-         .andExpect(jsonPath("tags[1]", equalTo("Version 1")));
+         .andExpect(jsonPath("tags[2]", equalTo("Version 1")));
    }
 
    @Test
