@@ -5,14 +5,9 @@ import static uk.co.zoneofavoidance.my.tasks.domain.Priority.NORMAL;
 import static uk.co.zoneofavoidance.my.tasks.domain.State.TO_DO;
 
 import java.util.Date;
+import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -54,6 +49,10 @@ public class Task {
    @UpdateTimestamp
    private Date updated;
 
+   @ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+   @JoinTable(name = "TaskTag", joinColumns = @JoinColumn(name = "task", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "tag", referencedColumnName = "id"))
+   private Set<Tag> tags;
+
    public static Task create(final Project project, final Long id, final String summary, final String description, final Priority priority, final State state) {
       final Task task = create(project, summary, description, priority, state);
       task.setId(id);
@@ -73,9 +72,6 @@ public class Task {
       task.setDescription(description);
       task.setPriority(priority);
       return task;
-   }
-
-   public Task() {
    }
 
    public Long getId() {
@@ -108,6 +104,10 @@ public class Task {
 
    public Date getUpdated() {
       return updated;
+   }
+
+   public Set<Tag> getTags() {
+      return tags;
    }
 
    public void setId(final Long id) {
@@ -144,6 +144,10 @@ public class Task {
 
    public boolean isModified() {
       return getUpdated() != null && getCreated() != null && getUpdated().after(getCreated());
+   }
+
+   public void setTags(final Set<Tag> tags) {
+      this.tags = tags;
    }
 
    @Override
