@@ -10,6 +10,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.Test;
 import org.springframework.test.annotation.DirtiesContext;
 
+/**
+ * Integration tests for {@link ProjectsRestController}.
+ */
+@SuppressWarnings("checkstyle:magicnumber")
 public class ProjectsRestControllerIT extends RestControllerIT {
 
    @Test

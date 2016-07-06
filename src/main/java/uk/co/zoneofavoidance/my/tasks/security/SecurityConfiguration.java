@@ -10,6 +10,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 
+/**
+ * Configures the {@link UserDetailsManager}.
+ */
 @Configuration
 public class SecurityConfiguration {
 

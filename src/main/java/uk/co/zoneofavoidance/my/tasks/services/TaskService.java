@@ -19,6 +19,9 @@ import uk.co.zoneofavoidance.my.tasks.exceptions.NotFoundException;
 import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
 import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
 
+/**
+ * Service that provides transactional access to tasks.
+ */
 @Service
 @Transactional
 public class TaskService {
@@ -48,7 +51,7 @@ public class TaskService {
    /**
     * Retrieves the tasks for a project.
     *
-    * @param id ID of the project
+    * @param projectId ID of the project
     * @return tasks for the project
     */
    @Transactional(readOnly = true)

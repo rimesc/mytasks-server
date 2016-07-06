@@ -15,9 +15,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 
+/**
+ * Domain object representing a record from the 'users' table used by
+ * {@link JdbcUserDetailsManager}.
+ */
 @Entity
 @Table(name = "users")
+@SuppressWarnings("checkstyle:javadocmethod")
 public class UserRecord implements Serializable {
 
    @Id
@@ -29,7 +35,7 @@ public class UserRecord implements Serializable {
    private String password;
 
    @Column(nullable = false)
-   boolean enabled = true;
+   private boolean enabled = true;
 
    @OneToMany(mappedBy = "user", cascade = ALL)
    private Collection<AuthorityRecord> authorities;
