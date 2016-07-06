@@ -7,6 +7,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.Test;
 
+/**
+ * Integration tests for {@link TagsRestController}.
+ */
+@SuppressWarnings("checkstyle:magicnumber")
 public class TagsRestControllerIT extends RestControllerIT {
 
    @Test

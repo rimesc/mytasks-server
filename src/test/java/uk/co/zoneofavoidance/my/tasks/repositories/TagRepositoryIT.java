@@ -23,6 +23,9 @@ import static org.junit.Assert.assertThat;
 import uk.co.zoneofavoidance.my.tasks.MyTasksApplication;
 import uk.co.zoneofavoidance.my.tasks.domain.Tag;
 
+/**
+ * Integration tests for {@link TagRepository}.
+ */
 @IntegrationTest
 @SpringApplicationConfiguration
 @ActiveProfiles("dev")
