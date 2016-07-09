@@ -65,7 +65,7 @@ public abstract class ModelAndViewControllerIT extends BaseMockMvcTest {
     * Matcher that matches an iterable sequence of tasks if they have the given
     * IDs in the given order.
     *
-    * @param names ordered sequence of IDs to match
+    * @param ids ordered sequence of IDs to match
     * @return a matcher
     */
    protected static Matcher<Iterable<? extends Task>> containsTasks(final Long... ids) {
@@ -97,6 +97,7 @@ public abstract class ModelAndViewControllerIT extends BaseMockMvcTest {
    /**
     * Matcher that matches a view name of the form "redirect:{@code <path>}".
     *
+    * @param path path to be matched
     * @return a matcher
     */
    protected static Matcher<String> isRedirect(final String path) {

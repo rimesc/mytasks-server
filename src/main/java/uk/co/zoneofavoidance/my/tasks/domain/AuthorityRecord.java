@@ -9,8 +9,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+
+/**
+ * Domain object representing a record from the 'authorities' table used by
+ * {@link JdbcUserDetailsManager}.
+ */
 @Entity
 @Table(name = "authorities")
+@SuppressWarnings("checkstyle:javadocmethod")
 public class AuthorityRecord implements Serializable {
 
    @Id

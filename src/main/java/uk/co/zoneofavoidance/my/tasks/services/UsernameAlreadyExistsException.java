@@ -8,6 +8,9 @@ import org.springframework.security.core.AuthenticationException;
  */
 public class UsernameAlreadyExistsException extends AuthenticationException {
 
+   /**
+    * @param username requested name
+    */
    public UsernameAlreadyExistsException(final String username) {
       super("The username '" + username + "' is already in use.");
    }

@@ -28,6 +28,9 @@ import uk.co.zoneofavoidance.my.tasks.exceptions.NotFoundException;
 import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
 import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
 
+/**
+ * Unit tests for {@link TaskService}.
+ */
 public class TaskServiceTest {
 
    private static final long PROJECT_ID = 157L;

@@ -11,6 +11,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+/**
+ * Spring Web MVC configuration.
+ */
 @Configuration
 public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
 

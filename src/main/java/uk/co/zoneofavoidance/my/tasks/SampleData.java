@@ -27,6 +27,9 @@ import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
 import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
 import uk.co.zoneofavoidance.my.tasks.services.UserService;
 
+/**
+ * Runs on startup in developer profile to add some sample data to the database.
+ */
 @Component
 @Profile("dev")
 public class SampleData implements CommandLineRunner {
