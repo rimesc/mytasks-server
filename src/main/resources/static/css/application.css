@@ -1,7 +1,10 @@
 body {
-	background-color: #f5f5f5;
 	/* Move down content because we have a fixed navbar that is 50px tall */
 	padding-top: 50px;
+}
+
+body.login {
+	background-color: #f5f5f5;
 }
 
 /* format form buttons in navbars the same as links */
@@ -35,15 +38,9 @@ span.line-through {
 	text-decoration: line-through;
 }
 
-.main {
-	background-color: #fff;
-	margin: 20px -15px;
-	border: 1px solid #ddd;
-	border-radius: 8px;
-}
 
-.content {
-	padding: 20px 40px;
+.main {
+	margin: 20px 0px; /*-15px*/
 }
 
 .project-header {
@@ -171,7 +168,7 @@ span.state-on_hold:BEFORE {
 }
 
 span.state-done:BEFORE {
-	content: "\e013\202f"; glyphicon-ok
+	content: "\e013\202f"; /* glyphicon-ok */
 }
  
 span.in_progress:BEFORE {
