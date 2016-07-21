@@ -63,7 +63,7 @@ public class Task {
    private Date updated;
 
    @ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-   @JoinTable(name = "TaskTag", joinColumns = @JoinColumn(name = "task", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "tag", referencedColumnName = "id"))
+   @JoinTable(name = "TaskTag", joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
    private Set<Tag> tags;
 
    /**

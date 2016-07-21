@@ -31,6 +31,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import uk.co.zoneofavoidance.my.tasks.domain.Project;
 import uk.co.zoneofavoidance.my.tasks.domain.State;
+import uk.co.zoneofavoidance.my.tasks.domain.Tag;
 import uk.co.zoneofavoidance.my.tasks.domain.Task;
 import uk.co.zoneofavoidance.my.tasks.exceptions.NotFoundException;
 import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
@@ -169,7 +170,7 @@ public class TasksRestController {
    }
 
    private TaskResponse convert(final Task task) {
-      return new TaskResponse(task.getId(), task.getSummary(), task.getDescription(), task.getPriority(), task.getState(), task.getCreated(), task.getUpdated(), task.getProject().getId(), "/api/tasks/" + task.getId());
+      return new TaskResponse(task.getId(), task.getSummary(), task.getDescription(), task.getPriority(), task.getState(), task.getTags().stream().map(Tag::getName).distinct().collect(toList()), task.getCreated(), task.getUpdated(), task.getProject().getId(), "/api/tasks/" + task.getId());
    }
 
    /**
