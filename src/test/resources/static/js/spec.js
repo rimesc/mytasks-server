@@ -883,7 +883,9 @@ describe("myTasksControllers", function() {
 				},
 				task: task
 			});
-			$scope.task = updatedTask;
+			$scope.task.summary = updatedTask.summary;
+			$scope.task.description = updatedTask.description;
+			$scope.task.priority = updatedTask.priority;
 			$scope.submit();
 			$httpBackend.flush();
 			expect($scope.errors).toBeUndefined();

@@ -395,7 +395,7 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 		$uibModalInstance.dismiss('cancel');
 	}
 
-	$scope.task = {summary: task.summary, description: task.description, priority: task.priority, project: task.project};
+	$scope.task = {summary: task.summary, description: task.description, priority: task.priority};
 	$scope.submit = submit;
 	$scope.cancel = cancel;
 })
