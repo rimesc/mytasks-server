@@ -170,7 +170,7 @@ public class TasksRestController {
    }
 
    private TaskResponse convert(final Task task) {
-      return new TaskResponse(task.getId(), task.getSummary(), task.getDescription(), task.getPriority(), task.getState(), task.getTags().stream().map(Tag::getName).distinct().collect(toList()), task.getCreated(), task.getUpdated(), task.getProject().getId(), "/api/tasks/" + task.getId());
+      return new TaskResponse(task.getId(), task.getSummary(), task.getDescription(), task.getPriority(), task.getState(), task.getTags().stream().map(Tag::getName).distinct().sorted().collect(toList()), task.getCreated(), task.getUpdated(), task.getProject().getId(), "/api/tasks/" + task.getId());
    }
 
    /**

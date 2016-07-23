@@ -1,6 +1,6 @@
 package uk.co.zoneofavoidance.my.tasks.rest.controllers;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
@@ -31,7 +31,7 @@ public class TasksRestControllerIT extends RestControllerIT {
          .andExpect(jsonPath("tasks[0].state", equalTo("TO_DO")))
          .andExpect(jsonPath("tasks[0].created", equalTo("2016-07-10T00:29:08.000+0000")))
          .andExpect(jsonPath("tasks[0].updated", equalTo("2016-07-10T00:29:08.000+0000")))
-         .andExpect(jsonPath("tasks[0].tags", containsInAnyOrder("First", "Second")))
+         .andExpect(jsonPath("tasks[0].tags", contains("First", "Second")))
          .andExpect(jsonPath("tasks[0].project", equalTo(1)));
    }
 
