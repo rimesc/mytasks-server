@@ -29,6 +29,20 @@ body.login {
   }
 }
 
+ul.tags {
+	list-style: none;
+	padding: 0px 0px 10px 0px;
+}
+
+ul.tags > li {
+	display: inline;
+	padding: 0px 10px;
+}
+
+ul.tags > li:FIRST-CHILD {
+	padding-left: 0px;
+}
+
 .panel-heading .navbar-form {
 	margin-top: 3px;
 	margin-bottom: 3px;
