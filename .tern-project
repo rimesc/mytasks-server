@@ -1,4 +1,17 @@
 {
+  "ide": {
+    "scriptPaths": [
+      {
+        "type": "FILE",
+        "path": "src/main/resources/templates/home.html"
+      },
+      {
+        "type": "FOLDER",
+        "path": "src/main/resources/static/js"
+      }
+    ]
+  },
+  "ecmaVersion": 5,
   "plugins": {
     "guess-types": {
       
@@ -9,10 +22,10 @@
     "jasmine": {
       
     },
-    "bootstrap": {
+    "angular1": {
       
     },
-    "angular1": {
+    "bootstrap": {
       
     }
   },

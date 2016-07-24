@@ -5,13 +5,18 @@ import static uk.co.zoneofavoidance.my.tasks.domain.Priority.NORMAL;
 import static uk.co.zoneofavoidance.my.tasks.domain.State.TO_DO;
 
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
@@ -57,6 +62,10 @@ public class Task {
    @UpdateTimestamp
    private Date updated;
 
+   @ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+   @JoinTable(name = "TaskTag", joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
+   private Set<Tag> tags;
+
    /**
     * Creates a new task.
     *
@@ -64,11 +73,12 @@ public class Task {
     * @param summary brief summary of the task
     * @param description detailed description of the task
     * @param priority initial priority of the task
-    * @param state initial state of the task
+    * @param state tags for the task
+    * @param tags initial state of the task
     * @return a new task
     */
-   public static Task create(final Project project, final String summary, final String description, final Priority priority, final State state) {
-      final Task task = create(project, summary, description, priority);
+   public static Task create(final Project project, final String summary, final String description, final Priority priority, final Set<Tag> tags, final State state) {
+      final Task task = create(project, summary, description, priority, tags);
       task.setState(state);
       return task;
    }
@@ -80,14 +90,16 @@ public class Task {
     * @param summary brief summary of the task
     * @param description detailed description of the task
     * @param priority initial priority of the task
+    * @param tags tags for the task
     * @return a new task
     */
-   public static Task create(final Project project, final String summary, final String description, final Priority priority) {
+   public static Task create(final Project project, final String summary, final String description, final Priority priority, final Set<Tag> tags) {
       final Task task = new Task();
       task.setProject(project);
       task.setSummary(summary);
       task.setDescription(description);
       task.setPriority(priority);
+      task.setTags(tags);
       return task;
    }
 
@@ -145,6 +157,13 @@ public class Task {
     */
    public Date getUpdated() {
       return updated;
+   }
+
+   /**
+    * @return the set of tags associated with this task
+    */
+   public Set<Tag> getTags() {
+      return tags;
    }
 
    /**
@@ -217,6 +236,15 @@ public class Task {
     */
    public void setUpdated(final Date updated) {
       this.updated = updated;
+   }
+
+   /**
+    * Sets the tags associated with this task.
+    *
+    * @param tags set of tags
+    */
+   public void setTags(final Set<Tag> tags) {
+      this.tags = tags;
    }
 
    /**

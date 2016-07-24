@@ -1,4 +1,4 @@
-var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'angularMoment', 'myTasksServices'])
+var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'ui.select', 'angularMoment', 'myTasksServices'])
 
 .controller('adminController', function($scope, userService) {
 	function loadCurrentUser() {
@@ -342,7 +342,10 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 	$scope.cancel = cancel;
 })
 
-.controller('newTaskModalController', function($scope, $uibModalInstance, taskService, projectId) {
+.controller('newTaskModalController', function($scope, $uibModalInstance, taskService, tagService, projectId) {
+	function loadTags() {
+		tagService.get({}, function(tags) { $scope.tags = tags });
+	}
 	function submit() {
 		if (angular.isUndefined($scope.task.summary)) {
 			$scope.task.summary = '';
@@ -366,12 +369,17 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 		$uibModalInstance.dismiss('cancel');
 	}
 
-	$scope.task = {project: projectId, priority: 'NORMAL'};
+	$scope.task = {project: projectId, priority: 'NORMAL', tags: []};
+	$scope.tags = [];
 	$scope.submit = submit;
 	$scope.cancel = cancel;
+	loadTags();
 })
  
-.controller('editTaskModalController', function($scope, $uibModalInstance, taskService, task) {
+.controller('editTaskModalController', function($scope, $uibModalInstance, taskService, tagService, task) {
+	function loadTags() {
+		tagService.get({}, function(tags) { $scope.tags = tags });
+	}
 	function submit() {
 		if (angular.isUndefined($scope.task.summary)) {
 			$scope.task.summary = '';
@@ -395,9 +403,11 @@ var myTasksControllers = angular.module('myTasksControllers', ['ngRoute', 'ngSan
 		$uibModalInstance.dismiss('cancel');
 	}
 
-	$scope.task = {summary: task.summary, description: task.description, priority: task.priority};
+	$scope.task = {summary: task.summary, description: task.description, priority: task.priority, tags: task.tags};
+	$scope.tags = [];
 	$scope.submit = submit;
 	$scope.cancel = cancel;
+	loadTags();
 })
 
 .controller('deleteTaskModalController', function($scope, $uibModalInstance, taskService, task) {

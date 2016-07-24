@@ -1,5 +1,7 @@
 package uk.co.zoneofavoidance.my.tasks.rest.request;
 
+import java.util.Set;
+
 import org.hibernate.validator.constraints.Length;
 
 import uk.co.zoneofavoidance.my.tasks.domain.Priority;
@@ -18,6 +20,8 @@ public class UpdateTaskRequest {
    private Priority priority;
 
    private State state;
+
+   private Set<String> tags;
 
    /**
     * @return the new state of the task
@@ -48,6 +52,13 @@ public class UpdateTaskRequest {
    }
 
    /**
+    * @return the new set of task tags
+    */
+   public Set<String> getTags() {
+      return tags;
+   }
+
+   /**
     * @param state new state of the task
     */
    public void setState(final State state) {
@@ -73,6 +84,13 @@ public class UpdateTaskRequest {
     */
    public void setPriority(final Priority priority) {
       this.priority = priority;
+   }
+
+   /**
+    * @param tags new set of task tags
+    */
+   public void setTags(final Set<String> tags) {
+      this.tags = tags;
    }
 
 }

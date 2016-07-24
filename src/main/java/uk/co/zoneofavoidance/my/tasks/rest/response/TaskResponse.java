@@ -1,6 +1,7 @@
 package uk.co.zoneofavoidance.my.tasks.rest.response;
 
 import java.util.Date;
+import java.util.List;
 
 import uk.co.zoneofavoidance.my.tasks.domain.Priority;
 import uk.co.zoneofavoidance.my.tasks.domain.State;
@@ -24,6 +25,8 @@ public class TaskResponse {
 
    private final Date updated;
 
+   private final List<String> tags;
+
    private final long project;
 
    private final String href;
@@ -34,17 +37,19 @@ public class TaskResponse {
     * @param description description of the task
     * @param priority priority of the task
     * @param state current state of the task
-    * @param created date when this task was created
-    * @param updated date when this task was last modified
-    * @param project ID of this task's parent project
+    * @param tags tags associated with the task
+    * @param created date when the task was created
+    * @param updated date when the task was last modified
+    * @param project ID of the task's parent project
     * @param href path to this task resource
     */
-   public TaskResponse(final long id, final String summary, final String description, final Priority priority, final State state, final Date created, final Date updated, final long project, final String href) {
+   public TaskResponse(final long id, final String summary, final String description, final Priority priority, final State state, final List<String> tags, final Date created, final Date updated, final long project, final String href) {
       this.id = id;
       this.summary = summary;
       this.description = description;
       this.priority = priority;
       this.state = state;
+      this.tags = tags;
       this.created = created;
       this.updated = updated;
       this.project = project;
@@ -84,6 +89,13 @@ public class TaskResponse {
     */
    public State getState() {
       return state;
+   }
+
+   /**
+    * @return the list of tags associated with the task
+    */
+   public List<String> getTags() {
+      return tags;
    }
 
    /**

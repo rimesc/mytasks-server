@@ -2,6 +2,7 @@ package uk.co.zoneofavoidance.my.tasks.services;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -37,8 +38,8 @@ public class TaskServiceTest {
    private static final long TASK_ID = 324L;
 
    private static final Project FOO_PROJECT = Project.create("Foo", "The Foo project.");
-   private static final Task FOO_TASK = Task.create(FOO_PROJECT, "Foo", "The Foo task.", NORMAL, TO_DO);
-   private static final Task BAR_TASK = Task.create(FOO_PROJECT, "Bar", "The Bar task.", HIGH, DONE);
+   private static final Task FOO_TASK = Task.create(FOO_PROJECT, "Foo", "The Foo task.", NORMAL, emptySet(), TO_DO);
+   private static final Task BAR_TASK = Task.create(FOO_PROJECT, "Bar", "The Bar task.", HIGH, emptySet(), DONE);
 
    @Mock
    private TaskRepository repository;

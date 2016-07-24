@@ -20,7 +20,7 @@ import uk.co.zoneofavoidance.my.tasks.MyTasksApplication;
  */
 @WebIntegrationTest
 @SpringApplicationConfiguration
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 public abstract class BaseMockMvcTest {
 
