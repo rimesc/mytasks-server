@@ -6,7 +6,7 @@
 <div data-ng-if="isDefined(task)">
 	<h1 class="page-header">{{task.summary}}</h1>
 	<ul class="tags text-muted">
-		<li data-ng-repeat="tag in task.tags">{{tag}}</li>
+		<li data-ng-repeat="tag in task.tags"><span class="glyphicon glyphicon-tag"></span> {{tag}}</li>
 	</ul>
 	<div class="btn-toolbar pull-right">
 		<div class="btn-group" role="group">
