@@ -73,11 +73,12 @@ public class Task {
     * @param summary brief summary of the task
     * @param description detailed description of the task
     * @param priority initial priority of the task
-    * @param state initial state of the task
+    * @param state tags for the task
+    * @param tags initial state of the task
     * @return a new task
     */
-   public static Task create(final Project project, final String summary, final String description, final Priority priority, final State state) {
-      final Task task = create(project, summary, description, priority);
+   public static Task create(final Project project, final String summary, final String description, final Priority priority, final Set<Tag> tags, final State state) {
+      final Task task = create(project, summary, description, priority, tags);
       task.setState(state);
       return task;
    }
@@ -89,14 +90,16 @@ public class Task {
     * @param summary brief summary of the task
     * @param description detailed description of the task
     * @param priority initial priority of the task
+    * @param tags tags for the task
     * @return a new task
     */
-   public static Task create(final Project project, final String summary, final String description, final Priority priority) {
+   public static Task create(final Project project, final String summary, final String description, final Priority priority, final Set<Tag> tags) {
       final Task task = new Task();
       task.setProject(project);
       task.setSummary(summary);
       task.setDescription(description);
       task.setPriority(priority);
+      task.setTags(tags);
       return task;
    }
 

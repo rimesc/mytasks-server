@@ -2,6 +2,7 @@ package uk.co.zoneofavoidance.my.tasks.rest.controllers;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -43,6 +44,7 @@ import uk.co.zoneofavoidance.my.tasks.rest.response.ErrorResponse;
 import uk.co.zoneofavoidance.my.tasks.rest.response.ReadMeResponse;
 import uk.co.zoneofavoidance.my.tasks.rest.response.TaskResponse;
 import uk.co.zoneofavoidance.my.tasks.rest.response.TasksResponse;
+import uk.co.zoneofavoidance.my.tasks.services.TagService;
 
 /**
  * REST controller for the tasks API.
@@ -55,12 +57,15 @@ public class TasksRestController {
 
    private final TaskRepository tasks;
 
+   private final TagService tags;
+
    private final PegDownProcessor markdown;
 
    @Autowired
-   public TasksRestController(final ProjectRepository projects, final TaskRepository tasks, final PegDownProcessor markdown) {
+   public TasksRestController(final ProjectRepository projects, final TaskRepository tasks, final TagService tags, final PegDownProcessor markdown) {
       this.projects = projects;
       this.tasks = tasks;
+      this.tags = tags;
       this.markdown = markdown;
    }
 
@@ -90,12 +95,12 @@ public class TasksRestController {
     */
    @RequestMapping(method = POST, consumes = "application/json", produces = "application/json")
    @ResponseStatus(ACCEPTED)
-   public TaskResponse postNewProject(@Valid @RequestBody final TaskForm form) {
+   public TaskResponse postNewTask(@Valid @RequestBody final TaskForm form) {
       final Project project = projects.findOne(form.getProject());
       if (project == null) {
          throw new NotFoundException("project");
       }
-      final Task task = tasks.save(Task.create(project, form.getSummary(), form.getDescription(), form.getPriority()));
+      final Task task = tasks.save(Task.create(project, form.getSummary(), form.getDescription(), form.getPriority(), form.getTags().stream().map(tags::get).collect(toSet())));
       return convert(task);
    }
 
@@ -132,6 +137,7 @@ public class TasksRestController {
       setIfNotNull(request.getDescription(), task::setDescription);
       setIfNotNull(request.getPriority(), task::setPriority);
       setIfNotNull(request.getState(), task::setState);
+      setIfNotNull(request.getTags().stream().map(tags::get).collect(toSet()), task::setTags);
       return convert(tasks.save(task));
    }
 

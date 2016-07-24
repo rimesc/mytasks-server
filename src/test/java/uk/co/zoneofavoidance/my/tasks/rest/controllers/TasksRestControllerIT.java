@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Test;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
 /**
@@ -110,20 +111,34 @@ public class TasksRestControllerIT extends RestControllerIT {
          .andExpect(jsonPath("tasks[2].project", equalTo(2)));
    }
 
-   // @Test
-   // @DirtiesContext
-   // public void postNewProjectSavesProjectIfValid() throws Exception {
-   // final String project = "{\"name\": \"My new project\", \"description\":
-   // \"This is a new project.\"}";
-   // post("/api/projects/", project)
-   // .andExpect(status().isAccepted())
-   // .andExpect(jsonPath("id", equalTo(4)))
-   // .andExpect(jsonPath("name", equalTo("My new project")))
-   // .andExpect(jsonPath("description", equalTo("This is a new project.")))
-   // .andExpect(jsonPath("numberOfOpenTasks", equalTo(0)))
-   // .andExpect(jsonPath("href", equalTo("/api/projects/4")));
-   // }
-   //
+   @Test
+   @DirtiesContext
+   public void postNewTaskSavesTaskIfValid() throws Exception {
+      final String task = "{\"project\": 1, \"summary\": \"My new task\", \"description\": \"This is a new task.\", \"priority\": \"NORMAL\", \"tags\": [\"First\", \"Second\"]}";
+      post("/api/tasks/", task)
+         .andExpect(status().isAccepted())
+         .andExpect(jsonPath("id", equalTo(8)))
+         .andExpect(jsonPath("summary", equalTo("My new task")))
+         .andExpect(jsonPath("description", equalTo("This is a new task.")))
+         .andExpect(jsonPath("priority", equalTo("NORMAL")))
+         .andExpect(jsonPath("tags", contains("First", "Second")))
+         .andExpect(jsonPath("href", equalTo("/api/tasks/8")));
+   }
+
+   @Test
+   @DirtiesContext
+   public void postUpdateTaskSavesTaskIfValid() throws Exception {
+      final String task = "{\"summary\": \"My edited task\", \"description\": \"This is an edited task.\", \"priority\": \"LOW\", \"tags\": [\"First\", \"Second\"]}";
+      post("/api/tasks/1", task)
+         .andExpect(status().isOk())
+         .andExpect(jsonPath("id", equalTo(1)))
+         .andExpect(jsonPath("summary", equalTo("My edited task")))
+         .andExpect(jsonPath("description", equalTo("This is an edited task.")))
+         .andExpect(jsonPath("priority", equalTo("LOW")))
+         .andExpect(jsonPath("tags", contains("First", "Second")))
+         .andExpect(jsonPath("href", equalTo("/api/tasks/1")));
+   }
+
    // @Test
    // public void postNewProjectRaisesErrorForEmptyName() throws Exception {
    // final String project = "{\"name\": \"\", \"description\": \"This is a new

@@ -1,5 +1,8 @@
 package uk.co.zoneofavoidance.my.tasks.rest.request;
 
+import java.util.Collections;
+import java.util.Set;
+
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
@@ -21,6 +24,9 @@ public class TaskForm {
 
    @NotNull
    private Priority priority;
+
+   @NotNull
+   private Set<String> tags = Collections.emptySet();
 
    /**
     * @return the ID of the parent project
@@ -51,6 +57,13 @@ public class TaskForm {
    }
 
    /**
+    * @return the tags for the task
+    */
+   public Set<String> getTags() {
+      return tags;
+   }
+
+   /**
     * @param project ID of the parent project
     */
    public void setProject(final Long project) {
@@ -76,6 +89,13 @@ public class TaskForm {
     */
    public void setPriority(final Priority priority) {
       this.priority = priority;
+   }
+
+   /**
+    * @param tags tags for the new task
+    */
+   public void setTags(final Set<String> tags) {
+      this.tags = tags;
    }
 
 }
