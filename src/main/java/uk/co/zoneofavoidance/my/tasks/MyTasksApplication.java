@@ -6,6 +6,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+/**
+ * Main class for the <em>myTasks</em> application.
+ */
 @SpringBootApplication
 public class MyTasksApplication {
 

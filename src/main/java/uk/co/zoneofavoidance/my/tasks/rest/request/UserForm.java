@@ -17,35 +17,44 @@ public class UserForm {
 
    private List<String> authorities;
 
-   public UserForm() {
-   }
-
-   public UserForm(final String username, final String password, final List<String> authorities) {
-      this.username = username;
-      this.password = password;
-      this.authorities = authorities;
-   }
-
+   /**
+    * @return the name of the user
+    */
    public String getUsername() {
       return username;
    }
 
+   /**
+    * @return the password for the user
+    */
    public String getPassword() {
       return password;
    }
 
+   /**
+    * @return a list of authorities for the user
+    */
    public List<String> getAuthorities() {
       return authorities;
    }
 
+   /**
+    * @param username name of the user
+    */
    public void setUsername(final String username) {
       this.username = username;
    }
 
+   /**
+    * @param password password for the user
+    */
    public void setPassword(final String password) {
       this.password = password;
    }
 
+   /**
+    * @param authorities list of authorities to give the user
+    */
    public void setAuthorities(final List<String> authorities) {
       this.authorities = authorities;
    }

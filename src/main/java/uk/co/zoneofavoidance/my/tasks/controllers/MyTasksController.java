@@ -9,6 +9,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
 
+/**
+ * Controller that serves the main view for the Angular JS front-end.
+ */
 @Controller
 public class MyTasksController {
 
@@ -19,6 +22,11 @@ public class MyTasksController {
       this.projects = projects;
    }
 
+   /**
+    * Handler for the root of the servlet context.
+    * 
+    * @return the main view
+    */
    @RequestMapping(path = "/", method = GET)
    public ModelAndView getHome() {
       final ModelAndView modelAndView = new ModelAndView("home");

@@ -31,8 +31,12 @@
 				</a>
 			</div>
 			<div class="pull-left">
+				<span class="text-muted glyphicon glyphicon-time"></span>
 				<span class="text-muted">{{task.modified ? 'Last modified' : 'Created'}}</span>
 				<span class="text-muted" data-am-time-ago="task.updated"></span>
+				<ul class="tags text-muted" style="display: inline-block; padding-bottom: 0; margin-left: 15px">
+					<li data-ng-repeat="tag in task.tags"><span class="glyphicon glyphicon-tag"></span> {{tag}}</li>
+				</ul>
 			</div>
 			<div class="pull-right">
 				<span class="priority" data-ng-class="'priority-' + task.priority.toLowerCase()"></span>

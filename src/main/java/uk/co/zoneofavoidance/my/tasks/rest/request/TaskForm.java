@@ -1,5 +1,8 @@
 package uk.co.zoneofavoidance.my.tasks.rest.request;
 
+import java.util.Collections;
+import java.util.Set;
+
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
@@ -22,50 +25,77 @@ public class TaskForm {
    @NotNull
    private Priority priority;
 
-   public TaskForm() {
-   }
+   @NotNull
+   private Set<String> tags = Collections.emptySet();
 
-   public TaskForm(final Long project) {
-      this.project = project;
-   }
-
-   public TaskForm(final Long project, final String summary, final String description, final Priority priority) {
-      this.project = project;
-      this.summary = summary;
-      this.description = description;
-      this.priority = priority;
-   }
-
+   /**
+    * @return the ID of the parent project
+    */
    public Long getProject() {
       return project;
    }
 
+   /**
+    * @return the summary of the task
+    */
    public String getSummary() {
       return summary;
    }
 
+   /**
+    * @return a description of the task
+    */
    public String getDescription() {
       return description;
    }
 
+   /**
+    * @return the priority of the task
+    */
    public Priority getPriority() {
       return priority;
    }
 
+   /**
+    * @return the tags for the task
+    */
+   public Set<String> getTags() {
+      return tags;
+   }
+
+   /**
+    * @param project ID of the parent project
+    */
    public void setProject(final Long project) {
       this.project = project;
    }
 
+   /**
+    * @param summary summary of the task
+    */
    public void setSummary(final String summary) {
       this.summary = summary;
    }
 
+   /**
+    * @param description description of the task
+    */
    public void setDescription(final String description) {
       this.description = description;
    }
 
+   /**
+    * @param priority priority of the task
+    */
    public void setPriority(final Priority priority) {
       this.priority = priority;
+   }
+
+   /**
+    * @param tags tags for the new task
+    */
+   public void setTags(final Set<String> tags) {
+      this.tags = tags;
    }
 
 }

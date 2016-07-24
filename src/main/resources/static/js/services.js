@@ -18,6 +18,12 @@ var myTasksServices = angular.module('myTasksServices', ['ngResource'])
 	});
 }])
 
+.factory('tagService', ['$resource', 'contextPath', function($resource, contextPath) {
+	return $resource(contextPath + 'api/tags', {}, {
+		get: {method: 'GET', isArray: true, transformResponse: [angular.fromJson, function(data) { return data.tags }]}
+	});
+}])
+
 .factory('userService', ['$resource', 'contextPath', function($resource, contextPath) {
 	return $resource(contextPath + 'api/admin/users/:id', {}, {
 		list: {method: 'GET', isArray: true, transformResponse: [angular.fromJson, function(data) { return data.users }]},

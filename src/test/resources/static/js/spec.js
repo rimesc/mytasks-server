@@ -748,6 +748,7 @@ describe("myTasksControllers", function() {
 
 		beforeEach(function() {
 			$scope = {};
+			$httpBackend.expectGET('/api/tags').respond(200, {'tags': []});
 		});
 
 		it("handles field errors", function() {
@@ -806,7 +807,7 @@ describe("myTasksControllers", function() {
 		
 		it("returns the new task on success", function() {
 			var createdTask;
-			var newTask = {"project": 1, "summary": "A new task", "description": "This is a new task.", "priority": "HIGH"};
+			var newTask = {"project": 1, "summary": "A new task", "description": "This is a new task.", "priority": "HIGH", "tags": ["foo", "bar"]};
 			$httpBackend.expectPOST('/api/tasks/', newTask).respond(200, newTask);
 			var controller = $controller('newTaskModalController', {
 				$scope: $scope,
@@ -828,12 +829,13 @@ describe("myTasksControllers", function() {
 
 	describe('editTaskModalController', function() {
 
-		var task = {id: '1', summary: 'First sample task', description: 'This is the first sample task.', priority: 'HIGH', state: 'TO_DO', created: '2016-04-03T19:52:00Z', updated: '2016-04-03T19:52:00Z', project: '1', href: '/api/tasks/1'};
+		var task = {id: '1', summary: 'First sample task', description: 'This is the first sample task.', priority: 'HIGH', "tags": ["bar"], state: 'TO_DO', created: '2016-04-03T19:52:00Z', updated: '2016-04-03T19:52:00Z', project: '1', href: '/api/tasks/1'};
 
 		var $scope;
 
 		beforeEach(function() {
 			$scope = {};
+			$httpBackend.expectGET('/api/tags').respond(200, {'tags': []});
 		});
 
 		it("handles field errors", function() {
@@ -872,7 +874,7 @@ describe("myTasksControllers", function() {
 		
 		it("returns the updated task on success", function() {
 			var savedTask;
-			var updatedTask = {summary: 'Renamed task', description: 'This is an edited task.', priority: 'LOW'};
+			var updatedTask = {summary: 'Renamed task', description: 'This is an edited task.', priority: 'LOW', "tags": ["foo", "baz"]};
 			$httpBackend.expectPOST('/api/tasks/1', updatedTask).respond(200, updatedTask);
 			var controller = $controller('editTaskModalController', {
 				$scope: $scope,
@@ -886,6 +888,7 @@ describe("myTasksControllers", function() {
 			$scope.task.summary = updatedTask.summary;
 			$scope.task.description = updatedTask.description;
 			$scope.task.priority = updatedTask.priority;
+			$scope.task.tags = updatedTask.tags;
 			$scope.submit();
 			$httpBackend.flush();
 			expect($scope.errors).toBeUndefined();

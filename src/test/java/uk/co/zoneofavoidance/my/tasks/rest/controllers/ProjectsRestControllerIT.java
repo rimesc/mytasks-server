@@ -1,15 +1,24 @@
 package uk.co.zoneofavoidance.my.tasks.rest.controllers;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.startsWith;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Test;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.jdbc.Sql;
 
+/**
+ * Integration tests for {@link ProjectsRestController}.
+ */
+@Sql(scripts = "/sql/setup_ProjectsRestControllerIT.sql", executionPhase = BEFORE_TEST_METHOD)
+@Sql(scripts = "/sql/cleanup.sql", executionPhase = AFTER_TEST_METHOD)
+@SuppressWarnings("checkstyle:magicnumber")
 public class ProjectsRestControllerIT extends RestControllerIT {
 
    @Test
@@ -18,24 +27,23 @@ public class ProjectsRestControllerIT extends RestControllerIT {
          .andExpect(status().isOk())
          .andExpect(jsonPath("projects", hasSize(3)))
          .andExpect(jsonPath("projects[0].id", equalTo(1)))
-         .andExpect(jsonPath("projects[0].name", equalTo("My first project")))
-         .andExpect(jsonPath("projects[0].description", startsWith("This is my first sample project.")))
+         .andExpect(jsonPath("projects[0].name", equalTo("First project")))
+         .andExpect(jsonPath("projects[0].description", startsWith("This is my first project.")))
          .andExpect(jsonPath("projects[0].numberOfOpenTasks", equalTo(2)))
          .andExpect(jsonPath("projects[0].href", equalTo("/api/projects/1")))
          .andExpect(jsonPath("projects[1].id", equalTo(2)))
-         .andExpect(jsonPath("projects[1].name", equalTo("My second project")))
-         .andExpect(jsonPath("projects[1].description", startsWith("This is my second sample project.")))
+         .andExpect(jsonPath("projects[1].name", equalTo("Second project")))
+         .andExpect(jsonPath("projects[1].description", startsWith("This is my second project.")))
          .andExpect(jsonPath("projects[1].href", equalTo("/api/projects/2")))
          .andExpect(jsonPath("projects[1].numberOfOpenTasks", equalTo(2)))
          .andExpect(jsonPath("projects[2].id", equalTo(3)))
-         .andExpect(jsonPath("projects[2].name", equalTo("My third project")))
-         .andExpect(jsonPath("projects[2].description", startsWith("This is my third sample project.")))
+         .andExpect(jsonPath("projects[2].name", equalTo("Third project")))
+         .andExpect(jsonPath("projects[2].description", startsWith("This is my third project.")))
          .andExpect(jsonPath("projects[2].href", equalTo("/api/projects/3")))
          .andExpect(jsonPath("projects[2].numberOfOpenTasks", equalTo(0)));
    }
 
    @Test
-   @DirtiesContext
    public void postNewProjectSavesProjectIfValid() throws Exception {
       final String project = "{\"name\": \"My new project\", \"description\": \"This is a new project.\"}";
       post("/api/projects/", project)
@@ -63,15 +71,15 @@ public class ProjectsRestControllerIT extends RestControllerIT {
       get("/api/projects/1")
          .andExpect(status().isOk())
          .andExpect(jsonPath("id", equalTo(1)))
-         .andExpect(jsonPath("name", equalTo("My first project")))
-         .andExpect(jsonPath("description", startsWith("This is my first sample project.")))
+         .andExpect(jsonPath("name", equalTo("First project")))
+         .andExpect(jsonPath("description", startsWith("This is my first project.")))
          .andExpect(jsonPath("numberOfOpenTasks", equalTo(2)))
          .andExpect(jsonPath("href", equalTo("/api/projects/1")));
       get("/api/projects/2")
          .andExpect(status().isOk())
          .andExpect(jsonPath("id", equalTo(2)))
-         .andExpect(jsonPath("name", equalTo("My second project")))
-         .andExpect(jsonPath("description", startsWith("This is my second sample project.")))
+         .andExpect(jsonPath("name", equalTo("Second project")))
+         .andExpect(jsonPath("description", startsWith("This is my second project.")))
          .andExpect(jsonPath("numberOfOpenTasks", equalTo(2)))
          .andExpect(jsonPath("href", equalTo("/api/projects/2")));
    }
@@ -96,8 +104,9 @@ public class ProjectsRestControllerIT extends RestControllerIT {
    public void getProjectReadMeReturnsReadMeIfAvailable() throws Exception {
       get("/api/projects/1/readme")
          .andExpect(status().isOk())
-         .andExpect(jsonPath("markdown", startsWith("# Lorem ipsum")))
-         .andExpect(jsonPath("html", startsWith("<h1>Lorem ipsum</h1>")));
+         .andExpect(jsonPath("markdown", startsWith("Lorem ipsum dolor sit amet,")))
+         .andExpect(jsonPath("html", startsWith("<p>Lorem ipsum dolor sit amet,")))
+         .andExpect(jsonPath("html", endsWith("ut labore et dolore magna aliqua.</p>")));
    }
 
    @Test
@@ -110,7 +119,7 @@ public class ProjectsRestControllerIT extends RestControllerIT {
 
    @Test
    public void getProjectReadMeIsNotFoundIfUnavailable() throws Exception {
-      get("/api/projects/2/readme")
+      get("/api/projects/3/readme")
          .andExpect(status().isNotFound())
          .andExpect(jsonPath("code", equalTo("Not Found")))
          .andExpect(jsonPath("message", equalTo("The requested note could not be found.")));
