@@ -1,6 +1,5 @@
 package uk.co.zoneofavoidance.my.tasks.services;
 
-import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.contains;
 import static org.mockito.Mockito.when;
 
@@ -10,6 +9,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+
+import com.google.common.collect.ImmutableSet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -50,7 +51,7 @@ public class TagServiceTest {
 
    @Test
    public void getAllReturnsUsedTagsOrdered() {
-      when(repository.findUsed()).thenReturn(asList(FOO_TAG, BAR_TAG, BAZ_TAG));
+      when(repository.findUsed()).thenReturn(ImmutableSet.of(FOO_TAG, BAR_TAG, BAZ_TAG));
       assertThat(service.getAll(), contains(BAR_TAG, BAZ_TAG, FOO_TAG));
    }
 
