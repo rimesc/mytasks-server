@@ -139,6 +139,20 @@ public class TasksRestControllerIT extends RestControllerIT {
          .andExpect(jsonPath("href", equalTo("/api/tasks/1")));
    }
 
+   @Test
+   @DirtiesContext
+   public void postStateUpdatePerformsStateTransition() throws Exception {
+      final String task = "{\"state\": \"IN_PROGRESS\"}";
+      post("/api/tasks/1", task)
+         .andExpect(status().isOk())
+         .andExpect(jsonPath("id", equalTo(1)))
+         .andExpect(jsonPath("summary", equalTo("First task"))) // unchanged
+         .andExpect(jsonPath("description", equalTo("My first task"))) // unchanged
+         .andExpect(jsonPath("priority", equalTo("NORMAL"))) // unchanged
+         .andExpect(jsonPath("tags", contains("First", "Second"))) // unchanged
+         .andExpect(jsonPath("state", equalTo("IN_PROGRESS")));
+   }
+
    // @Test
    // public void postNewProjectRaisesErrorForEmptyName() throws Exception {
    // final String project = "{\"name\": \"\", \"description\": \"This is a new
