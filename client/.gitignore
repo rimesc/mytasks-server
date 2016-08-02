@@ -1,7 +1,7 @@
 # node.js #
 /node/
 /node_modules/
+/bower_components/
 /target/
 /bin/
 /dist/
-/src/lib/

@@ -39,12 +39,12 @@
                   </goals>
                </execution>
                <execution>
-                  <id>jspm-install</id>
+                  <id>bower-install</id>
                   <goals>
                      <goal>npm</goal>
                   </goals>
                   <configuration>
-                     <arguments>run jspm-install</arguments>
+                     <arguments>run bower-install</arguments>
                   </configuration>
                </execution>
                <execution>

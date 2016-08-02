@@ -4,7 +4,7 @@ var path = require('path'),
 var paths = {
     baseUrl: 'file:' + process.cwd() + '/src/',
     config: ['src/config.js'],
-    jspmLibs: ['src/lib/**', '!src/lib/*/test/*'],
+    libs: ['bower_components/**'],
     css: {
         files: ['src/css/*.css']
     },
@@ -27,7 +27,7 @@ gulp.task('copy-js', function() {
 
 // Copy jspm-managed JavaScript dependencies to "dist" folder
 gulp.task('copy-lib', function() {
-    return gulp.src(paths.jspmLibs)
+    return gulp.src(paths.libs)
         .pipe(gulp.dest(paths.destination + '/lib'));
 });
 
