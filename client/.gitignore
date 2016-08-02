@@ -1,0 +1,7 @@
+# node.js #
+/node/
+/node_modules/
+/target/
+/bin/
+/dist/
+/src/lib/
