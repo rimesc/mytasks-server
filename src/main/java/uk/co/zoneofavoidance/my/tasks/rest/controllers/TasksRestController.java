@@ -137,7 +137,7 @@ public class TasksRestController {
       setIfNotNull(request.getDescription(), task::setDescription);
       setIfNotNull(request.getPriority(), task::setPriority);
       setIfNotNull(request.getState(), task::setState);
-      setIfNotNull(request.getTags().stream().map(tags::get).collect(toSet()), task::setTags);
+      setIfNotNull(request.getTags(), tags::get, task::setTags);
       return convert(tasks.save(task));
    }
 
