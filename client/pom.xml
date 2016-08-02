@@ -41,19 +41,21 @@
                <execution>
                   <id>bower-install</id>
                   <goals>
-                     <goal>npm</goal>
+                     <goal>bower</goal>
                   </goals>
-                  <configuration>
-                     <arguments>run bower-install</arguments>
-                  </configuration>
                </execution>
                <execution>
-                  <id>npm build</id>
+                  <id>gulp build</id>
                   <goals>
-                     <goal>npm</goal>
+                     <goal>gulp</goal>
                   </goals>
                   <configuration>
-                     <arguments>run build</arguments>
+                     <srcdir>${basedir}/src</srcdir>
+                     <outputdir>${basedir}/dist</outputdir>
+                     <triggerfiles>
+                        <triggerfile>gulpfile.js</triggerfile>
+                        <triggerfile>package.json</triggerfile>
+                     </triggerfiles>
                   </configuration>
                </execution>
             </executions>
@@ -63,7 +65,7 @@
             <executions>
                <execution>
                   <id>copy-resources</id>
-                  <phase>prepare-package</phase>
+                  <phase>process-resources</phase>
                   <goals>
                      <goal>copy-resources</goal>
                   </goals>

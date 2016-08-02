@@ -1,13 +1,14 @@
 var path = require('path'),
-    gulp = require('gulp');
+    gulp = require('gulp'),
+    less = require('gulp-less'),
+    cssMinify = require('gulp-minify-css');
 
 var paths = {
     baseUrl: 'file:' + process.cwd() + '/src/',
-    config: ['src/config.js'],
     libs: ['bower_components/**'],
-    css: {
-        files: ['src/css/*.css']
-    },
+    css: [],
+    less: ['src/less/*'],
+    fonts: ['bower_components/bootstrap/fonts/*'],
     images: ["src/images/*"],
     partials: ["src/partials/*"],
     modals: ["src/modals/*"],
@@ -16,7 +17,7 @@ var paths = {
 };
 
 gulp.task('copy-css', function() {
-    return gulp.src(paths.css.files)
+    return gulp.src(paths.css)
         .pipe(gulp.dest(paths.destination + '/css'));
 });
 
@@ -25,15 +26,9 @@ gulp.task('copy-js', function() {
         .pipe(gulp.dest(paths.destination + '/js'));
 });
 
-// Copy jspm-managed JavaScript dependencies to "dist" folder
 gulp.task('copy-lib', function() {
     return gulp.src(paths.libs)
         .pipe(gulp.dest(paths.destination + '/lib'));
-});
-
-gulp.task('copy-config', function() {
-    return gulp.src(paths.config)
-        .pipe(gulp.dest(paths.destination));
 });
 
 gulp.task('copy-images', function() {
@@ -56,6 +51,19 @@ gulp.task('copy-components', function() {
         .pipe(gulp.dest(paths.destination + '/components'))
 });
 
-gulp.task('build', ['copy-css', 'copy-js', 'copy-lib',
-    'copy-config', 'copy-images', 'copy-partials', 'copy-modals', 'copy-components'], function(){});
+gulp.task('less', function () {
+    return gulp.src(paths.less)
+        .pipe(less())
+        .pipe(cssMinify({noRebase: true}))
+        .pipe(gulp.dest(paths.destination + '/css'));
+});
+
+// copies fonts from bootstrap to where they can be referenced by the compiled CSS
+gulp.task('copy-fonts', function() {
+    return gulp.src(paths.fonts)
+        .pipe(gulp.dest(paths.destination + '/fonts'));
+});
+
+gulp.task('default', ['copy-css', 'copy-js', 'copy-lib',
+    'copy-images', 'copy-partials', 'copy-modals', 'copy-components', 'less', 'copy-fonts'], function(){});
 
