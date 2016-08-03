@@ -51,31 +51,11 @@
                   </goals>
                   <configuration>
                      <srcdir>${basedir}/src</srcdir>
-                     <outputdir>${basedir}/dist</outputdir>
+                     <outputdir>${project.build.directory}/classes/static</outputdir>
                      <triggerfiles>
                         <triggerfile>gulpfile.js</triggerfile>
                         <triggerfile>package.json</triggerfile>
                      </triggerfiles>
-                  </configuration>
-               </execution>
-            </executions>
-         </plugin>
-         <plugin>
-            <artifactId>maven-resources-plugin</artifactId>
-            <executions>
-               <execution>
-                  <id>copy-resources</id>
-                  <phase>process-resources</phase>
-                  <goals>
-                     <goal>copy-resources</goal>
-                  </goals>
-                  <configuration>
-                     <outputDirectory>${project.build.directory}/classes/static</outputDirectory>
-                     <resources>
-                        <resource>
-                           <directory>${basedir}/dist</directory>
-                        </resource>
-                     </resources>
                   </configuration>
                </execution>
             </executions>
