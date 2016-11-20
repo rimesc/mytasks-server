@@ -1,7 +1,5 @@
 package uk.co.zoneofavoidance.my.tasks.rest.controllers;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -24,7 +22,7 @@ public abstract class RestControllerIT extends BaseMockMvcTest {
     * @throws Exception if something went wrong
     */
    protected ResultActions get(final String path) throws Exception {
-      return mockMvc().perform(MockMvcRequestBuilders.get(path).with(csrf()));
+      return mockMvc().perform(MockMvcRequestBuilders.get(path));
    }
 
    /**
@@ -36,7 +34,7 @@ public abstract class RestControllerIT extends BaseMockMvcTest {
     * @throws Exception if something went wrong
     */
    protected ResultActions post(final String path, final String json) throws Exception {
-      return mockMvc().perform(MockMvcRequestBuilders.post(path).with(csrf())
+      return mockMvc().perform(MockMvcRequestBuilders.post(path)
          .contentType(APPLICATION_JSON).content(json));
    }
 
@@ -48,7 +46,7 @@ public abstract class RestControllerIT extends BaseMockMvcTest {
     * @throws Exception if something went wrong
     */
    protected ResultActions post(final String path) throws Exception {
-      return mockMvc().perform(MockMvcRequestBuilders.post(path).with(csrf()));
+      return mockMvc().perform(MockMvcRequestBuilders.post(path));
    }
 
 }

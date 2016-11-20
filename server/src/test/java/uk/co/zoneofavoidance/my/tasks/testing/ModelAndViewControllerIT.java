@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.startsWith;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import java.net.URI;
 
@@ -36,7 +35,7 @@ public abstract class ModelAndViewControllerIT extends BaseMockMvcTest {
     * @throws Exception if something went wrong
     */
    protected ResultActions get(final String path) throws Exception {
-      return mockMvc().perform(MockMvcRequestBuilders.get(new URI(path)).with(csrf()));
+      return mockMvc().perform(MockMvcRequestBuilders.get(new URI(path)));
    }
 
    /**
