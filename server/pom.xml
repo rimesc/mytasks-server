@@ -39,10 +39,6 @@
       </dependency>
  -->      <dependency>
          <groupId>org.springframework.boot</groupId>
-         <artifactId>spring-boot-starter-thymeleaf</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.springframework.boot</groupId>
          <artifactId>spring-boot-starter-web</artifactId>
       </dependency>
 
@@ -60,30 +56,6 @@
          <groupId>org.springframework.boot</groupId>
          <artifactId>spring-boot-starter-test</artifactId>
          <scope>test</scope>
-      </dependency>
-      <dependency>
-         <groupId>net.sourceforge.nekohtml</groupId>
-         <artifactId>nekohtml</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.webjars</groupId>
-         <artifactId>bootstrap</artifactId>
-         <version>3.3.6</version>
-      </dependency>
-      <dependency>
-         <groupId>org.webjars</groupId>
-         <artifactId>jquery</artifactId>
-         <version>2.1.4</version>
-      </dependency>
-      <dependency>
-         <groupId>org.webjars</groupId>
-         <artifactId>angularjs</artifactId>
-         <version>1.5.0</version>
-      </dependency>
-      <dependency>
-         <groupId>org.webjars</groupId>
-         <artifactId>angular-ui-bootstrap</artifactId>
-         <version>1.2.5</version>
       </dependency>
       <dependency>
          <groupId>org.apache.commons</groupId>
@@ -105,30 +77,9 @@
          <artifactId>spring-security-test</artifactId>
       </dependency>
     -->   <dependency>
-         <groupId>org.webjars</groupId>
-         <artifactId>jasmine</artifactId>
-         <version>2.0.0</version>
-         <scope>test</scope>
-      </dependency>
-      <dependency>
          <groupId>com.jayway.jsonpath</groupId>
          <artifactId>json-path</artifactId>
          <scope>test</scope>
-      </dependency>
-      <dependency>
-          <groupId>org.webjars</groupId>
-          <artifactId>momentjs</artifactId>
-          <version>2.12.0</version>
-      </dependency>
-      <dependency>
-          <groupId>org.webjars</groupId>
-          <artifactId>angular-moment</artifactId>
-          <version>0.10.3</version>
-      </dependency>
-      <dependency>
-         <groupId>org.webjars</groupId>
-         <artifactId>angular-ui-select</artifactId>
-         <version>0.17.1</version>
       </dependency>
 <!--       <dependency>
          <groupId>com.auth0</groupId>
