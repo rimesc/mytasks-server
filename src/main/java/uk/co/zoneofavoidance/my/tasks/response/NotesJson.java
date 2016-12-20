@@ -1,21 +1,26 @@
 package uk.co.zoneofavoidance.my.tasks.response;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 /**
  * REST response containing a 'read-me' in both raw markdown and HTML formats.
  */
-public class ReadMeResponse {
+@JsonPropertyOrder({ "html", "markdown" })
+public class NotesJson {
+
+   static final NotesJson EMPTY = new NotesJson("", "");
 
    private final String html;
 
-   private final String markdown;
+   private final String raw;
 
    /**
     * @param html formatted HTML
-    * @param markdown raw markdown
+    * @param raw raw markdown
     */
-   public ReadMeResponse(final String html, final String markdown) {
+   public NotesJson(final String html, final String raw) {
       this.html = html;
-      this.markdown = markdown;
+      this.raw = raw;
    }
 
    /**
@@ -28,8 +33,8 @@ public class ReadMeResponse {
    /**
     * @return the raw markdown version of the 'read-me'
     */
-   public String getMarkdown() {
-      return markdown;
+   public String getRaw() {
+      return raw;
    }
 
 }

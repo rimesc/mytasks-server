@@ -1,5 +1,6 @@
 package uk.co.zoneofavoidance.my.tasks.controllers;
 
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -8,11 +9,14 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static uk.co.zoneofavoidance.my.tasks.controllers.ProjectsController.BASE_PATH;
 import static uk.co.zoneofavoidance.my.tasks.util.BeanUtils.setIfNotNull;
+
+import java.util.Arrays;
+import java.util.List;
 
 import javax.validation.Valid;
 
-import org.pegdown.PegDownProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -33,28 +37,30 @@ import uk.co.zoneofavoidance.my.tasks.request.ProjectForm;
 import uk.co.zoneofavoidance.my.tasks.request.ReadMeRequest;
 import uk.co.zoneofavoidance.my.tasks.response.BindingErrorsResponse;
 import uk.co.zoneofavoidance.my.tasks.response.ErrorResponse;
-import uk.co.zoneofavoidance.my.tasks.response.ProjectResponse;
-import uk.co.zoneofavoidance.my.tasks.response.ProjectsResponse;
-import uk.co.zoneofavoidance.my.tasks.response.ReadMeResponse;
-
+import uk.co.zoneofavoidance.my.tasks.response.JsonConversions;
+import uk.co.zoneofavoidance.my.tasks.response.NotesJson;
+import uk.co.zoneofavoidance.my.tasks.response.ProjectJson;
+import uk.co.zoneofavoidance.my.tasks.response.ResourceJson;
 /**
  * REST controller for the projects API.
  */
 @RestController
-@RequestMapping("/api/projects")
+@RequestMapping(BASE_PATH)
 public class ProjectsController {
+
+   static final String BASE_PATH = "/api/projects";
 
    private final ProjectRepository projects;
 
    private final TaskRepository tasks;
 
-   private final PegDownProcessor markdown;
+   private final JsonConversions conversions;
 
    @Autowired
-   public ProjectsController(final ProjectRepository projects, final TaskRepository tasks, final PegDownProcessor markdown) {
+   public ProjectsController(final ProjectRepository projects, final TaskRepository tasks, final JsonConversions conversions) {
       this.projects = projects;
       this.tasks = tasks;
-      this.markdown = markdown;
+      this.conversions = conversions;
    }
 
    /**
@@ -63,8 +69,8 @@ public class ProjectsController {
     * @return a REST response containing a list of projects
     */
    @RequestMapping(method = GET, produces = "application/json")
-   public ProjectsResponse getProjects() {
-      return new ProjectsResponse(projects.findAll().stream().map(this::convert).collect(toList()));
+   public List<ResourceJson<ProjectJson>> getProjects() {
+      return projects.findAll().stream().map(project -> new ResourceJson<>(conversions.toAbridgedJson(project), path(project))).collect(toList());
    }
 
    /**
@@ -74,23 +80,23 @@ public class ProjectsController {
     * @return a REST response containing the project details
     */
    @RequestMapping(path = "{projectId}", method = GET, produces = "application/json")
-   public ProjectResponse getProject(@PathVariable final Long projectId) {
+   public ResourceJson<ProjectJson> getProject(@PathVariable final Long projectId) {
       final Project project = projects.findOne(projectId);
       if (project == null) {
          throw new NotFoundException("project");
       }
-      return convert(project);
+      return new ResourceJson<ProjectJson>(conversions.toJson(project), path(project));
    }
 
    /**
-    * End-point for obtaining the 'read-me' of a project.
+    * End-point for obtaining the notes for a project.
     *
     * @param projectId path variable containing the ID of the requested project
     * @return a REST response containing the 'read-me' in both raw markdown and
     *         HTML formats
     */
-   @RequestMapping(path = "{projectId}/readme", method = GET, produces = "application/json")
-   public ReadMeResponse getProjectReadMe(@PathVariable final Long projectId) {
+   @RequestMapping(path = "{projectId}/notes", method = GET, produces = "application/json")
+   public ResourceJson<NotesJson> getProjectReadMe(@PathVariable final Long projectId) {
       final Project project = projects.findOne(projectId);
       if (project == null) {
          throw new NotFoundException("project");
@@ -98,19 +104,19 @@ public class ProjectsController {
       if (project.getReadMe() == null) {
          throw new NotFoundException("note");
       }
-      return new ReadMeResponse(markdown.markdownToHtml(project.getReadMe().getText()), project.getReadMe().getText());
+      return new ResourceJson<>(conversions.json(project.getReadMe()), path(project) + "/notes");
    }
 
    /**
-    * End-point for updating the 'read-me' of a project.
+    * End-point for updating the notes for a project.
     *
     * @param projectId path variable containing the ID of the requested project
     * @param request JSON request body containing the updated markdown
     * @return a REST response containing the updated 'read-me' in both raw
     *         markdown and HTML formats
     */
-   @RequestMapping(path = "{projectId}/readme", method = POST, consumes = "application/json", produces = "application/json")
-   public ReadMeResponse postProjectReadMe(@PathVariable final Long projectId, @RequestBody @Valid final ReadMeRequest request) {
+   @RequestMapping(path = "{projectId}/notes", method = POST, consumes = "application/json", produces = "application/json")
+   public ResourceJson<NotesJson> postProjectReadMe(@PathVariable final Long projectId, @RequestBody @Valid final ReadMeRequest request) {
       final Project project = projects.findOne(projectId);
       if (project == null) {
          throw new NotFoundException("project");
@@ -122,7 +128,7 @@ public class ProjectsController {
          setIfNotNull(request.getMarkdown(), project.getReadMe()::setText);
       }
       final Project updatedProject = projects.save(project);
-      return new ReadMeResponse(markdown.markdownToHtml(updatedProject.getReadMe().getText()), updatedProject.getReadMe().getText());
+      return new ResourceJson<>(conversions.json(updatedProject.getReadMe()), path(updatedProject, "notes"));
    }
 
    /**
@@ -133,9 +139,9 @@ public class ProjectsController {
     */
    @RequestMapping(method = POST, consumes = "application/json", produces = "application/json")
    @ResponseStatus(ACCEPTED)
-   public ProjectResponse postNewProject(@Valid @RequestBody final ProjectForm form) {
+   public ResourceJson<ProjectJson> postNewProject(@Valid @RequestBody final ProjectForm form) {
       final Project project = projects.save(Project.create(form.getName(), form.getDescription()));
-      return convert(project);
+      return new ResourceJson<ProjectJson>(conversions.toJson(project), path(project));
    }
 
    /**
@@ -147,14 +153,14 @@ public class ProjectsController {
     */
    @RequestMapping(path = "{projectId}", method = POST, consumes = "application/json", produces = "application/json")
    @ResponseStatus(ACCEPTED)
-   public ProjectResponse postEditProject(@PathVariable final Long projectId, @Valid @RequestBody final ProjectForm form) {
+   public ResourceJson<ProjectJson> postEditProject(@PathVariable final Long projectId, @Valid @RequestBody final ProjectForm form) {
       final Project project = projects.findOne(projectId);
       if (project == null) {
          throw new NotFoundException("project");
       }
       project.setName(form.getName());
       project.setDescription(form.getDescription());
-      return convert(projects.save(project));
+      return new ResourceJson<ProjectJson>(conversions.toJson(project), path(project));
    }
 
    /**
@@ -171,10 +177,6 @@ public class ProjectsController {
       }
       tasks.deleteByProjectId(projectId);
       projects.delete(projectId);
-   }
-
-   private ProjectResponse convert(final Project project) {
-      return new ProjectResponse(project.getId(), project.getName(), project.getDescription(), project.getNumberOfOpenTasks(), "/api/projects/" + project.getId());
    }
 
    /**
@@ -208,6 +210,10 @@ public class ProjectsController {
    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
    public ResponseEntity<ErrorResponse> handleBadProjectId(final MethodArgumentTypeMismatchException ex) {
       return new ResponseEntity<>(ErrorResponse.create(BAD_REQUEST, "Invalid project ID: " + ex.getValue()), BAD_REQUEST);
+   }
+
+   private String path(final Project project, final String... extraPath) {
+      return BASE_PATH + "/" + project.getId() + Arrays.stream(extraPath).map(p -> "/" + p).collect(joining());
    }
 
 }

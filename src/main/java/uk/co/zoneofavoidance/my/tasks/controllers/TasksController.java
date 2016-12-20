@@ -41,7 +41,7 @@ import uk.co.zoneofavoidance.my.tasks.request.TaskForm;
 import uk.co.zoneofavoidance.my.tasks.request.UpdateTaskRequest;
 import uk.co.zoneofavoidance.my.tasks.response.BindingErrorsResponse;
 import uk.co.zoneofavoidance.my.tasks.response.ErrorResponse;
-import uk.co.zoneofavoidance.my.tasks.response.ReadMeResponse;
+import uk.co.zoneofavoidance.my.tasks.response.NotesJson;
 import uk.co.zoneofavoidance.my.tasks.response.TaskResponse;
 import uk.co.zoneofavoidance.my.tasks.response.TasksResponse;
 import uk.co.zoneofavoidance.my.tasks.services.TagService;
@@ -164,7 +164,7 @@ public class TasksController {
     *         HTML formats
     */
    @RequestMapping(path = "{taskId}/readme", method = GET, produces = "application/json")
-   public ReadMeResponse getTaskReadMe(@PathVariable final Long taskId) {
+   public NotesJson getTaskReadMe(@PathVariable final Long taskId) {
       final Task task = tasks.findOne(taskId);
       if (task == null) {
          throw new NotFoundException("task");
@@ -172,7 +172,7 @@ public class TasksController {
       if (task.getDescription() == null) {
          throw new NotFoundException("note");
       }
-      return new ReadMeResponse(markdown.markdownToHtml(task.getDescription()), task.getDescription());
+      return new NotesJson(markdown.markdownToHtml(task.getDescription()), task.getDescription());
    }
 
    private TaskResponse convert(final Task task) {
