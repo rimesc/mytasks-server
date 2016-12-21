@@ -1,9 +1,8 @@
 package uk.co.zoneofavoidance.my.tasks.controllers;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
-import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -12,11 +11,11 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static uk.co.zoneofavoidance.my.tasks.util.BeanUtils.setIfNotNull;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.validation.Valid;
 
-import org.pegdown.PegDownProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -32,18 +31,17 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import uk.co.zoneofavoidance.my.tasks.domain.Project;
 import uk.co.zoneofavoidance.my.tasks.domain.State;
-import uk.co.zoneofavoidance.my.tasks.domain.Tag;
 import uk.co.zoneofavoidance.my.tasks.domain.Task;
 import uk.co.zoneofavoidance.my.tasks.exceptions.NotFoundException;
 import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
 import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
-import uk.co.zoneofavoidance.my.tasks.request.TaskForm;
 import uk.co.zoneofavoidance.my.tasks.request.UpdateTaskRequest;
 import uk.co.zoneofavoidance.my.tasks.response.BindingErrorsResponse;
 import uk.co.zoneofavoidance.my.tasks.response.ErrorResponse;
+import uk.co.zoneofavoidance.my.tasks.response.JsonConversions;
 import uk.co.zoneofavoidance.my.tasks.response.NotesJson;
-import uk.co.zoneofavoidance.my.tasks.response.TaskResponse;
-import uk.co.zoneofavoidance.my.tasks.response.TasksResponse;
+import uk.co.zoneofavoidance.my.tasks.response.ResourceJson;
+import uk.co.zoneofavoidance.my.tasks.response.TaskJson;
 import uk.co.zoneofavoidance.my.tasks.services.TagService;
 
 /**
@@ -53,20 +51,22 @@ import uk.co.zoneofavoidance.my.tasks.services.TagService;
 @RequestMapping("/api/tasks")
 public class TasksController {
 
+   static final String BASE_PATH = "/api/tasks";
+
    private final ProjectRepository projects;
 
    private final TaskRepository tasks;
 
    private final TagService tags;
 
-   private final PegDownProcessor markdown;
+   private final JsonConversions conversions;
 
    @Autowired
-   public TasksController(final ProjectRepository projects, final TaskRepository tasks, final TagService tags, final PegDownProcessor markdown) {
+   public TasksController(final ProjectRepository projects, final TaskRepository tasks, final TagService tags, final JsonConversions conversions) {
       this.projects = projects;
       this.tasks = tasks;
       this.tags = tags;
-      this.markdown = markdown;
+      this.conversions = conversions;
    }
 
    /**
@@ -78,30 +78,13 @@ public class TasksController {
     * @return a REST response containing a list of tasks
     */
    @RequestMapping(method = GET, produces = "application/json")
-   public TasksResponse getTasks(@RequestParam("project") final Long projectId, @RequestParam(name = "state", required = false) final State[] state) {
+   public List<ResourceJson<TaskJson>> getTasks(@RequestParam("project") final Long projectId, @RequestParam(name = "state", required = false) final State[] state) {
       final Project project = projects.findOne(projectId);
       if (project == null) {
          throw new NotFoundException("project");
       }
       final List<Task> tasksForProject = state != null ? tasks.findByProjectIdAndStateIn(projectId, asList(state)) : tasks.findByProjectId(projectId);
-      return new TasksResponse(tasksForProject.stream().map(this::convert).collect(toList()));
-   }
-
-   /**
-    * End-point for creating a new task.
-    *
-    * @param form form containing the details of the new task
-    * @return a REST response containing the details of the new task
-    */
-   @RequestMapping(method = POST, consumes = "application/json", produces = "application/json")
-   @ResponseStatus(ACCEPTED)
-   public TaskResponse postNewTask(@Valid @RequestBody final TaskForm form) {
-      final Project project = projects.findOne(form.getProject());
-      if (project == null) {
-         throw new NotFoundException("project");
-      }
-      final Task task = tasks.save(Task.create(project, form.getSummary(), form.getDescription(), form.getPriority(), form.getTags().stream().map(tags::get).collect(toSet())));
-      return convert(task);
+      return tasksForProject.stream().map(task -> new ResourceJson<>(conversions.toAbridgedJson(task), path(task))).collect(toList());
    }
 
    /**
@@ -111,12 +94,12 @@ public class TasksController {
     * @return a REST response containing the task details
     */
    @RequestMapping(path = "{taskId}", method = GET, produces = "application/json")
-   public TaskResponse getTask(@PathVariable final Long taskId) {
+   public ResourceJson<TaskJson> getTask(@PathVariable final Long taskId) {
       final Task task = tasks.findOne(taskId);
       if (task == null) {
          throw new NotFoundException("task");
       }
-      return convert(task);
+      return new ResourceJson<TaskJson>(conversions.toJson(task), path(task));
    }
 
    /**
@@ -128,7 +111,7 @@ public class TasksController {
     * @return a REST response containing the details of the updated task
     */
    @RequestMapping(path = "{taskId}", method = POST, produces = "application/json")
-   public TaskResponse postTask(@PathVariable final Long taskId, @Valid @RequestBody final UpdateTaskRequest request) {
+   public ResourceJson<TaskJson> postTask(@PathVariable final Long taskId, @Valid @RequestBody final UpdateTaskRequest request) {
       final Task task = tasks.findOne(taskId);
       if (task == null) {
          throw new NotFoundException("task");
@@ -138,7 +121,7 @@ public class TasksController {
       setIfNotNull(request.getPriority(), task::setPriority);
       setIfNotNull(request.getState(), task::setState);
       setIfNotNull(request.getTags(), tags::get, task::setTags);
-      return convert(tasks.save(task));
+      return new ResourceJson<TaskJson>(conversions.toJson(tasks.save(task)), path(task));
    }
 
    /**
@@ -157,14 +140,14 @@ public class TasksController {
    }
 
    /**
-    * End-point for obtaining the 'read-me' of a task.
+    * End-point for obtaining the notes for a task.
     *
     * @param taskId path variable containing the ID of the requested task
     * @return a REST response containing the 'read-me' in both raw markdown and
     *         HTML formats
     */
-   @RequestMapping(path = "{taskId}/readme", method = GET, produces = "application/json")
-   public NotesJson getTaskReadMe(@PathVariable final Long taskId) {
+   @RequestMapping(path = "{taskId}/notes", method = GET, produces = "application/json")
+   public ResourceJson<NotesJson> getTaskNotes(@PathVariable final Long taskId) {
       final Task task = tasks.findOne(taskId);
       if (task == null) {
          throw new NotFoundException("task");
@@ -172,11 +155,7 @@ public class TasksController {
       if (task.getDescription() == null) {
          throw new NotFoundException("note");
       }
-      return new NotesJson(markdown.markdownToHtml(task.getDescription()), task.getDescription());
-   }
-
-   private TaskResponse convert(final Task task) {
-      return new TaskResponse(task.getId(), task.getSummary(), task.getDescription(), task.getPriority(), task.getState(), task.getTags().stream().map(Tag::getName).distinct().sorted().collect(toList()), task.getCreated(), task.getUpdated(), task.getProject().getId(), "/api/tasks/" + task.getId());
+      return new ResourceJson<>(conversions.json(task.getDescription()), path(task, "notes"));
    }
 
    /**
@@ -221,6 +200,10 @@ public class TasksController {
    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
    public ResponseEntity<ErrorResponse> handleBadProjectId(final MethodArgumentTypeMismatchException ex) {
       return new ResponseEntity<>(ErrorResponse.create(BAD_REQUEST, "Invalid task ID: " + ex.getValue()), BAD_REQUEST);
+   }
+
+   static String path(final Task task, final String... extraPath) {
+      return BASE_PATH + "/" + task.getId() + Arrays.stream(extraPath).map(p -> "/" + p).collect(joining());
    }
 
 }

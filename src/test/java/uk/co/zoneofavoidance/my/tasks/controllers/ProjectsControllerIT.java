@@ -1,5 +1,6 @@
 package uk.co.zoneofavoidance.my.tasks.controllers;
 
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
@@ -12,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Test;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
 /**
@@ -54,7 +56,7 @@ public class ProjectsControllerIT extends ControllerIT {
    public void postNewProjectSavesProjectIfValid() throws Exception {
       final String project = "{\"name\": \"My new project\", \"description\": \"This is a new project.\"}";
       post("/api/projects/", project)
-         .andExpect(status().isAccepted())
+         .andExpect(status().isCreated())
          .andExpect(jsonPath("$.id", equalTo(4)))
          .andExpect(jsonPath("$.name", equalTo("My new project")))
          .andExpect(jsonPath("$.description", equalTo("This is a new project.")))
@@ -149,6 +151,21 @@ public class ProjectsControllerIT extends ControllerIT {
          .andExpect(status().isBadRequest())
          .andExpect(jsonPath("$.code", equalTo("Bad Request")))
          .andExpect(jsonPath("$.message", equalTo("Invalid project ID: abc")));
+   }
+
+   @Test
+   @DirtiesContext
+   public void postNewTaskSavesTaskIfValid() throws Exception {
+      final String task = "{\"summary\": \"My new task\", \"priority\": \"NORMAL\", \"tags\": [\"First\", \"Second\"]}";
+      post("/api/projects/1/tasks/", task)
+         .andExpect(status().isCreated())
+         .andExpect(jsonPath("$.id", equalTo(6)))
+         .andExpect(jsonPath("$.summary", equalTo("My new task")))
+         .andExpect(jsonPath("$.priority", equalTo("NORMAL")))
+         .andExpect(jsonPath("$.tags", contains("First", "Second")))
+         .andExpect(jsonPath("$.project.id", equalTo(1)))
+         .andExpect(jsonPath("$.project.name", equalTo("First project")))
+         .andExpect(jsonPath("$.href", equalTo("/api/tasks/6")));
    }
 
 }

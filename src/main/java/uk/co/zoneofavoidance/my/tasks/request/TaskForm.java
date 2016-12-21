@@ -14,9 +14,6 @@ import uk.co.zoneofavoidance.my.tasks.domain.Priority;
  */
 public class TaskForm {
 
-   @NotNull
-   private Long project;
-
    @Length(min = 1, max = 255)
    private String summary;
 
@@ -27,13 +24,6 @@ public class TaskForm {
 
    @NotNull
    private Set<String> tags = Collections.emptySet();
-
-   /**
-    * @return the ID of the parent project
-    */
-   public Long getProject() {
-      return project;
-   }
 
    /**
     * @return the summary of the task
@@ -61,13 +51,6 @@ public class TaskForm {
     */
    public Set<String> getTags() {
       return tags;
-   }
-
-   /**
-    * @param project ID of the parent project
-    */
-   public void setProject(final Long project) {
-      this.project = project;
    }
 
    /**

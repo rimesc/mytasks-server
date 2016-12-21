@@ -24,119 +24,117 @@ public class TasksControllerIT extends ControllerIT {
    public void getTasksReturnsTasksForProject() throws Exception {
       get("/api/tasks/?project=1")
          .andExpect(status().isOk())
-         .andExpect(jsonPath("tasks", hasSize(1)))
-         .andExpect(jsonPath("tasks[0].id", equalTo(1)))
-         .andExpect(jsonPath("tasks[0].summary", equalTo("First task")))
-         .andExpect(jsonPath("tasks[0].description", equalTo("My first task")))
-         .andExpect(jsonPath("tasks[0].priority", equalTo("NORMAL")))
-         .andExpect(jsonPath("tasks[0].state", equalTo("TO_DO")))
-         .andExpect(jsonPath("tasks[0].created", equalTo("2016-07-10T00:29:08.000+0000")))
-         .andExpect(jsonPath("tasks[0].updated", equalTo("2016-07-10T00:29:08.000+0000")))
-         .andExpect(jsonPath("tasks[0].tags", contains("First", "Second")))
-         .andExpect(jsonPath("tasks[0].project", equalTo(1)));
+         .andExpect(jsonPath("$", hasSize(1)))
+         .andExpect(jsonPath("$[0].id", equalTo(1)))
+         .andExpect(jsonPath("$[0].summary", equalTo("First task")))
+         .andExpect(jsonPath("$[0].priority", equalTo("NORMAL")))
+         .andExpect(jsonPath("$[0].state", equalTo("TO_DO")))
+         .andExpect(jsonPath("$[0].created", equalTo("2016-07-10T00:29:08.000+0000")))
+         .andExpect(jsonPath("$[0].updated", equalTo("2016-07-10T00:29:08.000+0000")))
+         .andExpect(jsonPath("$[0].tags", contains("First", "Second")))
+         .andExpect(jsonPath("$[0].project.id", equalTo(1)))
+         .andExpect(jsonPath("$[0].project.name", equalTo("First project")));
    }
 
    @Test
    public void getTasksReturnsTasksForProjectWithAnyState() throws Exception {
       get("/api/tasks/?project=2")
          .andExpect(status().isOk())
-         .andExpect(jsonPath("tasks", hasSize(4)))
-         .andExpect(jsonPath("tasks[0].id", equalTo(2)))
-         .andExpect(jsonPath("tasks[0].summary", equalTo("Second task")))
-         .andExpect(jsonPath("tasks[0].project", equalTo(2)))
-         .andExpect(jsonPath("tasks[1].id", equalTo(3)))
-         .andExpect(jsonPath("tasks[1].summary", equalTo("Third task")))
-         .andExpect(jsonPath("tasks[1].project", equalTo(2)))
-         .andExpect(jsonPath("tasks[2].id", equalTo(4)))
-         .andExpect(jsonPath("tasks[2].summary", equalTo("Fourth task")))
-         .andExpect(jsonPath("tasks[2].project", equalTo(2)))
-         .andExpect(jsonPath("tasks[3].id", equalTo(5)))
-         .andExpect(jsonPath("tasks[3].summary", equalTo("Fifth task")))
-         .andExpect(jsonPath("tasks[3].project", equalTo(2)));
+         .andExpect(jsonPath("$", hasSize(4)))
+         .andExpect(jsonPath("$[0].id", equalTo(2)))
+         .andExpect(jsonPath("$[0].summary", equalTo("Second task")))
+         .andExpect(jsonPath("$[0].project.id", equalTo(2)))
+         .andExpect(jsonPath("$[0].project.name", equalTo("Second project")))
+         .andExpect(jsonPath("$[1].id", equalTo(3)))
+         .andExpect(jsonPath("$[1].summary", equalTo("Third task")))
+         .andExpect(jsonPath("$[1].project.id", equalTo(2)))
+         .andExpect(jsonPath("$[1].project.name", equalTo("Second project")))
+         .andExpect(jsonPath("$[2].id", equalTo(4)))
+         .andExpect(jsonPath("$[2].summary", equalTo("Fourth task")))
+         .andExpect(jsonPath("$[2].project.id", equalTo(2)))
+         .andExpect(jsonPath("$[2].project.name", equalTo("Second project")))
+         .andExpect(jsonPath("$[3].id", equalTo(5)))
+         .andExpect(jsonPath("$[3].summary", equalTo("Fifth task")))
+         .andExpect(jsonPath("$[3].project.id", equalTo(2)))
+         .andExpect(jsonPath("$[3].project.name", equalTo("Second project")));
    }
 
    @Test
    public void getTasksReturnsToDoTasksForProject() throws Exception {
       get("/api/tasks/?project=2&state=TO_DO")
          .andExpect(status().isOk())
-         .andExpect(jsonPath("tasks", hasSize(1)))
-         .andExpect(jsonPath("tasks[0].id", equalTo(2)))
-         .andExpect(jsonPath("tasks[0].summary", equalTo("Second task")))
-         .andExpect(jsonPath("tasks[0].project", equalTo(2)));
+         .andExpect(jsonPath("$", hasSize(1)))
+         .andExpect(jsonPath("$[0].id", equalTo(2)))
+         .andExpect(jsonPath("$[0].summary", equalTo("Second task")))
+         .andExpect(jsonPath("$[0].project.id", equalTo(2)))
+         .andExpect(jsonPath("$[0].project.name", equalTo("Second project")));
    }
 
    @Test
    public void getTasksReturnsInProgressTasksForProject() throws Exception {
       get("/api/tasks/?project=2&state=IN_PROGRESS")
          .andExpect(status().isOk())
-         .andExpect(jsonPath("tasks", hasSize(1)))
-         .andExpect(jsonPath("tasks[0].id", equalTo(3)))
-         .andExpect(jsonPath("tasks[0].summary", equalTo("Third task")))
-         .andExpect(jsonPath("tasks[0].project", equalTo(2)));
+         .andExpect(jsonPath("$", hasSize(1)))
+         .andExpect(jsonPath("$[0].id", equalTo(3)))
+         .andExpect(jsonPath("$[0].summary", equalTo("Third task")))
+         .andExpect(jsonPath("$[0].project.id", equalTo(2)))
+         .andExpect(jsonPath("$[0].project.name", equalTo("Second project")));
    }
 
    @Test
    public void getTasksReturnsOnHoldTasksForProject() throws Exception {
       get("/api/tasks/?project=2&state=ON_HOLD")
          .andExpect(status().isOk())
-         .andExpect(jsonPath("tasks", hasSize(1)))
-         .andExpect(jsonPath("tasks[0].id", equalTo(4)))
-         .andExpect(jsonPath("tasks[0].summary", equalTo("Fourth task")))
-         .andExpect(jsonPath("tasks[0].project", equalTo(2)));
+         .andExpect(jsonPath("$", hasSize(1)))
+         .andExpect(jsonPath("$[0].id", equalTo(4)))
+         .andExpect(jsonPath("$[0].summary", equalTo("Fourth task")))
+         .andExpect(jsonPath("$[0].project.id", equalTo(2)))
+         .andExpect(jsonPath("$[0].project.name", equalTo("Second project")));
    }
 
    @Test
    public void getTasksReturnsDoneTasksForProject() throws Exception {
       get("/api/tasks/?project=2&state=DONE")
          .andExpect(status().isOk())
-         .andExpect(jsonPath("tasks", hasSize(1)))
-         .andExpect(jsonPath("tasks[0].id", equalTo(5)))
-         .andExpect(jsonPath("tasks[0].summary", equalTo("Fifth task")))
-         .andExpect(jsonPath("tasks[0].project", equalTo(2)));
+         .andExpect(jsonPath("$", hasSize(1)))
+         .andExpect(jsonPath("$[0].id", equalTo(5)))
+         .andExpect(jsonPath("$[0].summary", equalTo("Fifth task")))
+         .andExpect(jsonPath("$[0].project.id", equalTo(2)))
+         .andExpect(jsonPath("$[0].project.name", equalTo("Second project")));
    }
 
    @Test
    public void getTasksReturnsOpenTasksForProject() throws Exception {
       get("/api/tasks/?project=2&state=TO_DO&state=IN_PROGRESS&state=ON_HOLD")
          .andExpect(status().isOk())
-         .andExpect(jsonPath("tasks", hasSize(3)))
-         .andExpect(jsonPath("tasks[0].id", equalTo(2)))
-         .andExpect(jsonPath("tasks[0].summary", equalTo("Second task")))
-         .andExpect(jsonPath("tasks[0].project", equalTo(2)))
-         .andExpect(jsonPath("tasks[1].id", equalTo(3)))
-         .andExpect(jsonPath("tasks[1].summary", equalTo("Third task")))
-         .andExpect(jsonPath("tasks[1].project", equalTo(2)))
-         .andExpect(jsonPath("tasks[2].id", equalTo(4)))
-         .andExpect(jsonPath("tasks[2].summary", equalTo("Fourth task")))
-         .andExpect(jsonPath("tasks[2].project", equalTo(2)));
-   }
-
-   @Test
-   @DirtiesContext
-   public void postNewTaskSavesTaskIfValid() throws Exception {
-      final String task = "{\"project\": 1, \"summary\": \"My new task\", \"description\": \"This is a new task.\", \"priority\": \"NORMAL\", \"tags\": [\"First\", \"Second\"]}";
-      post("/api/tasks/", task)
-         .andExpect(status().isAccepted())
-         .andExpect(jsonPath("id", equalTo(8)))
-         .andExpect(jsonPath("summary", equalTo("My new task")))
-         .andExpect(jsonPath("description", equalTo("This is a new task.")))
-         .andExpect(jsonPath("priority", equalTo("NORMAL")))
-         .andExpect(jsonPath("tags", contains("First", "Second")))
-         .andExpect(jsonPath("href", equalTo("/api/tasks/8")));
+         .andExpect(jsonPath("$", hasSize(3)))
+         .andExpect(jsonPath("$[0].id", equalTo(2)))
+         .andExpect(jsonPath("$[0].summary", equalTo("Second task")))
+         .andExpect(jsonPath("$[0].project.id", equalTo(2)))
+         .andExpect(jsonPath("$[0].project.name", equalTo("Second project")))
+         .andExpect(jsonPath("$[1].id", equalTo(3)))
+         .andExpect(jsonPath("$[1].summary", equalTo("Third task")))
+         .andExpect(jsonPath("$[1].project.id", equalTo(2)))
+         .andExpect(jsonPath("$[1].project.name", equalTo("Second project")))
+         .andExpect(jsonPath("$[2].id", equalTo(4)))
+         .andExpect(jsonPath("$[2].summary", equalTo("Fourth task")))
+         .andExpect(jsonPath("$[2].project.id", equalTo(2)))
+         .andExpect(jsonPath("$[2].project.name", equalTo("Second project")));
    }
 
    @Test
    @DirtiesContext
    public void postUpdateTaskSavesTaskIfValid() throws Exception {
-      final String task = "{\"summary\": \"My edited task\", \"description\": \"This is an edited task.\", \"priority\": \"LOW\", \"tags\": [\"First\", \"Second\"]}";
+      final String task = "{\"summary\": \"My edited task\", \"description\": \"This is an *edited* task.\", \"priority\": \"LOW\", \"tags\": [\"First\", \"Second\"]}";
       post("/api/tasks/1", task)
          .andExpect(status().isOk())
-         .andExpect(jsonPath("id", equalTo(1)))
-         .andExpect(jsonPath("summary", equalTo("My edited task")))
-         .andExpect(jsonPath("description", equalTo("This is an edited task.")))
-         .andExpect(jsonPath("priority", equalTo("LOW")))
-         .andExpect(jsonPath("tags", contains("First", "Second")))
-         .andExpect(jsonPath("href", equalTo("/api/tasks/1")));
+         .andExpect(jsonPath("$.id", equalTo(1)))
+         .andExpect(jsonPath("$.summary", equalTo("My edited task")))
+         .andExpect(jsonPath("$.notes.raw", equalTo("This is an *edited* task.")))
+         .andExpect(jsonPath("$.notes.html", equalTo("<p>This is an <em>edited</em> task.</p>")))
+         .andExpect(jsonPath("$.priority", equalTo("LOW")))
+         .andExpect(jsonPath("$.tags", contains("First", "Second")))
+         .andExpect(jsonPath("$.href", equalTo("/api/tasks/1")));
    }
 
    @Test
@@ -145,12 +143,13 @@ public class TasksControllerIT extends ControllerIT {
       final String task = "{\"state\": \"IN_PROGRESS\"}";
       post("/api/tasks/1", task)
          .andExpect(status().isOk())
-         .andExpect(jsonPath("id", equalTo(1)))
-         .andExpect(jsonPath("summary", equalTo("First task"))) // unchanged
-         .andExpect(jsonPath("description", equalTo("My first task"))) // unchanged
-         .andExpect(jsonPath("priority", equalTo("NORMAL"))) // unchanged
-         .andExpect(jsonPath("tags", contains("First", "Second"))) // unchanged
-         .andExpect(jsonPath("state", equalTo("IN_PROGRESS")));
+         .andExpect(jsonPath("$.id", equalTo(1)))
+         .andExpect(jsonPath("$.summary", equalTo("First task"))) // unchanged
+         .andExpect(jsonPath("$.notes.raw", equalTo("My first task")))
+         .andExpect(jsonPath("$.notes.html", equalTo("<p>My first task</p>")))
+         .andExpect(jsonPath("$.priority", equalTo("NORMAL"))) // unchanged
+         .andExpect(jsonPath("$.tags", contains("First", "Second"))) // unchanged
+         .andExpect(jsonPath("$.state", equalTo("IN_PROGRESS")));
    }
 
    // @Test
