@@ -1,14 +1,11 @@
 package uk.co.zoneofavoidance.my.tasks.controllers;
 
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.isEmptyString;
-import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -28,49 +25,49 @@ public class ProjectsControllerIT extends ControllerIT {
    public void getProjectsReturnsAllProjects() throws Exception {
       get("/api/projects/")
          .andExpect(status().isOk())
-         .andExpect(jsonPath("$", hasSize(3)))
-         .andExpect(jsonPath("$[0].id", equalTo(1)))
-         .andExpect(jsonPath("$[0].name", equalTo("First project")))
-         .andExpect(jsonPath("$[0].description", startsWith("This is my first project.")))
-         .andExpect(jsonPath("$[0].tasks.total", equalTo(3)))
-         .andExpect(jsonPath("$[0].tasks.open", equalTo(2)))
-         .andExpect(jsonPath("$[0].tasks.closed", equalTo(1)))
-         .andExpect(jsonPath("$[0].href", equalTo("/api/projects/1")))
-         .andExpect(jsonPath("$[1].id", equalTo(2)))
-         .andExpect(jsonPath("$[1].name", equalTo("Second project")))
-         .andExpect(jsonPath("$[1].description", startsWith("This is my second project.")))
-         .andExpect(jsonPath("$[1].href", equalTo("/api/projects/2")))
-         .andExpect(jsonPath("$[1].tasks.total", equalTo(2)))
-         .andExpect(jsonPath("$[1].tasks.open", equalTo(2)))
-         .andExpect(jsonPath("$[1].tasks.closed", equalTo(0)))
-         .andExpect(jsonPath("$[2].id", equalTo(3)))
-         .andExpect(jsonPath("$[2].name", equalTo("Third project")))
-         .andExpect(jsonPath("$[2].description", startsWith("This is my third project.")))
-         .andExpect(jsonPath("$[2].href", equalTo("/api/projects/3")))
-         .andExpect(jsonPath("$[2].tasks.total", equalTo(0)))
-         .andExpect(jsonPath("$[2].tasks.open", equalTo(0)))
-         .andExpect(jsonPath("$[2].tasks.closed", equalTo(0)));
+         .andExpect(content().json("["
+            + "  {"
+            + "    'id': 1,"
+            + "    'name': 'First project',"
+            + "    'description': 'This is my first project.',"
+            + "    'tasks': { 'total': 3, 'open': 2, 'closed': 1 },"
+            + "    'href': '/api/projects/1'"
+            + "  },"
+            + "  {"
+            + "    'id': 2,"
+            + "    'name': 'Second project',"
+            + "    'description': 'This is my second project.',"
+            + "    'tasks': { 'total': 2, 'open': 2, 'closed': 0 },"
+            + "    'href': '/api/projects/2'"
+            + "  },"
+            + "  {"
+            + "    'id': 3,"
+            + "    'name': 'Third project',"
+            + "    'description': 'This is my third project.',"
+            + "    'tasks': { 'total': 0, 'open': 0, 'closed': 0 },"
+            + "    'href': '/api/projects/3'"
+            + "  }"
+            + "]", STRICT));
    }
 
    @Test
    public void postNewProjectSavesProjectIfValid() throws Exception {
-      final String project = "{\"name\": \"My new project\", \"description\": \"This is a new project.\"}";
+      final String project = "{'name': 'My new project', 'description': 'This is a new project.'}";
       post("/api/projects/", project)
          .andExpect(status().isCreated())
-         .andExpect(jsonPath("$.id", equalTo(4)))
-         .andExpect(jsonPath("$.name", equalTo("My new project")))
-         .andExpect(jsonPath("$.description", equalTo("This is a new project.")))
-         .andExpect(jsonPath("$.notes.html", isEmptyString()))
-         .andExpect(jsonPath("$.notes.raw", isEmptyString()))
-         .andExpect(jsonPath("$.tasks.total", equalTo(0)))
-         .andExpect(jsonPath("$.tasks.open", equalTo(0)))
-         .andExpect(jsonPath("$.tasks.closed", equalTo(0)))
-         .andExpect(jsonPath("$.href", equalTo("/api/projects/4")));
+         .andExpect(content().json("{"
+            + "  'id': 4,"
+            + "  'name': 'My new project',"
+            + "  'description': 'This is a new project.',"
+            + "  'notes': { 'html': '' , 'raw': '' },"
+            + "  'tasks': { 'total': 0, 'open': 0, 'closed': 0 },"
+            + "  'href': '/api/projects/4'"
+            + "}", STRICT));
    }
 
    @Test
    public void postNewProjectRaisesErrorForEmptyName() throws Exception {
-      final String project = "{\"name\": \"\", \"description\": \"This is a new project.\"}";
+      final String project = "{'name': '', 'description': 'This is a new project.'}";
       post("/api/projects/", project)
          .andExpect(status().isBadRequest())
          .andExpect(jsonPath("$.errors", hasSize(2)))
@@ -83,25 +80,27 @@ public class ProjectsControllerIT extends ControllerIT {
    public void getProjectReturnsRequestedProject() throws Exception {
       get("/api/projects/1")
          .andExpect(status().isOk())
-         .andExpect(jsonPath("$.id", equalTo(1)))
-         .andExpect(jsonPath("$.name", equalTo("First project")))
-         .andExpect(jsonPath("$.description", startsWith("This is my first project.")))
-         .andExpect(jsonPath("$.tasks.total", equalTo(3)))
-         .andExpect(jsonPath("$.tasks.open", equalTo(2)))
-         .andExpect(jsonPath("$.tasks.closed", equalTo(1)))
-         .andExpect(jsonPath("$.notes.raw", startsWith("Lorem ipsum dolor sit amet,")))
-         .andExpect(jsonPath("$.notes.html", startsWith("<p>Lorem ipsum dolor sit amet,")))
-         .andExpect(jsonPath("$.notes.html", endsWith("ut labore et dolore magna aliqua.</p>")))
-         .andExpect(jsonPath("$.href", equalTo("/api/projects/1")));
+         .andExpect(content().json("{"
+            + "  'id': 1,"
+            + "  'name': 'First project',"
+            + "  'description': 'This is my first project.',"
+            + "  'notes': {"
+            + "    'html': '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',"
+            + "    'raw': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'"
+            + "  },"
+            + "  'tasks': { 'total': 3, 'open': 2, 'closed': 1 },"
+            + "  'href': '/api/projects/1'"
+            + "}", STRICT));
       get("/api/projects/2")
          .andExpect(status().isOk())
-         .andExpect(jsonPath("$.id", equalTo(2)))
-         .andExpect(jsonPath("$.name", equalTo("Second project")))
-         .andExpect(jsonPath("$.description", startsWith("This is my second project.")))
-         .andExpect(jsonPath("$.tasks.total", equalTo(2)))
-         .andExpect(jsonPath("$.tasks.open", equalTo(2)))
-         .andExpect(jsonPath("$.tasks.closed", equalTo(0)))
-         .andExpect(jsonPath("$.href", equalTo("/api/projects/2")));
+         .andExpect(content().json("{"
+            + "  'id': 2,"
+            + "  'name': 'Second project',"
+            + "  'description': 'This is my second project.',"
+            + "  'notes': { 'html': '', 'raw': '' },"
+            + "  'tasks': { 'total': 2, 'open': 2, 'closed': 0 },"
+            + "  'href': '/api/projects/2'"
+            + "}", STRICT));
    }
 
    @Test
@@ -124,9 +123,10 @@ public class ProjectsControllerIT extends ControllerIT {
    public void getProjectReadMeReturnsReadMeIfAvailable() throws Exception {
       get("/api/projects/1/notes")
          .andExpect(status().isOk())
-         .andExpect(jsonPath("$.raw", startsWith("Lorem ipsum dolor sit amet,")))
-         .andExpect(jsonPath("$.html", startsWith("<p>Lorem ipsum dolor sit amet,")))
-         .andExpect(jsonPath("$.html", endsWith("ut labore et dolore magna aliqua.</p>")));
+         .andExpect(content().json("{"
+            + "  'raw': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',"
+            + "  'html': '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.<p>'"
+            + "}", STRICT));
    }
 
    @Test
@@ -156,16 +156,17 @@ public class ProjectsControllerIT extends ControllerIT {
    @Test
    @DirtiesContext
    public void postNewTaskSavesTaskIfValid() throws Exception {
-      final String task = "{\"summary\": \"My new task\", \"priority\": \"NORMAL\", \"tags\": [\"First\", \"Second\"]}";
+      final String task = "{'summary': 'My new task', 'priority': 'NORMAL', 'tags': ['First', 'Second']}";
       post("/api/projects/1/tasks/", task)
          .andExpect(status().isCreated())
-         .andExpect(jsonPath("$.id", equalTo(6)))
-         .andExpect(jsonPath("$.summary", equalTo("My new task")))
-         .andExpect(jsonPath("$.priority", equalTo("NORMAL")))
-         .andExpect(jsonPath("$.tags", contains("First", "Second")))
-         .andExpect(jsonPath("$.project.id", equalTo(1)))
-         .andExpect(jsonPath("$.project.name", equalTo("First project")))
-         .andExpect(jsonPath("$.href", equalTo("/api/tasks/6")));
+         .andExpect(content().json("{"
+            + "  'id': 6,"
+            + "  'summary': 'My new task',"
+            + "  'priority': 'NORMAL',"
+            + "  'tags': [ 'First', 'Second' ],"
+            + "  'project': { 'id': 1, 'name': 'First project' },"
+            + "  'href': '/api/tasks/6'"
+            + "}", STRICT));
    }
 
 }

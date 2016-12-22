@@ -1,5 +1,9 @@
 package uk.co.zoneofavoidance.my.tasks.controllers;
 
+import static org.apache.commons.lang3.StringUtils.strip;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -9,6 +13,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
  * Integration test for REST controllers using {@link MockMvc}.
  */
 public abstract class ControllerIT extends BaseMockMvcTest {
+
+   /** Strict matching of JSON responses. */
+   protected static final boolean STRICT = true;
 
    private static final MediaType APPLICATION_JSON = new MediaType("application", "json");
 
@@ -33,7 +40,7 @@ public abstract class ControllerIT extends BaseMockMvcTest {
     */
    protected ResultActions post(final String path, final String json) throws Exception {
       return mockMvc().perform(MockMvcRequestBuilders.post(path)
-         .contentType(APPLICATION_JSON).content(json));
+         .contentType(APPLICATION_JSON).content(convertQuotes(json)));
    }
 
    /**
@@ -45,6 +52,25 @@ public abstract class ControllerIT extends BaseMockMvcTest {
     */
    protected ResultActions post(final String path) throws Exception {
       return mockMvc().perform(MockMvcRequestBuilders.post(path));
+   }
+
+   /**
+    * Convert single-quoted pseudo-JSON to valid double-quoted JSON.
+    *
+    * @param json string containing JSON or pseudo-JSON
+    * @return a string containing valid JSON
+    */
+   protected static String convertQuotes(final String json) {
+      switch (json.trim().charAt(0)) {
+         case '{':
+            return new JSONObject(json).toString();
+         case '[':
+            return new JSONArray(json).toString();
+         case '\'':
+            return String.format("\"%s\"", strip(json, "\'"));
+         default:
+            return json;
+      }
    }
 
 }
