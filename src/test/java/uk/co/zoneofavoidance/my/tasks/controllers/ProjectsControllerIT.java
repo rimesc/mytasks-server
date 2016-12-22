@@ -1,5 +1,6 @@
 package uk.co.zoneofavoidance.my.tasks.controllers;
 
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -8,6 +9,9 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.co.zoneofavoidance.my.tasks.controllers.JsonStringMatchers.dateWithin;
+
+import java.util.Date;
 
 import org.junit.Test;
 import org.springframework.test.annotation.DirtiesContext;
@@ -97,7 +101,10 @@ public class ProjectsControllerIT extends ControllerIT {
             + "  'id': 2,"
             + "  'name': 'Second project',"
             + "  'description': 'This is my second project.',"
-            + "  'notes': { 'html': '', 'raw': '' },"
+            + "  'notes': {"
+            + "    'html': '<p>Ut enim ad minim veniam, quis nostrud exercitation.</p>',"
+            + "    'raw': 'Ut enim ad minim veniam, quis nostrud exercitation.'"
+            + "  },"
             + "  'tasks': { 'total': 2, 'open': 2, 'closed': 0 },"
             + "  'href': '/api/projects/2'"
             + "}", STRICT));
@@ -120,17 +127,18 @@ public class ProjectsControllerIT extends ControllerIT {
    }
 
    @Test
-   public void getProjectReadMeReturnsReadMeIfAvailable() throws Exception {
+   public void getProjectNotesReturnsNotesIfAvailable() throws Exception {
       get("/api/projects/1/notes")
          .andExpect(status().isOk())
          .andExpect(content().json("{"
             + "  'raw': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',"
-            + "  'html': '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.<p>'"
+            + "  'html': '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',"
+            + "  'href': '/api/projects/1/notes'"
             + "}", STRICT));
    }
 
    @Test
-   public void getUnknownProjectReadMeIsNotFound() throws Exception {
+   public void getUnknownProjectNotesIsNotFound() throws Exception {
       get("/api/projects/6/notes")
          .andExpect(status().isNotFound())
          .andExpect(jsonPath("$.code", equalTo("Not Found")))
@@ -138,7 +146,7 @@ public class ProjectsControllerIT extends ControllerIT {
    }
 
    @Test
-   public void getProjectReadMeIsNotFoundIfUnavailable() throws Exception {
+   public void getProjectNotesIsNotFoundIfUnavailable() throws Exception {
       get("/api/projects/3/notes")
          .andExpect(status().isNotFound())
          .andExpect(jsonPath("$.code", equalTo("Not Found")))
@@ -146,7 +154,7 @@ public class ProjectsControllerIT extends ControllerIT {
    }
 
    @Test
-   public void getInvalidProjectReadMeIsBadRequest() throws Exception {
+   public void getInvalidProjectNotesIsBadRequest() throws Exception {
       get("/api/projects/abc/notes")
          .andExpect(status().isBadRequest())
          .andExpect(jsonPath("$.code", equalTo("Bad Request")))
@@ -163,10 +171,13 @@ public class ProjectsControllerIT extends ControllerIT {
             + "  'id': 6,"
             + "  'summary': 'My new task',"
             + "  'priority': 'NORMAL',"
+            + "  'state': 'TO_DO',"
             + "  'tags': [ 'First', 'Second' ],"
+            + "  'notes': { 'raw': '', 'html': '' },"
             + "  'project': { 'id': 1, 'name': 'First project' },"
             + "  'href': '/api/tasks/6'"
-            + "}", STRICT));
+            + "}")) // Not STRICT because the value of 'created' is unknown
+         .andExpect(jsonPath("$.created", dateWithin(1, SECONDS, new Date())));
    }
 
 }
