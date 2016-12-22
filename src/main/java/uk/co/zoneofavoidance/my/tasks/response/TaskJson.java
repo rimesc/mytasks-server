@@ -101,15 +101,7 @@ public class TaskJson {
     * @return the date when the task was last modified
     */
    public Date getUpdated() {
-      return updated;
-   }
-
-   /**
-    * @return <code>true</code> if the task has been modified, otherwise
-    *         <code>false</code>
-    */
-   public boolean isModified() {
-      return getUpdated().after(getCreated());
+      return updated.after(created) ? updated : null;
    }
 
    /**

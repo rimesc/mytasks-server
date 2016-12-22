@@ -1,5 +1,6 @@
 package uk.co.zoneofavoidance.my.tasks.controllers;
 
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
@@ -7,6 +8,9 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.co.zoneofavoidance.my.tasks.controllers.JsonStringMatchers.dateWithin;
+
+import java.util.Date;
 
 import org.junit.Test;
 import org.springframework.test.annotation.DirtiesContext;
@@ -32,8 +36,6 @@ public class TasksControllerIT extends ControllerIT {
             + "    'priority': 'NORMAL',"
             + "    'state': 'TO_DO',"
             + "    'created': '2016-07-10T00:29:08.000+0000',"
-            + "    'updated': '2016-07-10T00:29:08.000+0000',"
-            + "    'modified': false,"
             + "    'tags': [ 'First', 'Second' ],"
             + "    'project': {"
             + "      'id': 1,"
@@ -130,7 +132,6 @@ public class TasksControllerIT extends ControllerIT {
             + "  'priority': 'LOW',"
             + "  'state': 'TO_DO',"
             + "  'created': '2016-07-10T00:29:08.000+0000',"
-            + "  'modified': true,"
             + "  'tags': [ 'First', 'Second' ],"
             + "  'notes': {"
             + "    'raw': 'This is an *edited* task.',"
@@ -141,7 +142,8 @@ public class TasksControllerIT extends ControllerIT {
             + "    'name': 'First project'"
             + "  },"
             + "  'href': '/api/tasks/1'"
-            + "}")); // Not STRICT because the value of 'updated' is unknown
+            + "}")) // Not STRICT because the value of 'updated' is unknown
+         .andExpect(jsonPath("$.updated", dateWithin(1, SECONDS, new Date())));
    }
 
    @Test
