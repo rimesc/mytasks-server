@@ -4,25 +4,32 @@ import java.util.Collections;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 import org.hibernate.validator.constraints.Length;
 
 import uk.co.zoneofavoidance.my.tasks.domain.Priority;
+import uk.co.zoneofavoidance.my.tasks.domain.State;
+import uk.co.zoneofavoidance.my.tasks.request.validation.Create;
 
 /**
- * Bean backing the new task form.
+ * Bean backing the new/update task forms.
  */
 public class TaskForm {
 
    @Length(min = 1, max = 255)
+   @NotNull(groups = Create.class)
    private String summary;
 
+   @NotNull(groups = Create.class)
    private String description;
 
-   @NotNull
+   @NotNull(groups = Create.class)
    private Priority priority;
 
-   @NotNull
+   @Null(groups = Create.class)
+   private State state;
+
    private Set<String> tags = Collections.emptySet();
 
    /**
@@ -44,6 +51,13 @@ public class TaskForm {
     */
    public Priority getPriority() {
       return priority;
+   }
+
+   /**
+    * @return the new state of the task
+    */
+   public State getState() {
+      return state;
    }
 
    /**
@@ -72,6 +86,13 @@ public class TaskForm {
     */
    public void setPriority(final Priority priority) {
       this.priority = priority;
+   }
+
+   /**
+    * @param state new state of the task
+    */
+   public void setState(final State state) {
+      this.state = state;
    }
 
    /**

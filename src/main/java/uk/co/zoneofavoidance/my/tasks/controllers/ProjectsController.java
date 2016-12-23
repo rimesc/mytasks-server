@@ -18,9 +18,11 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
+import javax.validation.groups.Default;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,6 +41,7 @@ import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
 import uk.co.zoneofavoidance.my.tasks.request.ProjectForm;
 import uk.co.zoneofavoidance.my.tasks.request.ReadMeRequest;
 import uk.co.zoneofavoidance.my.tasks.request.TaskForm;
+import uk.co.zoneofavoidance.my.tasks.request.validation.Create;
 import uk.co.zoneofavoidance.my.tasks.response.BindingErrorsResponse;
 import uk.co.zoneofavoidance.my.tasks.response.ErrorResponse;
 import uk.co.zoneofavoidance.my.tasks.response.JsonConversions;
@@ -140,7 +143,7 @@ public class ProjectsController {
     */
    @RequestMapping(method = POST, consumes = "application/json", produces = "application/json")
    @ResponseStatus(CREATED)
-   public ResourceJson<ProjectJson> postNewProject(@Valid @RequestBody final ProjectForm form) {
+   public ResourceJson<ProjectJson> postNewProject(@Validated({ Create.class, Default.class }) @RequestBody final ProjectForm form) {
       final Project project = projects.save(Project.create(form.getName(), form.getDescription()));
       return new ResourceJson<ProjectJson>(conversions.toJson(project), path(project));
    }
@@ -195,7 +198,7 @@ public class ProjectsController {
     */
    @RequestMapping(path = "{projectId}/tasks", method = POST, consumes = "application/json", produces = "application/json")
    @ResponseStatus(CREATED)
-   public ResourceJson<TaskJson> postNewProjectTask(@PathVariable final Long projectId, @RequestBody @Valid final TaskForm form) {
+   public ResourceJson<TaskJson> postNewProjectTask(@PathVariable final Long projectId, @RequestBody @Validated({ Create.class, Default.class }) final TaskForm form) {
       final Project project = findProjectOrThrow(projectId);
       final Task task = tasks.save(Task.create(project, form.getSummary(), form.getDescription(), form.getPriority(), form.getTags().stream().map(tags::get).collect(toSet())));
       return new ResourceJson<>(conversions.toJson(task), TasksController.path(task));

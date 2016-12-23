@@ -1,33 +1,21 @@
 package uk.co.zoneofavoidance.my.tasks.request;
 
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
+
+import uk.co.zoneofavoidance.my.tasks.request.validation.Create;
 
 /**
- * Bean backing the new project form.
+ * Bean backing the new/update project forms.
  */
 public class ProjectForm {
 
-   @NotEmpty
+   @NotNull(groups = Create.class)
    @Length(min = 1, max = 255)
    private String name;
 
    private String description;
-
-   /**
-    * For the framework.
-    */
-   public ProjectForm() {
-   }
-
-   /**
-    * @param name name of the project
-    * @param description description of the project
-    */
-   public ProjectForm(final String name, final String description) {
-      this.name = name;
-      this.description = description;
-   }
 
    /**
     * @return the name of the project

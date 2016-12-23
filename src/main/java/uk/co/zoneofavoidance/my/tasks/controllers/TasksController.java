@@ -35,7 +35,7 @@ import uk.co.zoneofavoidance.my.tasks.domain.Task;
 import uk.co.zoneofavoidance.my.tasks.exceptions.NotFoundException;
 import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
 import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
-import uk.co.zoneofavoidance.my.tasks.request.UpdateTaskRequest;
+import uk.co.zoneofavoidance.my.tasks.request.TaskForm;
 import uk.co.zoneofavoidance.my.tasks.response.BindingErrorsResponse;
 import uk.co.zoneofavoidance.my.tasks.response.ErrorResponse;
 import uk.co.zoneofavoidance.my.tasks.response.JsonConversions;
@@ -111,7 +111,7 @@ public class TasksController {
     * @return a REST response containing the details of the updated task
     */
    @RequestMapping(path = "{taskId}", method = POST, produces = "application/json")
-   public ResourceJson<TaskJson> postTask(@PathVariable final Long taskId, @Valid @RequestBody final UpdateTaskRequest request) {
+   public ResourceJson<TaskJson> postTask(@PathVariable final Long taskId, @Valid @RequestBody final TaskForm request) {
       final Task task = tasks.findOne(taskId);
       if (task == null) {
          throw new NotFoundException("task");

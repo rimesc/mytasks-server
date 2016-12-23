@@ -1,6 +1,7 @@
 package uk.co.zoneofavoidance.my.tasks.controllers;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -74,10 +75,10 @@ public class ProjectsControllerIT extends ControllerIT {
       final String project = "{'name': '', 'description': 'This is a new project.'}";
       post("/api/projects/", project)
          .andExpect(status().isBadRequest())
-         .andExpect(jsonPath("$.errors", hasSize(2)))
-         .andExpect(jsonPath("$.errors[*].field", containsInAnyOrder("name", "name")))
-         .andExpect(jsonPath("$.errors[*].code", containsInAnyOrder("Length", "NotEmpty")))
-         .andExpect(jsonPath("$.errors[*].message", containsInAnyOrder("length must be between 1 and 255", "may not be empty")));
+         .andExpect(jsonPath("$.errors", hasSize(1)))
+         .andExpect(jsonPath("$.errors[*].field", contains("name")))
+         .andExpect(jsonPath("$.errors[*].code", contains("Length")))
+         .andExpect(jsonPath("$.errors[*].message", contains("length must be between 1 and 255")));
    }
 
    @Test
@@ -164,7 +165,7 @@ public class ProjectsControllerIT extends ControllerIT {
    @Test
    @DirtiesContext
    public void postNewTaskSavesTaskIfValid() throws Exception {
-      final String task = "{'summary': 'My new task', 'priority': 'NORMAL', 'tags': ['First', 'Second']}";
+      final String task = "{'summary': 'My new task', 'description': 'This is my new task.', 'priority': 'NORMAL', 'tags': ['First', 'Second']}";
       post("/api/projects/1/tasks/", task)
          .andExpect(status().isCreated())
          .andExpect(content().json("{"
@@ -173,7 +174,7 @@ public class ProjectsControllerIT extends ControllerIT {
             + "  'priority': 'NORMAL',"
             + "  'state': 'TO_DO',"
             + "  'tags': [ 'First', 'Second' ],"
-            + "  'notes': { 'raw': '', 'html': '' },"
+            + "  'notes': { 'raw': 'This is my new task.', 'html': '<p>This is my new task.</p>' },"
             + "  'project': { 'id': 1, 'name': 'First project' },"
             + "  'href': '/api/tasks/6'"
             + "}")) // Not STRICT because the value of 'created' is unknown
