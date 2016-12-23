@@ -13,6 +13,7 @@ import static uk.co.zoneofavoidance.my.tasks.util.BeanUtils.setIfNotNull;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -95,10 +96,7 @@ public class TasksController {
     */
    @RequestMapping(path = "{taskId}", method = GET, produces = "application/json")
    public ResourceJson<TaskJson> getTask(@PathVariable final Long taskId) {
-      final Task task = tasks.findOne(taskId);
-      if (task == null) {
-         throw new NotFoundException("task");
-      }
+      final Task task = findTaskOrThrow(taskId);
       return new ResourceJson<TaskJson>(conversions.toJson(task), path(task));
    }
 
@@ -112,12 +110,8 @@ public class TasksController {
     */
    @RequestMapping(path = "{taskId}", method = POST, produces = "application/json")
    public ResourceJson<TaskJson> postTask(@PathVariable final Long taskId, @Valid @RequestBody final TaskForm request) {
-      final Task task = tasks.findOne(taskId);
-      if (task == null) {
-         throw new NotFoundException("task");
-      }
+      final Task task = findTaskOrThrow(taskId);
       setIfNotNull(request.getSummary(), task::setSummary);
-      setIfNotNull(request.getDescription(), task::setDescription);
       setIfNotNull(request.getPriority(), task::setPriority);
       setIfNotNull(request.getState(), task::setState);
       setIfNotNull(request.getTags(), tags::get, task::setTags);
@@ -132,10 +126,7 @@ public class TasksController {
    @RequestMapping(path = "{taskId}", method = DELETE)
    @ResponseStatus(NO_CONTENT)
    public void deleteTask(@PathVariable final Long taskId) {
-      final Task task = tasks.findOne(taskId);
-      if (task == null) {
-         throw new NotFoundException("task");
-      }
+      findTaskOrThrow(taskId);
       tasks.delete(taskId);
    }
 
@@ -148,14 +139,24 @@ public class TasksController {
     */
    @RequestMapping(path = "{taskId}/notes", method = GET, produces = "application/json")
    public ResourceJson<NotesJson> getTaskNotes(@PathVariable final Long taskId) {
-      final Task task = tasks.findOne(taskId);
-      if (task == null) {
-         throw new NotFoundException("task");
-      }
-      if (task.getDescription() == null) {
-         throw new NotFoundException("note");
-      }
+      final Task task = findTaskOrThrow(taskId);
       return new ResourceJson<>(conversions.json(task.getDescription()), path(task, "notes"));
+   }
+
+   /**
+    * End-point for updating the notes for a task.
+    *
+    * @param taskId path variable containing the ID of the requested task
+    * @param notes request body containing the updated markdown
+    * @return a REST response containing the updated notes in both raw markdown
+    *         and HTML formats
+    */
+   @RequestMapping(path = "{taskId}/notes", method = POST, consumes = "text/markdown", produces = "application/json")
+   public ResourceJson<NotesJson> postTaskNotes(@PathVariable final Long taskId, @RequestBody final String notes) {
+      final Task task = findTaskOrThrow(taskId);
+      task.setDescription(notes);
+      final Task updatedTask = tasks.save(task);
+      return new ResourceJson<>(conversions.json(task.getDescription()), path(updatedTask, "notes"));
    }
 
    /**
@@ -204,6 +205,10 @@ public class TasksController {
 
    static String path(final Task task, final String... extraPath) {
       return BASE_PATH + "/" + task.getId() + Arrays.stream(extraPath).map(p -> "/" + p).collect(joining());
+   }
+
+   private Task findTaskOrThrow(final Long taskId) {
+      return Optional.ofNullable(tasks.findOne(taskId)).orElseThrow(() -> new NotFoundException("task"));
    }
 
 }

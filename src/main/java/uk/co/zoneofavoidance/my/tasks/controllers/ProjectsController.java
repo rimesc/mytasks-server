@@ -39,7 +39,6 @@ import uk.co.zoneofavoidance.my.tasks.exceptions.NotFoundException;
 import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
 import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
 import uk.co.zoneofavoidance.my.tasks.request.ProjectForm;
-import uk.co.zoneofavoidance.my.tasks.request.ReadMeRequest;
 import uk.co.zoneofavoidance.my.tasks.request.TaskForm;
 import uk.co.zoneofavoidance.my.tasks.request.validation.Create;
 import uk.co.zoneofavoidance.my.tasks.response.BindingErrorsResponse;
@@ -102,11 +101,11 @@ public class ProjectsController {
     * End-point for obtaining the notes for a project.
     *
     * @param projectId path variable containing the ID of the requested project
-    * @return a REST response containing the 'read-me' in both raw markdown and
-    *         HTML formats
+    * @return a REST response containing the notes in both raw markdown and HTML
+    *         formats
     */
    @RequestMapping(path = "{projectId}/notes", method = GET, produces = "application/json")
-   public ResourceJson<NotesJson> getProjectReadMe(@PathVariable final Long projectId) {
+   public ResourceJson<NotesJson> getProjectNotes(@PathVariable final Long projectId) {
       final Project project = findProjectOrThrow(projectId);
       if (project.getReadMe() == null) {
          throw new NotFoundException("note");
@@ -118,18 +117,18 @@ public class ProjectsController {
     * End-point for updating the notes for a project.
     *
     * @param projectId path variable containing the ID of the requested project
-    * @param request JSON request body containing the updated markdown
-    * @return a REST response containing the updated 'read-me' in both raw
-    *         markdown and HTML formats
+    * @param notes request body containing the updated markdown
+    * @return a REST response containing the updated notes in both raw markdown
+    *         and HTML formats
     */
-   @RequestMapping(path = "{projectId}/notes", method = POST, consumes = "application/json", produces = "application/json")
-   public ResourceJson<NotesJson> postProjectReadMe(@PathVariable final Long projectId, @RequestBody @Valid final ReadMeRequest request) {
+   @RequestMapping(path = "{projectId}/notes", method = POST, consumes = "text/markdown", produces = "application/json")
+   public ResourceJson<NotesJson> postProjectNotes(@PathVariable final Long projectId, @RequestBody final String notes) {
       final Project project = findProjectOrThrow(projectId);
       if (project.getReadMe() == null) {
-         setIfNotNull(request.getMarkdown(), m -> project.setReadMe(new Note(request.getMarkdown())));
+         setIfNotNull(notes, m -> project.setReadMe(new Note(notes)));
       }
       else {
-         setIfNotNull(request.getMarkdown(), project.getReadMe()::setText);
+         setIfNotNull(notes, project.getReadMe()::setText);
       }
       final Project updatedProject = projects.save(project);
       return new ResourceJson<>(conversions.json(updatedProject.getReadMe()), path(updatedProject, "notes"));
@@ -200,7 +199,7 @@ public class ProjectsController {
    @ResponseStatus(CREATED)
    public ResourceJson<TaskJson> postNewProjectTask(@PathVariable final Long projectId, @RequestBody @Validated({ Create.class, Default.class }) final TaskForm form) {
       final Project project = findProjectOrThrow(projectId);
-      final Task task = tasks.save(Task.create(project, form.getSummary(), form.getDescription(), form.getPriority(), form.getTags().stream().map(tags::get).collect(toSet())));
+      final Task task = tasks.save(Task.create(project, form.getSummary(), "", form.getPriority(), form.getTags().stream().map(tags::get).collect(toSet())));
       return new ResourceJson<>(conversions.toJson(task), TasksController.path(task));
    }
 

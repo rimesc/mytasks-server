@@ -25,7 +25,6 @@ public class TaskFormTest extends FormValidationTestBase<TaskForm> {
    public void setUpForm() throws Exception {
       form = new TaskForm();
       form.setSummary("My task");
-      form.setDescription("My task.");
       form.setPriority(Priority.NORMAL);
       form.setTags(ImmutableSet.of("foo", "bar"));
    }
@@ -45,12 +44,6 @@ public class TaskFormTest extends FormValidationTestBase<TaskForm> {
    public void missingSummaryIsAnErrorOnCreation() {
       form.setSummary(null);
       assertConstraintViolations(contains(constraintViolation("summary", "may not be null")), Create.class);
-   }
-
-   @Test
-   public void missingDescriptionIsAnErrorOnCreation() {
-      form.setDescription(null);
-      assertConstraintViolations(contains(constraintViolation("description", "may not be null")), Create.class);
    }
 
    @Test

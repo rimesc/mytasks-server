@@ -22,9 +22,6 @@ public class TaskForm {
    private String summary;
 
    @NotNull(groups = Create.class)
-   private String description;
-
-   @NotNull(groups = Create.class)
    private Priority priority;
 
    @Null(groups = Create.class)
@@ -37,13 +34,6 @@ public class TaskForm {
     */
    public String getSummary() {
       return summary;
-   }
-
-   /**
-    * @return a description of the task
-    */
-   public String getDescription() {
-      return description;
    }
 
    /**
@@ -72,13 +62,6 @@ public class TaskForm {
     */
    public void setSummary(final String summary) {
       this.summary = summary;
-   }
-
-   /**
-    * @param description description of the task
-    */
-   public void setDescription(final String description) {
-      this.description = description;
    }
 
    /**

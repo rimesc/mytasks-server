@@ -39,8 +39,21 @@ public abstract class ControllerIT extends BaseMockMvcTest {
     * @throws Exception if something went wrong
     */
    protected ResultActions post(final String path, final String json) throws Exception {
+      return post(path, convertQuotes(json), APPLICATION_JSON);
+   }
+
+   /**
+    * Perform an HTTP POST request to the given path.
+    *
+    * @param path the path within the servlet context
+    * @param content string to send as the request body
+    * @param mediaType type of the request body
+    * @return an instance of {@link ResultActions}; never {@code null}
+    * @throws Exception if something went wrong
+    */
+   protected ResultActions post(final String path, final String content, final MediaType mediaType) throws Exception {
       return mockMvc().perform(MockMvcRequestBuilders.post(path)
-         .contentType(APPLICATION_JSON).content(convertQuotes(json)));
+         .contentType(mediaType).content(content));
    }
 
    /**

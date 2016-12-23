@@ -3,6 +3,7 @@ package uk.co.zoneofavoidance.my.tasks.controllers;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.http.MediaType.TEXT_MARKDOWN;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -196,7 +197,7 @@ public class TasksControllerIT extends ControllerIT {
    @Test
    @DirtiesContext
    public void postUpdateTaskSavesTaskIfValid() throws Exception {
-      final String task = "{'summary': 'My edited task', 'description': 'This is an *edited* task.', 'priority': 'LOW', 'tags': ['First', 'Second']}";
+      final String task = "{'summary': 'My edited task', 'priority': 'LOW', 'tags': ['First', 'Second']}";
       post("/api/tasks/1", task)
          .andExpect(status().isOk())
          .andExpect(content().json("{"
@@ -207,8 +208,8 @@ public class TasksControllerIT extends ControllerIT {
             + "  'created': '2016-07-10T00:29:08.000+0000',"
             + "  'tags': [ 'First', 'Second' ],"
             + "  'notes': {"
-            + "    'raw': 'This is an *edited* task.',"
-            + "    'html': '<p>This is an <em>edited</em> task.</p>'"
+            + "    'raw': 'My first task',"
+            + "    'html': '<p>My first task</p>'"
             + "  },"
             + "  'project': {"
             + "    'id': 1,"
@@ -217,6 +218,21 @@ public class TasksControllerIT extends ControllerIT {
             + "  'href': '/api/tasks/1'"
             + "}")) // Not STRICT because the value of 'updated' is unknown
          .andExpect(jsonPath("$.updated", dateWithin(1, SECONDS, new Date())));
+   }
+
+   @Test
+   @DirtiesContext
+   public void postTaskNotesSavesNotes() throws Exception {
+      final String notes = "These are *'edited'* notes.";
+      post("/api/tasks/1/notes", notes, TEXT_MARKDOWN)
+         .andExpect(status().isOk())
+         .andExpect(content().json("{"
+            // The double-backslash is removed when the pseudo-JSON is
+            // converted to double quotes
+            + "  'html': '<p>These are <em>\\'edited\\'</em> notes.</p>',"
+            + "  'raw': 'These are *\\'edited\\'* notes.',"
+            + "  'href': '/api/tasks/1/notes'"
+            + "}"));
    }
 
    @Test

@@ -2,9 +2,9 @@ package uk.co.zoneofavoidance.my.tasks.controllers;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.http.MediaType.TEXT_MARKDOWN;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -79,6 +79,21 @@ public class ProjectsControllerIT extends ControllerIT {
          .andExpect(jsonPath("$.errors[*].field", contains("name")))
          .andExpect(jsonPath("$.errors[*].code", contains("Length")))
          .andExpect(jsonPath("$.errors[*].message", contains("length must be between 1 and 255")));
+   }
+
+   @Test
+   @DirtiesContext
+   public void postProjectNotesSavesNotes() throws Exception {
+      final String notes = "These are *'edited'* notes.";
+      post("/api/projects/1/notes", notes, TEXT_MARKDOWN)
+         .andExpect(status().isOk())
+         .andExpect(content().json("{"
+            // The double-backslash is removed when the pseudo-JSON is
+            // converted to double quotes
+            + "  'html': '<p>These are <em>\\'edited\\'</em> notes.</p>',"
+            + "  'raw': 'These are *\\'edited\\'* notes.',"
+            + "  'href': '/api/projects/1/notes'"
+            + "}"));
    }
 
    @Test
@@ -165,7 +180,7 @@ public class ProjectsControllerIT extends ControllerIT {
    @Test
    @DirtiesContext
    public void postNewTaskSavesTaskIfValid() throws Exception {
-      final String task = "{'summary': 'My new task', 'description': 'This is my new task.', 'priority': 'NORMAL', 'tags': ['First', 'Second']}";
+      final String task = "{'summary': 'My new task', 'priority': 'NORMAL', 'tags': ['First', 'Second']}";
       post("/api/projects/1/tasks/", task)
          .andExpect(status().isCreated())
          .andExpect(content().json("{"
@@ -174,7 +189,7 @@ public class ProjectsControllerIT extends ControllerIT {
             + "  'priority': 'NORMAL',"
             + "  'state': 'TO_DO',"
             + "  'tags': [ 'First', 'Second' ],"
-            + "  'notes': { 'raw': 'This is my new task.', 'html': '<p>This is my new task.</p>' },"
+            + "  'notes': { 'raw': '', 'html': '' },"
             + "  'project': { 'id': 1, 'name': 'First project' },"
             + "  'href': '/api/tasks/6'"
             + "}")) // Not STRICT because the value of 'created' is unknown
