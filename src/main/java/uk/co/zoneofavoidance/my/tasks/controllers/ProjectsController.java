@@ -159,7 +159,7 @@ public class ProjectsController {
       final Project project = findProjectOrThrow(projectId);
       project.setName(form.getName());
       project.setDescription(form.getDescription());
-      return new ResourceJson<ProjectJson>(conversions.toJson(project), path(project));
+      return new ResourceJson<ProjectJson>(conversions.toJson(projects.save(project)), path(project));
    }
 
    /**
