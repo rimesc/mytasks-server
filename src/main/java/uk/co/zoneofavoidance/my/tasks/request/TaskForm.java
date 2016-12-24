@@ -1,6 +1,5 @@
 package uk.co.zoneofavoidance.my.tasks.request;
 
-import java.util.Collections;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
@@ -27,7 +26,7 @@ public class TaskForm {
    @Null(groups = Create.class)
    private State state;
 
-   private Set<String> tags = Collections.emptySet();
+   private Set<String> tags;
 
    /**
     * @return the summary of the task
