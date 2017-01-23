@@ -1,40 +1,28 @@
 package uk.co.zoneofavoidance.my.tasks.security;
 
-import javax.sql.DataSource;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+
+import com.auth0.spring.security.api.Auth0SecurityConfig;
 
 /**
- * Configures the {@link UserDetailsManager}.
+ * Security configuration backed by <a href="https://auth0.com">Auth0</a>.
  */
 @Configuration
-public class SecurityConfiguration {
+@EnableWebSecurity(debug = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
+@ComponentScan(basePackageClasses = Auth0SecurityConfig.class)
+public class SecurityConfiguration extends Auth0SecurityConfig {
 
-   /** Admin role. */
-   public static final String ADMIN_ROLE = "ROLE_ADMIN";
-
-   /** User role. */
-   public static final String USER_ROLE = "ROLE_USER";
-
-   @Autowired
-   private DataSource dataSource;
-
-   @Bean
-   public UserDetailsManager userDetailsManager() {
-      final JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager();
-      userDetailsManager.setDataSource(dataSource);
-      return userDetailsManager;
-   }
-
-   @Bean
-   public PasswordEncoder passwordEncoder() {
-      return new BCryptPasswordEncoder();
+   @Override
+   protected void authorizeRequests(final HttpSecurity http) throws Exception {
+      http.authorizeRequests().anyRequest().authenticated();
    }
 
 }

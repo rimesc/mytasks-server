@@ -1,7 +1,7 @@
 package uk.co.zoneofavoidance.my.tasks;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.context.web.SpringBootServletInitializer;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
 
 /**
  * Initialises the application when running in a servlet container.
