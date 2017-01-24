@@ -29,3 +29,6 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Uncommited runtime properties (e.g. auth credentials)
+/application.properties
