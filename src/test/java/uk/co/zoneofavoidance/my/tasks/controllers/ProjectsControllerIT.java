@@ -196,4 +196,23 @@ public class ProjectsControllerIT extends ControllerIT {
          .andExpect(jsonPath("$.created", dateWithin(1, SECONDS, new Date())));
    }
 
+   @Test
+   @DirtiesContext
+   public void postNewTaskHandlesMissingTags() throws Exception {
+      final String task = "{'summary': 'My new task', 'priority': 'NORMAL'}";
+      post("/api/projects/1/tasks/", task)
+         .andExpect(status().isCreated())
+         .andExpect(content().json("{"
+            + "  'id': 6,"
+            + "  'summary': 'My new task',"
+            + "  'priority': 'NORMAL',"
+            + "  'state': 'TO_DO',"
+            + "  'tags': [ ],"
+            + "  'notes': { 'raw': '', 'html': '' },"
+            + "  'project': { 'id': 1, 'name': 'First project' },"
+            + "  'href': '/api/tasks/6'"
+            + "}")) // Not STRICT because the value of 'created' is unknown
+         .andExpect(jsonPath("$.created", dateWithin(1, SECONDS, new Date())));
+   }
+
 }

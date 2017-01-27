@@ -1,5 +1,6 @@
 package uk.co.zoneofavoidance.my.tasks.controllers;
 
+import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -199,7 +200,7 @@ public class ProjectsController {
    @ResponseStatus(CREATED)
    public ResourceJson<TaskJson> postNewProjectTask(@PathVariable final Long projectId, @RequestBody @Validated({ Create.class, Default.class }) final TaskForm form) {
       final Project project = findProjectOrThrow(projectId);
-      final Task task = tasks.save(Task.create(project, form.getSummary(), "", form.getPriority(), form.getTags().stream().map(tags::get).collect(toSet())));
+      final Task task = tasks.save(Task.create(project, form.getSummary(), "", form.getPriority(), Optional.ofNullable(form.getTags()).orElse(emptySet()).stream().map(tags::get).collect(toSet())));
       return new ResourceJson<>(conversions.toJson(task), TasksController.path(task));
    }
 
