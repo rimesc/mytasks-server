@@ -11,7 +11,7 @@
 
    <groupId>uk.co.zoneofavoidance</groupId>
    <artifactId>mytasks-server</artifactId>
-   <version>0.4.0</version>
+   <version>0.4.1</version>
    <packaging>jar</packaging>
 
    <name>myTasks-server</name>
