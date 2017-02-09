@@ -26,7 +26,7 @@ public final class JsonStringMatchers {
     * @see DateMatchers#within(long, java.util.concurrent.TimeUnit, Date)
     */
    public static Matcher<String> dateWithin(final long period, final ChronoUnit unit, final Date date) {
-      return new TransformingMatcher<>(item -> new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSZ").parse(item), DateMatchers.within(period, unit, date));
+      return new TransformingMatcher<>(item -> new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse(item), DateMatchers.within(period, unit, date));
    }
 
    private static class TransformingMatcher<T> extends BaseMatcher<String> {
