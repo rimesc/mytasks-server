@@ -37,8 +37,6 @@ import uk.co.zoneofavoidance.my.tasks.domain.Note;
 import uk.co.zoneofavoidance.my.tasks.domain.Project;
 import uk.co.zoneofavoidance.my.tasks.domain.Task;
 import uk.co.zoneofavoidance.my.tasks.exceptions.NotFoundException;
-import uk.co.zoneofavoidance.my.tasks.repositories.ProjectRepository;
-import uk.co.zoneofavoidance.my.tasks.repositories.TaskRepository;
 import uk.co.zoneofavoidance.my.tasks.request.ProjectForm;
 import uk.co.zoneofavoidance.my.tasks.request.TaskForm;
 import uk.co.zoneofavoidance.my.tasks.request.validation.Create;
@@ -49,7 +47,9 @@ import uk.co.zoneofavoidance.my.tasks.response.NotesJson;
 import uk.co.zoneofavoidance.my.tasks.response.ProjectJson;
 import uk.co.zoneofavoidance.my.tasks.response.ResourceJson;
 import uk.co.zoneofavoidance.my.tasks.response.TaskJson;
+import uk.co.zoneofavoidance.my.tasks.services.ProjectService;
 import uk.co.zoneofavoidance.my.tasks.services.TagService;
+import uk.co.zoneofavoidance.my.tasks.services.TaskService;
 
 /**
  * REST controller for the projects API.
@@ -60,16 +60,16 @@ public class ProjectsController {
 
    static final String BASE_PATH = "/api/projects";
 
-   private final ProjectRepository projects;
+   private final ProjectService projects;
 
-   private final TaskRepository tasks;
+   private final TaskService tasks;
 
    private final TagService tags;
 
    private final JsonConversions conversions;
 
    @Autowired
-   public ProjectsController(final ProjectRepository projects, final TaskRepository tasks, final TagService tags, final JsonConversions conversions) {
+   public ProjectsController(final ProjectService projects, final TaskService tasks, final TagService tags, final JsonConversions conversions) {
       this.projects = projects;
       this.tasks = tasks;
       this.tags = tags;
@@ -83,7 +83,7 @@ public class ProjectsController {
     */
    @RequestMapping(method = GET, produces = "application/json")
    public List<ResourceJson<ProjectJson>> getProjects() {
-      return projects.findAll().stream().map(project -> new ResourceJson<>(conversions.toAbridgedJson(project), path(project))).collect(toList());
+      return projects.list().stream().map(project -> new ResourceJson<>(conversions.toAbridgedJson(project), path(project))).collect(toList());
    }
 
    /**
@@ -94,7 +94,7 @@ public class ProjectsController {
     */
    @RequestMapping(path = "{projectId}", method = GET, produces = "application/json")
    public ResourceJson<ProjectJson> getProject(@PathVariable final Long projectId) {
-      final Project project = findProjectOrThrow(projectId);
+      final Project project = projects.get(projectId);
       return new ResourceJson<ProjectJson>(conversions.toJson(project), path(project));
    }
 
@@ -107,7 +107,7 @@ public class ProjectsController {
     */
    @RequestMapping(path = "{projectId}/notes", method = GET, produces = "application/json")
    public ResourceJson<NotesJson> getProjectNotes(@PathVariable final Long projectId) {
-      final Project project = findProjectOrThrow(projectId);
+      final Project project = projects.get(projectId);
       if (project.getReadMe() == null) {
          throw new NotFoundException("note");
       }
@@ -124,7 +124,7 @@ public class ProjectsController {
     */
    @RequestMapping(path = "{projectId}/notes", method = POST, consumes = "text/markdown", produces = "application/json")
    public ResourceJson<NotesJson> postProjectNotes(@PathVariable final Long projectId, @RequestBody final String notes) {
-      final Project project = findProjectOrThrow(projectId);
+      final Project project = projects.get(projectId);
       if (project.getReadMe() == null) {
          setIfNotNull(notes, m -> project.setReadMe(new Note(notes)));
       }
@@ -157,7 +157,7 @@ public class ProjectsController {
     */
    @RequestMapping(path = "{projectId}", method = POST, consumes = "application/json", produces = "application/json")
    public ResourceJson<ProjectJson> postEditProject(@PathVariable final Long projectId, @Valid @RequestBody final ProjectForm form) {
-      final Project project = findProjectOrThrow(projectId);
+      final Project project = projects.get(projectId);
       project.setName(form.getName());
       project.setDescription(form.getDescription());
       return new ResourceJson<ProjectJson>(conversions.toJson(projects.save(project)), path(project));
@@ -171,8 +171,6 @@ public class ProjectsController {
    @RequestMapping(path = "{projectId}", method = DELETE)
    @ResponseStatus(NO_CONTENT)
    public void deleteProject(@PathVariable final Long projectId) {
-      findProjectOrThrow(projectId);
-      tasks.deleteByProjectId(projectId);
       projects.delete(projectId);
    }
 
@@ -184,8 +182,7 @@ public class ProjectsController {
     */
    @RequestMapping(path = "{projectId}/tasks", method = GET, produces = "application/json")
    public List<ResourceJson<TaskJson>> getProjectTasks(@PathVariable final Long projectId) {
-      findProjectOrThrow(projectId);
-      final List<Task> tasksForProject = tasks.findByProjectId(projectId);
+      final List<Task> tasksForProject = tasks.getForProject(projectId);
       return tasksForProject.stream().map(task -> new ResourceJson<>(conversions.toAbridgedJson(task), TasksController.path(task))).collect(toList());
    }
 
@@ -199,7 +196,7 @@ public class ProjectsController {
    @RequestMapping(path = "{projectId}/tasks", method = POST, consumes = "application/json", produces = "application/json")
    @ResponseStatus(CREATED)
    public ResourceJson<TaskJson> postNewProjectTask(@PathVariable final Long projectId, @RequestBody @Validated({ Create.class, Default.class }) final TaskForm form) {
-      final Project project = findProjectOrThrow(projectId);
+      final Project project = projects.get(projectId);
       final Task task = tasks.save(Task.create(project, form.getSummary(), "", form.getPriority(), Optional.ofNullable(form.getTags()).orElse(emptySet()).stream().map(tags::get).collect(toSet())));
       return new ResourceJson<>(conversions.toJson(task), TasksController.path(task));
    }
@@ -239,10 +236,6 @@ public class ProjectsController {
 
    static String path(final Project project, final String... extraPath) {
       return BASE_PATH + "/" + project.getId() + Arrays.stream(extraPath).map(p -> "/" + p).collect(joining());
-   }
-
-   private Project findProjectOrThrow(final Long projectId) {
-      return Optional.ofNullable(projects.findOne(projectId)).orElseThrow(() -> new NotFoundException("project"));
    }
 
 }

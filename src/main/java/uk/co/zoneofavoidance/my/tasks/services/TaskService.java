@@ -1,10 +1,6 @@
 package uk.co.zoneofavoidance.my.tasks.services;
 
 import static java.util.Arrays.asList;
-import static uk.co.zoneofavoidance.my.tasks.domain.State.DONE;
-import static uk.co.zoneofavoidance.my.tasks.domain.State.IN_PROGRESS;
-import static uk.co.zoneofavoidance.my.tasks.domain.State.ON_HOLD;
-import static uk.co.zoneofavoidance.my.tasks.domain.State.TO_DO;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,13 +35,13 @@ public class TaskService {
    /**
     * Retrieves a task by ID.
     *
-    * @param id ID of the task to retrieve
+    * @param taskId ID of the task to retrieve
     * @return task with the given ID
     * @throws NotFoundException if no task with the given ID can be found
     */
    @Transactional(readOnly = true)
-   public Task get(final long id) throws NotFoundException {
-      return Optional.ofNullable(tasks.findOne(id)).orElseThrow(() -> new NotFoundException("task"));
+   public Task get(final long taskId) throws NotFoundException {
+      return findTaskOrThrow(taskId);
    }
 
    /**
@@ -53,6 +49,7 @@ public class TaskService {
     *
     * @param projectId ID of the project
     * @return tasks for the project
+    * @throws NotFoundException if no project with the given ID can be found
     */
    @Transactional(readOnly = true)
    public List<Task> getForProject(final long projectId) {
@@ -80,28 +77,6 @@ public class TaskService {
    }
 
    /**
-    * Retrieves the open tasks for a project.
-    *
-    * @param projectId ID of the project
-    * @return open tasks for the project
-    */
-   @Transactional(readOnly = true)
-   public List<Task> getOpenForProject(final long projectId) {
-      return getForProject(projectId, TO_DO, IN_PROGRESS, ON_HOLD);
-   }
-
-   /**
-    * Retrieves the closed tasks for a project.
-    *
-    * @param projectId ID of the project
-    * @return closed tasks for the project
-    */
-   @Transactional(readOnly = true)
-   public List<Task> getClosedForProject(final Long projectId) {
-      return getForProject(projectId, DONE);
-   }
-
-   /**
     * Saves a task.
     *
     * @param task task to save
@@ -112,18 +87,21 @@ public class TaskService {
    }
 
    /**
-    * Deletes a task.
+    * Deletes a task by ID.
     *
-    * @param task task to delete
+    * @param taskId ID of the task to delete
     */
-   public void delete(final Task task) {
+   public void delete(final long taskId) {
+      final Task task = findTaskOrThrow(taskId);
       tasks.delete(task);
    }
 
    private void checkProjectExists(final long projectId) {
-      if (projects.findOne(projectId) == null) {
-         throw new NotFoundException("project");
-      }
+      Optional.ofNullable(projects.findOne(projectId)).orElseThrow(() -> new NotFoundException("project"));
+   }
+
+   private Task findTaskOrThrow(final long taskId) {
+      return Optional.ofNullable(tasks.findOne(taskId)).orElseThrow(() -> new NotFoundException("task"));
    }
 
 }
