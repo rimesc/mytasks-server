@@ -6,23 +6,29 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import uk.co.zoneofavoidance.my.tasks.MyTasksApplication;
+import uk.co.zoneofavoidance.my.tasks.security.AuthenticatedUser;
 
 /**
  * Integration test using {@link MockMvc}.
  */
 @SpringBootTest(webEnvironment = RANDOM_PORT)
+@ContextConfiguration(classes = { BaseMockMvcTest.Config.class })
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 public abstract class BaseMockMvcTest {
+
+   static final String TEST_USER = "test_user";
 
    @Autowired
    private WebApplicationContext webAppContext;
@@ -34,10 +40,7 @@ public abstract class BaseMockMvcTest {
       mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
    }
 
-   /**
-    * @return the mock MVC
-    */
-   protected MockMvc mockMvc() {
+   MockMvc mockMvc() {
       return mockMvc;
    }
 
@@ -46,7 +49,33 @@ public abstract class BaseMockMvcTest {
     */
    @Configuration
    @Import(MyTasksApplication.class)
-   public static class Config {
+   static class Config {
+      @Bean
+      public AuthenticatedUser authenticatedUser() {
+         return new MutableAuthenticatedUser(TEST_USER);
+      }
+   }
+
+   /**
+    * Mutable implementation for testing.
+    */
+   static final class MutableAuthenticatedUser implements AuthenticatedUser {
+
+      private String id;
+
+      private MutableAuthenticatedUser(final String id) {
+         this.id = id;
+      }
+
+      @Override
+      public String getId() {
+         return id;
+      }
+
+      public void setId(final String id) {
+         this.id = id;
+      }
+
    }
 
 }

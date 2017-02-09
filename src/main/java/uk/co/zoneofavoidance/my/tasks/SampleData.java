@@ -11,6 +11,7 @@ import static uk.co.zoneofavoidance.my.tasks.domain.State.DONE;
 import static uk.co.zoneofavoidance.my.tasks.domain.State.IN_PROGRESS;
 import static uk.co.zoneofavoidance.my.tasks.domain.State.ON_HOLD;
 import static uk.co.zoneofavoidance.my.tasks.domain.State.TO_DO;
+import static uk.co.zoneofavoidance.my.tasks.security.AuthenticatedUser.GLOBAL_USER;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -42,13 +43,14 @@ public class SampleData implements CommandLineRunner {
 
    @Override
    public void run(final String... args) throws Exception {
-      final Project firstProject = Project.create("My first project", "This is my first sample project.");
-      final Project secondProject = Project.create("My second project", "This is my second sample project. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
+      final Project firstProject = createSampleProject("My first project", "This is my first sample project.");
+      final Project secondProject = createSampleProject("My second project", "This is my second sample project. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
       final Note readMe = new Note(Resources.toString(SampleData.class.getResource("/samples/readme.md"), UTF_8));
       firstProject.setReadMe(readMe);
       projects.save(firstProject);
       projects.save(secondProject);
-      projects.save(Project.create("My third project", "This is my third sample project. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
+      final Project thirdProject = createSampleProject("My third project", "This is my third sample project. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+      projects.save(thirdProject);
       final Task firstTask = Task.create(firstProject, "First sample task", Resources.toString(SampleData.class.getResource("/samples/readme.md"), UTF_8), HIGH, emptySet(), TO_DO);
       firstTask.setTags(ImmutableSet.of(Tag.create("Bug"), Tag.create("Version 1")));
       tasks.save(firstTask);
@@ -58,5 +60,11 @@ public class SampleData implements CommandLineRunner {
       tasks.save(Task.create(firstProject, "Third sample task", "This is the third sample task.", LOW, emptySet(), TO_DO));
       tasks.save(Task.create(secondProject, "Fourth sample task", "This is the fourth sample task.", NORMAL, emptySet(), IN_PROGRESS));
       tasks.save(Task.create(secondProject, "Fifth sample task", "This is the fifth sample task.", HIGH, emptySet(), ON_HOLD));
+   }
+
+   private Project createSampleProject(final String name, final String description) {
+      final Project project = Project.create(name, description);
+      project.setOwner(GLOBAL_USER);
+      return project;
    }
 }

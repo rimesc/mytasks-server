@@ -6,7 +6,6 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -24,7 +23,6 @@ import javax.validation.groups.Default;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,7 +38,6 @@ import uk.co.zoneofavoidance.my.tasks.exceptions.NotFoundException;
 import uk.co.zoneofavoidance.my.tasks.request.ProjectForm;
 import uk.co.zoneofavoidance.my.tasks.request.TaskForm;
 import uk.co.zoneofavoidance.my.tasks.request.validation.Create;
-import uk.co.zoneofavoidance.my.tasks.response.BindingErrorsResponse;
 import uk.co.zoneofavoidance.my.tasks.response.ErrorResponse;
 import uk.co.zoneofavoidance.my.tasks.response.JsonConversions;
 import uk.co.zoneofavoidance.my.tasks.response.NotesJson;
@@ -67,6 +64,7 @@ public class ProjectsController {
    private final TagService tags;
 
    private final JsonConversions conversions;
+
 
    @Autowired
    public ProjectsController(final ProjectService projects, final TaskService tasks, final TagService tags, final JsonConversions conversions) {
@@ -199,28 +197,6 @@ public class ProjectsController {
       final Project project = projects.get(projectId);
       final Task task = tasks.save(Task.create(project, form.getSummary(), "", form.getPriority(), Optional.ofNullable(form.getTags()).orElse(emptySet()).stream().map(tags::get).collect(toSet())));
       return new ResourceJson<>(conversions.toJson(task), TasksController.path(task));
-   }
-
-   /**
-    * Error handler for invalid project forms.
-    *
-    * @param ex exception
-    * @return a REST response containing details of the error
-    */
-   @ExceptionHandler(MethodArgumentNotValidException.class)
-   public ResponseEntity<BindingErrorsResponse> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex) {
-      return new ResponseEntity<>(BindingErrorsResponse.create(ex.getBindingResult()), BAD_REQUEST);
-   }
-
-   /**
-    * Error handler for when a project is not found.
-    *
-    * @param ex exception
-    * @return a REST response containing details of the error
-    */
-   @ExceptionHandler(NotFoundException.class)
-   public ResponseEntity<ErrorResponse> handleNotFound(final NotFoundException ex) {
-      return new ResponseEntity<>(ErrorResponse.create(NOT_FOUND, ex.getMessage()), NOT_FOUND);
    }
 
    /**

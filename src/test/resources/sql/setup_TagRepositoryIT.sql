@@ -1,4 +1,4 @@
-INSERT INTO project (id, name, description, created) VALUES (1, 'First project', 'My first project.', '2016-07-10T00:29:08+00');
+INSERT INTO project (id, name, description, owner, created) VALUES (1, 'First project', 'My first project.', 'test_user', '2016-07-10T00:29:08+00');
 INSERT INTO task (id, summary, description, priority, state, created, updated, project_id) VALUES (1, 'First task', 'My first task', 'NORMAL', 'TO_DO', '2016-07-10T00:29:08+00', '2016-07-10T00:29:08+00', 1);
 INSERT INTO tag (id, name) VALUES (1, 'First');
 INSERT INTO tag (id, name) VALUES (2, 'Second');

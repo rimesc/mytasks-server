@@ -35,6 +35,11 @@ public class Project {
    @Lob
    private String description;
 
+   @Column(nullable = false)
+   @Length(max = 255)
+   @NotBlank
+   private String owner;
+
    @CreationTimestamp
    private Date created;
 
@@ -80,6 +85,13 @@ public class Project {
     */
    public String getDescription() {
       return description;
+   }
+
+   /**
+    * @return the ID of the user that owns this project
+    */
+   public String getOwner() {
+      return owner;
    }
 
    /**
@@ -136,6 +148,15 @@ public class Project {
     */
    public void setDescription(final String description) {
       this.description = description;
+   }
+
+   /**
+    * Sets the user ID of the owner of this project.
+    *
+    * @param owner new owner
+    */
+   public void setOwner(final String owner) {
+      this.owner = owner;
    }
 
    /**

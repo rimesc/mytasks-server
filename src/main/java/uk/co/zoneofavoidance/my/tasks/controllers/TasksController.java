@@ -3,7 +3,6 @@ package uk.co.zoneofavoidance.my.tasks.controllers;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -17,7 +16,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -168,35 +166,13 @@ public class TasksController {
    }
 
    /**
-    * Error handler for invalid task forms.
-    *
-    * @param ex exception
-    * @return a REST response containing details of the error
-    */
-   @ExceptionHandler(BindException.class)
-   public ResponseEntity<BindingErrorsResponse> handleBindingError(final BindException ex) {
-      return new ResponseEntity<>(BindingErrorsResponse.create(ex.getBindingResult()), BAD_REQUEST);
-   }
-
-   /**
-    * Error handler for when a task is not found.
-    *
-    * @param ex exception
-    * @return a REST response containing details of the error
-    */
-   @ExceptionHandler(NotFoundException.class)
-   public ResponseEntity<ErrorResponse> handleNotFound(final NotFoundException ex) {
-      return new ResponseEntity<>(ErrorResponse.create(NOT_FOUND, ex.getMessage()), NOT_FOUND);
-   }
-
-   /**
     * Error handler for invalid (non-numeric) task IDs.
     *
     * @param ex exception
     * @return a REST response containing details of the error
     */
    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-   public ResponseEntity<ErrorResponse> handleBadProjectId(final MethodArgumentTypeMismatchException ex) {
+   public ResponseEntity<ErrorResponse> handleBadTaskId(final MethodArgumentTypeMismatchException ex) {
       return new ResponseEntity<>(ErrorResponse.create(BAD_REQUEST, "Invalid task ID: " + ex.getValue()), BAD_REQUEST);
    }
 

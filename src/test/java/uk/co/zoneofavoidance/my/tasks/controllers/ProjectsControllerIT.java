@@ -15,6 +15,7 @@ import static uk.co.zoneofavoidance.my.tasks.controllers.JsonStringMatchers.date
 import java.util.Date;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -25,6 +26,9 @@ import org.springframework.test.context.jdbc.Sql;
 @Sql(scripts = "/sql/cleanup.sql", executionPhase = AFTER_TEST_METHOD)
 @SuppressWarnings("checkstyle:magicnumber")
 public class ProjectsControllerIT extends ControllerIT {
+
+   @Autowired
+   private MutableAuthenticatedUser user;
 
    @Test
    public void getProjectsReturnsAllProjects() throws Exception {
@@ -132,6 +136,16 @@ public class ProjectsControllerIT extends ControllerIT {
          .andExpect(status().isNotFound())
          .andExpect(jsonPath("$.code", equalTo("Not Found")))
          .andExpect(jsonPath("$.message", equalTo("The requested project could not be found.")));
+   }
+
+   @Test
+   @DirtiesContext
+   public void getForbiddenProjectIsForbidden() throws Exception {
+      user.setId("another_user");
+      get("/api/projects/1")
+         .andExpect(status().isForbidden())
+         .andExpect(jsonPath("$.code", equalTo("Forbidden")))
+         .andExpect(jsonPath("$.message", equalTo("You don't have permission to view the requested project.")));
    }
 
    @Test
