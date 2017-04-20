@@ -152,7 +152,7 @@ public class TasksController {
     *         and HTML formats
     */
    @RequestMapping(path = "{taskId}/notes", method = POST, consumes = "text/markdown", produces = "application/json")
-   public ResourceJson<NotesJson> postTaskNotes(@PathVariable final Long taskId, @RequestBody final String notes) {
+   public ResourceJson<NotesJson> postTaskNotes(@PathVariable final Long taskId, @RequestBody(required = false) final String notes) {
       final Task task = findTaskOrThrow(taskId);
       task.setDescription(notes);
       final Task updatedTask = tasks.save(task);

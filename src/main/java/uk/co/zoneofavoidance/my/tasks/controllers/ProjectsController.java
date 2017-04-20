@@ -12,7 +12,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static uk.co.zoneofavoidance.my.tasks.controllers.ProjectsController.BASE_PATH;
-import static uk.co.zoneofavoidance.my.tasks.util.BeanUtils.setIfNotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -123,13 +122,16 @@ public class ProjectsController {
     *         and HTML formats
     */
    @RequestMapping(path = "{projectId}/notes", method = POST, consumes = "text/markdown", produces = "application/json")
-   public ResourceJson<NotesJson> postProjectNotes(@PathVariable final Long projectId, @RequestBody final String notes) {
+   public ResourceJson<NotesJson> postProjectNotes(@PathVariable final Long projectId, @RequestBody(required = false) final String notes) {
       final Project project = findProjectOrThrow(projectId);
-      if (project.getReadMe() == null) {
-         setIfNotNull(notes, m -> project.setReadMe(new Note(notes)));
+      if (notes == null) {
+         project.setReadMe(null);
+      }
+      else if (project.getReadMe() == null) {
+         project.setReadMe(new Note(notes));
       }
       else {
-         setIfNotNull(notes, project.getReadMe()::setText);
+         project.getReadMe().setText(notes);
       }
       final Project updatedProject = projects.save(project);
       return new ResourceJson<>(conversions.json(updatedProject.getReadMe()), path(updatedProject, "notes"));

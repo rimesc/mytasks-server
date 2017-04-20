@@ -237,6 +237,19 @@ public class TasksControllerIT extends ControllerIT {
 
    @Test
    @DirtiesContext
+   public void postEmptyTaskNotesDeletesNotes() throws Exception {
+      final String notes = "";
+      post("/api/tasks/1/notes", notes, TEXT_MARKDOWN)
+         .andExpect(status().isOk())
+         .andExpect(content().json("{"
+            + "  'html': '',"
+            + "  'raw': '',"
+            + "  'href': '/api/tasks/1/notes'"
+            + "}"));
+   }
+
+   @Test
+   @DirtiesContext
    public void postStateUpdatePerformsStateTransition() throws Exception {
       final String task = "{'state': 'IN_PROGRESS'}";
       post("/api/tasks/1", task)

@@ -97,6 +97,19 @@ public class ProjectsControllerIT extends ControllerIT {
    }
 
    @Test
+   @DirtiesContext
+   public void postEmptyProjectNotesDeletesNotes() throws Exception {
+      final String notes = "";
+      post("/api/projects/1/notes", notes, TEXT_MARKDOWN)
+         .andExpect(status().isOk())
+         .andExpect(content().json("{"
+            + "  'html': '',"
+            + "  'raw': '',"
+            + "  'href': '/api/projects/1/notes'"
+            + "}"));
+   }
+
+   @Test
    public void getProjectReturnsRequestedProject() throws Exception {
       get("/api/projects/1")
          .andExpect(status().isOk())
