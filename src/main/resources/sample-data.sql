@@ -95,7 +95,7 @@ INSERT INTO task_tag (task_id, tag_id) VALUES (1, 2);
 INSERT INTO task_tag (task_id, tag_id) VALUES (2, 3);
 
 INSERT INTO project (id, name, description, created) VALUES (2, 'My second project', 'This is my second sample project. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', '2016-07-10T00:29:08+00');
-INSERT INTO task (id, summary, description, priority, state, created, updated, project_id) VALUES (4, 'Fourth sample task', 'This is the fourth sample task.', 'NORMAL', 'IN_PROGRESS', '2016-07-10T00:29:08+00', '2016-07-10T00:29:08+00', 1);
-INSERT INTO task (id, summary, description, priority, state, created, updated, project_id) VALUES (5, 'Fifth sample task', 'This is the fifth sample task.', 'HIGH', 'ON_HOLD', '2016-07-10T00:29:08+00', '2016-07-10T00:29:08+00', 1);
+INSERT INTO task (id, summary, description, priority, state, created, updated, project_id) VALUES (4, 'Fourth sample task', 'This is the fourth sample task.', 'NORMAL', 'IN_PROGRESS', '2016-07-10T00:29:08+00', '2016-07-10T00:29:08+00', 2);
+INSERT INTO task (id, summary, description, priority, state, created, updated, project_id) VALUES (5, 'Fifth sample task', 'This is the fifth sample task.', 'HIGH', 'ON_HOLD', '2016-07-10T00:29:08+00', '2016-07-10T00:29:08+00', 2);
 
 INSERT INTO project (id, name, description, created) VALUES (3, 'My third project', 'This is my third sample project. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', '2016-07-10T00:29:08+00');
