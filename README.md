@@ -14,20 +14,18 @@ Run `mvn -D run.profiles=dev spring-boot:run` to run in development mode (in-mem
 
 ## Running in Docker
 
-### Building the image
+### Without TLS
+
+Build the image:
 
     docker build -t mytasks-server:latest .
 
-### Running the server
-
-To create and run the container (replacing the `%MY_***%` placeholders with your own credentials):
+Launch the server (replacing the `%MY_***%` placeholders with your own credentials):
 
     docker volume create mytasks-data
     docker run -d -p 8080:8080 -v mytasks-data:/mytasks -e "AUTH0_DOMAIN=%MY_DOMAIN%" -e "AUTH0_ISSUER=%MY_ISSUER%" -e "AUTH0_CLIENTID=%MY_CLIENT%" -e "AUTH0_CLIENTSECRET=%MY_SECRET%" --name mytasks-server --restart=always mytasks-server:latest
 
-### Enabling TLS
-
-To build a Docker image with support for TLS, perform the following steps before building the image.
+### With TLS
 
 #### Create a self-signed certificate
 
@@ -35,7 +33,15 @@ Use `keytool` to generate a self-signed certificate in the root of the repositor
 
     keytool -genkey -alias mytasks -keyalg RSA -keysize 2048 -keystore keystore.pks -validity 3650
 
-#### Configure TLS
+To import the certificate into your OS/browser , use `keytool` to extract the certificate from the key store:
+
+    keytool -export -alias mytasks -file mytasks.crt -keystore keystore.jks
+
+What you need to do with the resulting file is OS-specific; on MacOS run e.g.:
+
+    sudo security add-trusted-cert -d -r trustRoot -k ~/Library/Keychains/login.keychain mytasks.crt
+
+#### Build and launch the image
 
 Add the following to `application.yml` in the repository root (creating the file if necessary), filling in the passwords used to create the certificate:
 
@@ -49,15 +55,12 @@ Add the following to `application.yml` in the repository root (creating the file
         key-store-password: %STORE_PASSWORD%
         key-password: %KEY_PASSWORD%
 
-As the server is now listening on a different port, it's necessary to change the argument to the `docker run` command above to `-p 8443:443`.
+Build the image:
 
-#### Import the certificate
+    docker build -t mytasks-server:latest .
 
-Use `keytool` to extract the certificate from the key store:
+Launch the server (replacing the `%MY_***%` placeholders with your own credentials):
 
-    keytool -export -alias mytasks -file mytasks.crt -keystore keystore.jks
-
-What you need to do with the resulting file is OS-specific; on MacOS run e.g.:
-
-    sudo security add-trusted-cert -d -r trustRoot -k ~/Library/Keychains/login.keychain mytasks.crt
+    docker volume create mytasks-data
+    docker run -d -p 8443:443 -v mytasks-data:/mytasks -e "AUTH0_DOMAIN=%MY_DOMAIN%" -e "AUTH0_ISSUER=%MY_ISSUER%" -e "AUTH0_CLIENTID=%MY_CLIENT%" -e "AUTH0_CLIENTSECRET=%MY_SECRET%" --name mytasks-server --restart=always mytasks-server:latest
 
