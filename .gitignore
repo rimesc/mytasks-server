@@ -31,4 +31,6 @@ Temporary Items
 .apdisk
 
 # Uncommited runtime properties (e.g. auth credentials)
-/application.properties
+/application.yml
+/keystore.jks
+/mytasks.crt
